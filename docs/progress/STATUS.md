@@ -47,7 +47,8 @@ Desviación del PLAN: sprites/terreno provisionales **procedurales propios** (`t
 
 - [ ] **Push/merge a `main` + primera corrida de CI en GitHub** → cierra K1 de F1 (Firefox/WebKit) y valida el workflow.
 - [ ] **Medición de FPS en hardware de referencia** (portátil Iris Xe/AMD 680M, Chrome) → cierra K1 de F2.
-- [ ] Cuenta de Render con método de pago, conectar `render.yaml`, secrets `RENDER_DEPLOY_HOOK_API|RELAY|WEB` → cierra "URL desplegada" de F0.
+- [x] Render desplegado con Blueprint (plan free, autoDeploy desde `main`). URLs: web `https://reinos-web-4bcg.onrender.com/`, API `https://reinos-api.onrender.com/health` (OK), relay `https://reinos-relay.onrender.com/health` (OK). `reinos-kv` es privado (sin URL). Los deploy hooks de GitHub ya no hacen falta.
+- [ ] Verificar `/devlog/` en la URL de `reinos-web` (el rewrite de devlog se quitó: revisar que cargue).
 - [ ] Aprobar `.claude/settings.json` (propuesta en `docs/settings.proposed.json`).
 - [ ] Clúster MongoDB Atlas + `MONGODB_URI` (Fase 8).
 - [ ] Packs de arte/audio y herramientas de IA para assets (puerta de Fase 6; conviene empezar ya).
