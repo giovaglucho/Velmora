@@ -37,8 +37,8 @@ describe('validateCommandShape', () => {
   it('has stable command codes', () => {
     expect(COMMAND_CODE).toEqual({ move: 1, stop: 2 });
   });
-  const cases: [string, (c: Record<string, any>) => void][] = [
-    // eslint-disable-line @typescript-eslint/no-explicit-any
+  type Loose = Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+  const cases: [string, (c: Loose) => void][] = [
     ['float turn', (c) => (c.turn = 1.5)],
     ['negative turn', (c) => (c.turn = -1)],
     ['string turn', (c) => (c.turn = '1')],

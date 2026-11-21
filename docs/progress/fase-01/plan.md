@@ -6,11 +6,11 @@ Fuente: `docs/PLAN.md` Fase 1, GDD §15.2 y §7/§8, ADR-003, **ADR-005** (contr
 
 ## 1. Criterios de fase (del PLAN) y cómo se verifican
 
-| # | Criterio | Verificación (comando / evidencia) | Tareas |
-| --- | --- | --- | --- |
-| K1 | 1000 unidades × 10 000 ticks producen el mismo `finalHash` en los entornos disponibles | `pnpm test:det` (Node) + `pnpm test:det:browsers` (Chromium local; Firefox y WebKit en CI). Evidencia: `docs/progress/fase-01/determinism.md` con tabla entorno → hash | D2, D4, E1–E3 |
-| K2 | Tick ≤ 3 ms con 400 unidades | `pnpm --filter @reinos/headless bench` → `docs/progress/fase-01/bench.md` (p95 por tick ≤ 3 ms, 400 unidades en movimiento, Node 22) | D3 |
-| K3 | 0 violaciones de `lint:sim` | `pnpm lint:sim` sale 0 con `fixed.ts`, `sim/src/**` completos; además `pnpm lint`, `pnpm typecheck` | todas |
+| #   | Criterio                                                                               | Verificación (comando / evidencia)                                                                                                                                     | Tareas        |
+| --- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| K1  | 1000 unidades × 10 000 ticks producen el mismo `finalHash` en los entornos disponibles | `pnpm test:det` (Node) + `pnpm test:det:browsers` (Chromium local; Firefox y WebKit en CI). Evidencia: `docs/progress/fase-01/determinism.md` con tabla entorno → hash | D2, D4, E1–E3 |
+| K2  | Tick ≤ 3 ms con 400 unidades                                                           | `pnpm --filter @reinos/headless bench` → `docs/progress/fase-01/bench.md` (p95 por tick ≤ 3 ms, 400 unidades en movimiento, Node 22)                                   | D3            |
+| K3  | 0 violaciones de `lint:sim`                                                            | `pnpm lint:sim` sale 0 con `fixed.ts`, `sim/src/**` completos; además `pnpm lint`, `pnpm typecheck`                                                                    | todas         |
 
 **Entornos (honestidad de evidencia).** Aquí solo hay Node 22.23 y Chromium (`/opt/pw-browsers/chromium`, y `/usr/bin/google-chrome`); **no** hay Firefox ni WebKit y `playwright install` no se ejecuta en este entorno (ver `e2e/README.md`). Por tanto:
 
@@ -196,46 +196,46 @@ Dueños: `architect`, `sim-engineer` (carril A y B), `sim-engineer (2º)` (carri
 
 ## 4. Tabla resumen
 
-| Tarea | Dueño | Días | Depende de | Criterio principal |
-| --- | --- | --- | --- | --- |
-| T0 | sim-engineer (2º) | 0,5 | ADR-005 | typecheck/lint/data:check verdes; `buildSimData` válido |
-| A1 | sim-engineer | 0,5 | T0 | `isqrt`/`fxMul`/`fxDiv` exactos vs `BigInt` |
-| A2 | sim-engineer | 0,5 | A1 | tablas con hash pineado; error ≤ 1 en sin/cos/atan2 |
-| B1 | sim-engineer | 0,75 | T0 | World determinista, hash dorado independiente |
-| B2 | sim-engineer | 0,75 | B1 | comandos: tabla de casos + fuzz; orden-invariante |
-| R1 | architect | 0,25 | B2 | veredicto; ADR-005 aceptado |
-| B3 | sim-engineer | 0,75 | R1 | `step` ≡ 4×`stepTick`; hash por turno |
-| B4 | sim-engineer | 0,5 | B3 | `validateReplay`/`runReplay`, detección de divergencia |
-| C1 | sim-engineer (2º) | 0,75 | T0 | rejilla + `nearestFree` vs fuerza bruta |
-| C2 | sim-engineer (2º) | 1 | C1 | grafo incremental == grafo desde cero; conectividad == flood fill |
-| C3 | sim-engineer (2º) | 1 | C2 | ruta OK ⇔ alcanzable; ≤ 1,25× óptimo; caché transparente |
-| C4 | sim-engineer (2º) | 1 | C1, B1 | sin casillas bloqueadas; Jacobi; llegada en pasillo |
-| C5 | sim-engineer (2º) | 0,75 | C3, C4, B3 | 400 unidades llegan; `clearCaches` transparente |
-| D1 | qa-engineer | 0,75 | B4 | `headless run` exit 0/1/2 |
-| D2 | qa-engineer | 0,75 | D1, C5 | escenario 1000×10 000 reproducible, ejerce movimiento |
-| D3 | qa-engineer | 0,75 | D1, C5 | p95 ≤ 3 ms/tick con 400 unidades (K2) |
-| D4 | qa-engineer | 0,5 | D2 | `pnpm test:det` con hash dorado (K1-Node) |
-| E1 | qa-engineer | 1 | D2 | Node = Chromium (hilo y Worker) |
-| E2 | qa-engineer | 0,5 | E1 | Firefox/WebKit en CI (no ejecutables aquí) |
-| E3 | qa-engineer | 0,25 | E1, E2 | `determinism.md` honesto |
-| F1 | devlog-reporter | 1 | D3, C5 | GIF de debug ≥ 60 fotogramas |
-| F2 | devlog-reporter | 0,5 | D3, F1 | `pnpm devlog` con GIF + tabla |
-| R2 | reviewer | 0,5 | D4, E3, F2 | informe sin bloqueantes abiertos |
-| Z | orquestador/architect | 0,5 | R2 | K1–K3 con evidencia; STATUS y ADR |
+| Tarea | Dueño                 | Días | Depende de | Criterio principal                                                |
+| ----- | --------------------- | ---- | ---------- | ----------------------------------------------------------------- |
+| T0    | sim-engineer (2º)     | 0,5  | ADR-005    | typecheck/lint/data:check verdes; `buildSimData` válido           |
+| A1    | sim-engineer          | 0,5  | T0         | `isqrt`/`fxMul`/`fxDiv` exactos vs `BigInt`                       |
+| A2    | sim-engineer          | 0,5  | A1         | tablas con hash pineado; error ≤ 1 en sin/cos/atan2               |
+| B1    | sim-engineer          | 0,75 | T0         | World determinista, hash dorado independiente                     |
+| B2    | sim-engineer          | 0,75 | B1         | comandos: tabla de casos + fuzz; orden-invariante                 |
+| R1    | architect             | 0,25 | B2         | veredicto; ADR-005 aceptado                                       |
+| B3    | sim-engineer          | 0,75 | R1         | `step` ≡ 4×`stepTick`; hash por turno                             |
+| B4    | sim-engineer          | 0,5  | B3         | `validateReplay`/`runReplay`, detección de divergencia            |
+| C1    | sim-engineer (2º)     | 0,75 | T0         | rejilla + `nearestFree` vs fuerza bruta                           |
+| C2    | sim-engineer (2º)     | 1    | C1         | grafo incremental == grafo desde cero; conectividad == flood fill |
+| C3    | sim-engineer (2º)     | 1    | C2         | ruta OK ⇔ alcanzable; ≤ 1,25× óptimo; caché transparente          |
+| C4    | sim-engineer (2º)     | 1    | C1, B1     | sin casillas bloqueadas; Jacobi; llegada en pasillo               |
+| C5    | sim-engineer (2º)     | 0,75 | C3, C4, B3 | 400 unidades llegan; `clearCaches` transparente                   |
+| D1    | qa-engineer           | 0,75 | B4         | `headless run` exit 0/1/2                                         |
+| D2    | qa-engineer           | 0,75 | D1, C5     | escenario 1000×10 000 reproducible, ejerce movimiento             |
+| D3    | qa-engineer           | 0,75 | D1, C5     | p95 ≤ 3 ms/tick con 400 unidades (K2)                             |
+| D4    | qa-engineer           | 0,5  | D2         | `pnpm test:det` con hash dorado (K1-Node)                         |
+| E1    | qa-engineer           | 1    | D2         | Node = Chromium (hilo y Worker)                                   |
+| E2    | qa-engineer           | 0,5  | E1         | Firefox/WebKit en CI (no ejecutables aquí)                        |
+| E3    | qa-engineer           | 0,25 | E1, E2     | `determinism.md` honesto                                          |
+| F1    | devlog-reporter       | 1    | D3, C5     | GIF de debug ≥ 60 fotogramas                                      |
+| F2    | devlog-reporter       | 0,5  | D3, F1     | `pnpm devlog` con GIF + tabla                                     |
+| R2    | reviewer              | 0,5  | D4, E3, F2 | informe sin bloqueantes abiertos                                  |
+| Z     | orquestador/architect | 0,5  | R2         | K1–K3 con evidencia; STATUS y ADR                                 |
 
 Ruta crítica: T0 → B1 → B2 → R1 → B3 → B4 → D1 → D2 → D4 → E1 → E3 → R2 → Z (≈ 8,5 d-agente); el carril C (T0 → C1 → C2 → C3 → C5, ≈ 4,5 d) corre en paralelo y debe estar listo antes de D2/D3.
 
 ## 5. Riesgos y mitigaciones
 
-| Riesgo | Mitigación |
-| --- | --- |
-| B y C chocan en `steer/` o `loop/` | Propiedad por carpeta (ADR-005 §11), stub de T0 y `MovementSystem` como único punto de unión |
-| Desbordes en productos de punto fijo | Rangos documentados, tests contra `BigInt`, `FX_MAX_OPERAND` |
-| Tick > 3 ms con 400 unidades | Presupuesto de rutas por tick, caché jerárquica, buffers preasignados, perfilado temprano en D3 (correr bench incluso con B/C parciales al terminar C5) |
-| Desync por caché o por orden de procesamiento | Tests de transparencia de cachés y de Jacobi; `hashFull` con waypoints |
-| Firefox/WebKit no verificables aquí | Configurados en CI; K1 queda "pendiente de CI" explícito; no se declara cerrado antes |
-| `lint:sim` bloquea `/` fuera de `fixed.ts` | `Math.trunc(a / b)` o desplazamientos; excepciones solo con `lint-sim-allow` justificado y revisado en R2 |
-| Cambios de balance alteran hashes dorados | Los dorados dependen de `DATA_VERSION`; bump de versión exige re-pinear y registrar en PR |
+| Riesgo                                        | Mitigación                                                                                                                                              |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| B y C chocan en `steer/` o `loop/`            | Propiedad por carpeta (ADR-005 §11), stub de T0 y `MovementSystem` como único punto de unión                                                            |
+| Desbordes en productos de punto fijo          | Rangos documentados, tests contra `BigInt`, `FX_MAX_OPERAND`                                                                                            |
+| Tick > 3 ms con 400 unidades                  | Presupuesto de rutas por tick, caché jerárquica, buffers preasignados, perfilado temprano en D3 (correr bench incluso con B/C parciales al terminar C5) |
+| Desync por caché o por orden de procesamiento | Tests de transparencia de cachés y de Jacobi; `hashFull` con waypoints                                                                                  |
+| Firefox/WebKit no verificables aquí           | Configurados en CI; K1 queda "pendiente de CI" explícito; no se declara cerrado antes                                                                   |
+| `lint:sim` bloquea `/` fuera de `fixed.ts`    | `Math.trunc(a / b)` o desplazamientos; excepciones solo con `lint-sim-allow` justificado y revisado en R2                                               |
+| Cambios de balance alteran hashes dorados     | Los dorados dependen de `DATA_VERSION`; bump de versión exige re-pinear y registrar en PR                                                               |
 
 ## 6. Fuera de alcance de F1
 

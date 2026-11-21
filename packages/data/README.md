@@ -20,7 +20,7 @@ Source of truth: `docs/GDD.md`. Every entry is transcribed from a GDD table; whe
 | `techs.json`                                        | §4.5, §9, §10 unique techs                                          | `TechsFile`                                       |
 | `upgrades.json`                                     | §7.2 line upgrades, §6 defense upgrades                             | `UpgradesFile`                                    |
 | `combat.json`                                       | §6 build/repair, §8                                                 | `CombatFile`                                      |
-| `game.json`                                         | §3.5, §11.2, §11.3                                                  | `GameFile`                                        |
+| `game.json`                                         | §3.5, §11.2, §11.3, ADR-005 `movement`                              | `GameFile`                                        |
 | `factions/*.json`                                   | §10                                                                 | `FactionDef`                                      |
 | `maps/*.json`                                       | §11.4                                                               | `MapScript`                                       |
 | `ai/difficulties.json`, `layers.json`, `rules.json` | §12.1-12.3                                                          | `DifficultiesFile`, `AiLayersFile`, `AiRulesFile` |
