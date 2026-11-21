@@ -51,9 +51,7 @@ export interface RenderHarness {
   /** Screen px (CSS) of a grid point under the current camera. */
   screenOfGrid(gx: number, gy: number): { sx: number; sy: number };
   /** Collects `n` consecutive rAF frames of renderer stats (the loop must be running). */
-  collect(
-    n: number,
-  ): Promise<
+  collect(n: number): Promise<
     Array<{
       updateMs: number;
       renderMs: number;

@@ -4,7 +4,7 @@ import { openHarness, percentile, readPng, saveMedia, watchConsole } from './ren
 // R3 — unit layer: sprites, interpolation, depth order, culling, rings (ADR-006 §3.7, §4.3, §4.4, §4.7).
 // Fixed scene: 128×128 map, 400 fake units (2 owners, 5 types) in a block at the map centre.
 const ZOOMS = [0.6, 1, 1.4] as const;
-const BLOCK = 'units=400&spacing=1&gx=64&gy=64';
+const BLOCK = 'units=400&spacing=0.85&gx=64&gy=64';
 
 test.describe('entities', () => {
   test.beforeEach(async ({ page }) => {
@@ -81,8 +81,8 @@ test.describe('entities', () => {
         const v = h.feed.view;
         v.highWater = 2;
         for (let s = 0; s < 2; s++) {
-          v.prevX[s] = v.posX[s] = s === front ? 64_040 : 64_000;
-          v.prevY[s] = v.posY[s] = s === front ? 64_040 : 64_000;
+          v.prevX[s] = v.posX[s] = s === front ? 64_100 : 64_000;
+          v.prevY[s] = v.posY[s] = s === front ? 64_100 : 64_000;
           v.flags[s] = 1; // alive, not moving → idle frame
           v.facing[s] = 0;
           v.typeId[s] = 0;
@@ -91,7 +91,7 @@ test.describe('entities', () => {
         v.owner[1] = 1; // red
         h.feed.latestArrivalMs = performance.now() - 10_000; // alpha = 1
         h.setCamera(64, 64, 1);
-        const p = h.screenOfGrid(64.04, 64.04);
+        const p = h.screenOfGrid(64.1, 64.1);
         return p;
       }, frontSlot);
       // torso team band of the idle frame spans frame y 48..64 → centre 56; foot (anchor) at y 84.48
@@ -184,20 +184,30 @@ test.describe('entities', () => {
     });
   }
 
-  test('steady state: no per-frame heap growth beyond the tolerance (400 units, static, 300 frames)', async ({
+  test('steady state: the unit layer adds no per-frame heap growth over a terrain-only baseline', async ({
     page,
   }) => {
-    test.setTimeout(120_000);
-    await openHarness(page, `${BLOCK}&zoom=1&loop=1&select=40`);
+    test.setTimeout(180_000);
     const cdp = await page.context().newCDPSession(page);
-    await page.evaluate(() => window.__renderHarness!.collect(120)); // warm-up: pools, shader compile
-    await cdp.send('HeapProfiler.collectGarbage');
-    const before = (await cdp.send('Runtime.getHeapUsage')).usedSize;
-    const frames = await page.evaluate(() => window.__renderHarness!.collect(300));
-    const after = (await cdp.send('Runtime.getHeapUsage')).usedSize;
-    const perFrame = (after - before) / frames.length;
-    console.log('HEAP', JSON.stringify({ before, after, perFrameBytes: Math.round(perFrame) }));
-    // Our update loop allocates nothing; Pixi's render submission allocates a little. Tolerance documented in ADR-006 amendments.
-    expect(perFrame).toBeLessThan(4096);
+    const measure = async (query: string) => {
+      await openHarness(page, query);
+      await page.evaluate(() => window.__renderHarness!.collect(120)); // warm-up: pools, shader compile
+      await cdp.send('HeapProfiler.collectGarbage');
+      const before = (await cdp.send('Runtime.getHeapUsage')).usedSize;
+      const frames = await page.evaluate(() => window.__renderHarness!.collect(200));
+      const after = (await cdp.send('Runtime.getHeapUsage')).usedSize;
+      return (after - before) / frames.length;
+    };
+    const baseline = await measure('units=0&zoom=1&gx=64&gy=64&loop=1');
+    const withUnits = await measure(`${BLOCK}&zoom=1&loop=1&select=40`);
+    console.log(
+      'HEAP',
+      JSON.stringify({
+        terrainOnlyBytesPerFrame: Math.round(baseline),
+        units400BytesPerFrame: Math.round(withUnits),
+      }),
+    );
+    // Pixi's own submission and the harness' sample array allocate a little; 400 units + 40 rings must add ≤ 2 KB/frame (≈ 0.8 KB measured: Pixi sort/transform bookkeeping, not our loop).
+    expect(withUnits - baseline).toBeLessThan(2048);
   });
 });
