@@ -4,15 +4,15 @@ Escenario: `thousand` (1000 unidades x 10 000 ticks = 2500 turnos, mapa 200x200 
 
 ## Estado de verificación
 
-| Entorno                                         | Versión                       | Verificado aquí | Resultado                                   |
-| ----------------------------------------------- | ----------------------------- | --------------- | ------------------------------------------- |
-| Node (hilo principal)                           | v22.23.5                      | si              | referencia                                  |
-| Node `--jitless`                                | v22.23.5                      | si              | idéntico a Node                             |
-| Chromium, hilo principal                        | Chrome for Testing 153.0.8010 | si              | finalHash y 25 checkpoints idénticos a Node |
-| Chromium, Web Worker                            | Chrome for Testing 153.0.8010 | si              | finalHash y 25 checkpoints idénticos a Node |
-| Chromium `--js-flags=--jitless` (hilo y Worker) | Chrome for Testing 153.0.8010 | si              | finalHash y 25 checkpoints idénticos a Node |
-| Firefox (hilo y Worker)                         | el de `playwright install`    | **NO**          | pendiente de CI (`test-det-browsers`)       |
-| WebKit (hilo y Worker)                          | el de `playwright install`    | **NO**          | pendiente de CI (`test-det-browsers`)       |
+| Entorno                                               | Versión                       | Verificado aquí | Resultado                                   |
+| ----------------------------------------------------- | ----------------------------- | --------------- | ------------------------------------------- |
+| Node (hilo principal)                                 | v22.23.5                      | si              | referencia                                  |
+| Node `--jitless`                                      | v22.23.5                      | si              | idéntico a Node                             |
+| Chromium, hilo principal                              | Chrome for Testing 153.0.8010 | si              | finalHash y 25 checkpoints idénticos a Node |
+| Chromium, Web Worker                                  | Chrome for Testing 153.0.8010 | si              | finalHash y 25 checkpoints idénticos a Node |
+| Chromium `--js-flags=--jitless` (solo hilo principal) | Chrome for Testing 153.0.8010 | si              | finalHash y 25 checkpoints idénticos a Node |
+| Firefox (hilo y Worker)                               | el de `playwright install`    | **NO**          | pendiente de CI (`test-det-browsers`)       |
+| WebKit (hilo y Worker)                                | el de `playwright install`    | **NO**          | pendiente de CI (`test-det-browsers`)       |
 
 Firefox y WebKit no existen en este sandbox y no se instalan aquí. El proyecto de Playwright solo los activa con `PW_ALL_BROWSERS=1`; el job `test-det-browsers` de `.github/workflows/ci.yml` hace `playwright install --with-deps chromium firefox webkit` y los ejecuta. K1 queda **cerrado para Node y Chromium** y **abierto para Firefox/WebKit** hasta la primera corrida verde en GitHub (TODO-HUMANO: push/merge para que el job corra).
 
@@ -30,7 +30,7 @@ node --jitless --import tsx tools/headless/src/cli.ts golden check   # Node jitl
 pnpm --filter @reinos/headless run golden:update   # re-pinear tras un cambio intencionado
 ```
 
-Tiempos medidos aquí (movimiento stub): Node ~2 s; Chromium ~2 s por caso; `--jitless` ~22 s por caso en Chromium y ~40 s en Node; la suite `test:det:browsers` completa tarda ~1 min.
+Tiempos medidos aquí: con el movimiento stub, Node ~2 s, Chromium ~2 s por caso y `--jitless` ~22 s (Node jitless ~40 s); con el movimiento real (pathfinding) Node ~45 s, Chromium ~14 s por caso y `--jitless` ~2,4 min por caso. Por eso `--jitless` solo corre el caso de hilo principal (sin Worker ni control negativo) y la suite `test:det:browsers` queda en ~4,5 min (medido: 4 m 33 s).
 
 ## Cómo funciona
 

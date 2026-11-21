@@ -4,7 +4,17 @@
 <body><main>
 <h1>Devlog · Reinos de Ceniza</h1>
 <p class="sub">Progreso visible fase por fase. Lo más reciente arriba.</p>
-<ol class="hitos" aria-label="Hitos del plan"><li class="hito actual" aria-current="step"><span class="dot"></span><b>Hito 1</b><span>Prototipo</span><small>F0–3 · estamos en F0</small></li><li class="hito"><span class="dot"></span><b>Hito 2</b><span>MVP vs IA</span><small>F4–5</small></li><li class="hito"><span class="dot"></span><b>Hito 3</b><span>Aspecto AAA</span><small>F6–7</small></li><li class="hito"><span class="dot"></span><b>Hito 4</b><span>Online</span><small>F8–9</small></li><li class="hito"><span class="dot"></span><b>Hito 5</b><span>Lanzamiento</span><small>F10–13</small></li></ol>
+<ol class="hitos" aria-label="Hitos del plan"><li class="hito actual" aria-current="step"><span class="dot"></span><b>Hito 1</b><span>Prototipo</span><small>F0–3 · estamos en F1</small></li><li class="hito"><span class="dot"></span><b>Hito 2</b><span>MVP vs IA</span><small>F4–5</small></li><li class="hito"><span class="dot"></span><b>Hito 3</b><span>Aspecto AAA</span><small>F6–7</small></li><li class="hito"><span class="dot"></span><b>Hito 4</b><span>Online</span><small>F8–9</small></li><li class="hito"><span class="dot"></span><b>Hito 5</b><span>Lanzamiento</span><small>F10–13</small></li></ol>
+<article class="card" id="fase-01">
+<header><h2><span class="n">Fase 01</span> Núcleo de simulación determinista</h2><span class="pct">14% del plan</span></header>
+<div class="bar" role="progressbar" aria-valuenow="14" aria-valuemin="0" aria-valuemax="100"><i style="width:14%"></i></div>
+<div class="gallery"><a href="media/fase-01/f1-debug-last.png"><img loading="lazy" src="media/fase-01/f1-debug-last.png" alt="Debug 2D: unidades y rutas A* rodeando obstáculos"></a><a href="media/fase-01/f1-debug-first.png"><img loading="lazy" src="media/fase-01/f1-debug-first.png" alt="Debug 2D: estado inicial"></a></div><video controls muted loop preload="metadata" src="media/fase-01/f1-debug.webm"></video>
+<p><strong>Ahora se puede:</strong> correr una simulación headless reproducible bit a bit: 1000 unidades × 10 000 ticks con pathfinding jerárquico y steering, el mismo hash en Node y Chromium (hilo principal y Worker)</p>
+<div class="stats"><div class="stat pend"><span class="v">—</span><span class="u">pendiente</span><span class="l">FPS</span></div><div class="stat"><span class="v">0,7</span><span class="u">ms</span><span class="l">Tick</span></div><div class="stat"><span class="v">344</span><span class="u">verdes</span><span class="l">Tests</span></div></div>
+<p class="nota">tick medio 0,71 ms (p95 1,72 ms) con 400 unidades, objetivo ≤ 3 ms; 1000 unidades: media 1,70 ms. Firefox/WebKit pendientes de CI.</p>
+<p><strong>Siguiente:</strong> Fase 2: render isométrico base con PixiJS (simulación en Web Worker, cámara, niebla, selección).</p>
+<footer>2026-11-21</footer>
+</article>
 <article class="card" id="fase-00">
 <header><h2><span class="n">Fase 00</span> Fundaciones</h2><span class="pct">7% del plan</span></header>
 <div class="bar" role="progressbar" aria-valuenow="7" aria-valuemin="0" aria-valuemax="100"><i style="width:7%"></i></div>
