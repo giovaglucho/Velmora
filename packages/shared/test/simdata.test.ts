@@ -60,6 +60,13 @@ describe('simDataHash', () => {
     b.hpFx = [1 + 2 ** 32, 2, 3];
     expect(simDataHash(a)).not.toBe(simDataHash(b));
   });
+  it('does not alias negative values with their uint32 image', () => {
+    const a = base();
+    const b = base();
+    a.movement.arriveDistFx = -1;
+    b.movement.arriveDistFx = 0xffffffff;
+    expect(simDataHash(a)).not.toBe(simDataHash(b));
+  });
   it('rejects non-integer values instead of truncating them', () => {
     const d = base();
     d.movement.arriveDistFx = 100.5;

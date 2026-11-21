@@ -42,8 +42,9 @@ const SIM_DATA_HASH_LAYOUT = 1;
 function hashNum(h: number, v: number, what: string): number {
   if (!Number.isSafeInteger(v))
     throw new RangeError('simDataHash: ' + what + ' must be an integer');
-  // Two 32-bit halves (low word via ToUint32, high word exact for safe integers): injective.
-  return fnv1aInt32(fnv1aInt32(h, v >>> 0), Math.floor(v / 0x100000000));
+  // Two 32-bit halves (low word via ToUint32, high word = exact multiple of 2^32 divided exactly, also for negatives): injective.
+  const lo = v >>> 0;
+  return fnv1aInt32(fnv1aInt32(h, lo), Math.trunc((v - lo) / 0x100000000));
 }
 function hashStr(h: number, s: string): number {
   let x = fnv1aInt32(h, s.length);

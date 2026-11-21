@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 // Carril U (ADR-006 §5–6, §8): box selection of 100 units, right-click move, control groups, HUD counter.
 // Runs against the integrated client (I1: boot/main.ts + window.__reinos).
@@ -9,6 +9,22 @@ interface Api {
   camera: { x: number; y: number; zoomIndex: number };
   units(): Array<{ eid: number; owner: number; sx: number; sy: number }>;
   metrics: { inputToMarkerMs: number; reactRendersPerSec: number; frameMs: number };
+}
+/** Rubber-band over the given units, kept clear of the HUD (top bar, minimap host at the bottom right). */
+async function boxOver(page: Page, units: Array<{ sx: number; sy: number }>): Promise<void> {
+  const xs = units.map((u) => u.sx);
+  const ys = units.map((u) => u.sy);
+  const pad = 40;
+  await page.mouse.move(Math.max(4, Math.min(...xs) - pad), Math.max(40, Math.min(...ys) - 100));
+  await page.mouse.down();
+  await page.mouse.move(
+    Math.min(1270, Math.max(...xs) + pad),
+    Math.min(578, Math.max(...ys) + 10),
+    {
+      steps: 6,
+    },
+  );
+  await page.mouse.up();
 }
 type W = { __reinos?: Api };
 
@@ -30,9 +46,16 @@ test.describe('input: select, order, groups', () => {
     const xs = units.map((u) => u.sx);
     const ys = units.map((u) => u.sy);
     const pad = 60;
-    await page.mouse.move(Math.min(...xs) - pad, Math.min(...ys) - pad - 40);
+    await page.mouse.move(
+      Math.max(4, Math.min(...xs) - pad),
+      Math.max(4, Math.min(...ys) - pad - 40),
+    );
     await page.mouse.down();
-    await page.mouse.move(Math.max(...xs) + pad, Math.max(...ys) + pad, { steps: 8 });
+    await page.mouse.move(
+      Math.min(1270, Math.max(...xs) + pad),
+      Math.min(578, Math.max(...ys) + pad), // stay clear of the minimap host
+      { steps: 8 },
+    );
     await page.mouse.up();
     await expect(page.getByTestId('selection-count')).toHaveAttribute(
       'data-count',
@@ -53,10 +76,7 @@ test.describe('input: select, order, groups', () => {
       (window as unknown as { __reinos: Api }).__reinos.units().filter((u) => u.owner === 0),
     );
     // Select through the real input path (box), then order: the marker only exists when units obey.
-    await page.mouse.move(2, 80);
-    await page.mouse.down();
-    await page.mouse.move(1278, 560, { steps: 4 });
-    await page.mouse.up();
+    await boxOver(page, own);
     await expect(page.getByTestId('selection-count')).toHaveAttribute(
       'data-count',
       String(own.length),
@@ -82,10 +102,7 @@ test.describe('input: select, order, groups', () => {
         (window as unknown as { __reinos: Api }).__reinos.units().filter((u) => u.owner === 0),
       );
     const before = await get();
-    await page.mouse.move(2, 80);
-    await page.mouse.down();
-    await page.mouse.move(1278, 560, { steps: 4 });
-    await page.mouse.up();
+    await boxOver(page, before);
     await page.mouse.click(900, 200, { button: 'right' });
     await page.waitForTimeout(2500);
     const after = await get();
