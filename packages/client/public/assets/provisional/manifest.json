@@ -1,0 +1,153 @@
+{
+  "version": 1,
+  "generator": "provisional-procedural",
+  "seed": 1592601105,
+  "dirs": 8,
+  "anim": {
+    "idle": 1,
+    "walk": 4
+  },
+  "frameSize": [64, 96],
+  "buildingFrameSize": [128, 128],
+  "textures": {
+    "ground": ["ground0.png", "ground1.png", "ground2.png", "ground3.png"],
+    "water": "water.png",
+    "noise": "noise.png",
+    "groundSize": 512,
+    "noiseSize": 256
+  },
+  "atlases": {
+    "units": {
+      "image": "units.png",
+      "data": "units.json"
+    },
+    "buildings": {
+      "image": "buildings.png",
+      "data": "buildings.json"
+    },
+    "ui": {
+      "image": "ui.png",
+      "data": "ui.json"
+    }
+  },
+  "appearances": {
+    "units/colono": "civil",
+    "units/recluta": "infantry",
+    "units/guerrero": "infantry",
+    "units/espada_larga": "infantry",
+    "units/gran_espada": "infantry",
+    "units/campeon_ceniciento": "infantry",
+    "units/lancero": "infantry",
+    "units/piquero": "infantry",
+    "units/alabardero": "infantry",
+    "units/arquero": "ranged",
+    "units/ballestero": "ranged",
+    "units/arbalestero": "ranged",
+    "units/escaramuzador": "ranged",
+    "units/escaramuzador_veterano": "ranged",
+    "units/jinete_arquero": "cavalry",
+    "units/jinete_arquero_pesado": "cavalry",
+    "units/arcabucero_de_eter": "ranged",
+    "units/batidor": "cavalry",
+    "units/jinete_ligero": "cavalry",
+    "units/husar": "cavalry",
+    "units/caballero": "cavalry",
+    "units/caballero_real": "cavalry",
+    "units/paladin": "cavalry",
+    "units/custodio": "generic",
+    "units/ariete": "generic",
+    "units/ariete_blindado": "generic",
+    "units/ariete_de_asedio": "generic",
+    "units/lanzapiedras": "generic",
+    "units/onagro": "generic",
+    "units/onagro_de_asedio": "generic",
+    "units/escorpion": "generic",
+    "units/escorpion_pesado": "generic",
+    "units/bombarda_de_eter": "ranged",
+    "units/fundibulo": "generic",
+    "units/zapador": "infantry",
+    "units/carreta_de_comercio": "civil",
+    "units/pesquero": "generic",
+    "units/galera": "generic",
+    "units/galera_de_guerra": "generic",
+    "units/galeon": "generic",
+    "units/brulote": "generic",
+    "units/barco_de_demolicion": "generic",
+    "units/galeon_de_eter": "ranged",
+    "buildings/ciudadela": "building",
+    "buildings/casa": "building",
+    "buildings/molino": "building",
+    "buildings/aserradero": "building",
+    "buildings/campamento_minero": "building",
+    "buildings/puerto": "building",
+    "buildings/cuartel": "building",
+    "buildings/granja": "building",
+    "buildings/empalizada": "building",
+    "buildings/puerta_de_empalizada": "building",
+    "buildings/atalaya": "building",
+    "buildings/arqueria": "building",
+    "buildings/establo": "building",
+    "buildings/forja": "building",
+    "buildings/mercado": "building",
+    "buildings/trampa_de_peces": "building",
+    "buildings/torre_de_vigia": "building",
+    "buildings/muralla_de_piedra": "building",
+    "buildings/porton": "building",
+    "buildings/santuario": "building",
+    "buildings/academia": "building",
+    "buildings/taller_de_asedio": "building",
+    "buildings/bastion": "building",
+    "buildings/faro_celeste": "building",
+    "buildings/torre_de_bombarda_de_eter": "building"
+  },
+  "files": {
+    "ground0.png": {
+      "sha256": "a2a323f775d9245ae24e44a37b5dc7729d35ce15afeb3202f3a80a9a4fe98fed",
+      "bytes": 524506
+    },
+    "ground1.png": {
+      "sha256": "cebf081d016d54e3561a3ac25deb54f1c630645b6c5bed7a0efe4774213d8ff6",
+      "bytes": 500288
+    },
+    "ground2.png": {
+      "sha256": "bc0407fc6a8db593f1b52d7863beed8eab393418dc92b5643ab30749e86ac926",
+      "bytes": 472054
+    },
+    "ground3.png": {
+      "sha256": "31c3d2916050545a0a37477d90892008222ac445fd4d095517679384ef37cba5",
+      "bytes": 501708
+    },
+    "water.png": {
+      "sha256": "7d44bcefa75d7fe189fab797a1c51d816bd444af4abf5a2ed6cb9fb279001af8",
+      "bytes": 148976
+    },
+    "noise.png": {
+      "sha256": "bb7efcf4953eb6b50875229cc3f4e8e016d822c19888cabab9b9d813932f39ee",
+      "bytes": 86852
+    },
+    "units.png": {
+      "sha256": "e3e44e1e8206ee00b8517e30fcecfa930f2860ec178fa0e4ecab3ec7e1f36f62",
+      "bytes": 360045
+    },
+    "units.json": {
+      "sha256": "40ed3da242137eaedaf7992fe03a71139b1abfe0c16a09a07804d33afe854d37",
+      "bytes": 56446
+    },
+    "buildings.png": {
+      "sha256": "20fae2a192cbd3d024763d8714d97f494cbad2081d47a236c08a01e2047c546e",
+      "bytes": 29378
+    },
+    "buildings.json": {
+      "sha256": "4264cbfcc959735963301f1c125246165ff8eb16c0f34784440e9a7ecdba77b0",
+      "bytes": 2455
+    },
+    "ui.png": {
+      "sha256": "218fb53e9c680c8f7b1172c86f015e9b76b9e92b13d39af4c04525f76a02a215",
+      "bytes": 4502
+    },
+    "ui.json": {
+      "sha256": "909d71822871b98a60accdf7fb44176080a5ba975b3a3d95d10c55f5fea741b9",
+      "bytes": 841
+    }
+  }
+}

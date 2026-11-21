@@ -12,9 +12,18 @@ Todo asset (imagen, modelo, sonido, musica, fuente, shader de terceros) debe fig
 
 ## Registro
 
-| Asset | Fuente | Licencia | Atribucion | Fase | Archivo |
-| ----- | ------ | -------- | ---------- | ---- | ------- |
-|       |        |          |            |      |         |
+| Asset                                                                                        | Fuente                                                                         | Licencia            | Atribucion | Fase | Archivo                                                                      |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------- | ---------- | ---- | ---------------------------------------------------------------------------- |
+| Textura de terreno provisional: pasto (512x512, tileable)                                    | Generado por `tools/asset-pipeline` (`pnpm assets:gen`, semilla fija, sin red) | Propio (procedural) | Ninguna    | 2    | `packages/client/public/assets/provisional/ground0.png`                      |
+| Textura de terreno provisional: tierra (512x512, tileable)                                   | Generado por `tools/asset-pipeline` (`pnpm assets:gen`, semilla fija, sin red) | Propio (procedural) | Ninguna    | 2    | `packages/client/public/assets/provisional/ground1.png`                      |
+| Textura de terreno provisional: arena (512x512, tileable)                                    | Generado por `tools/asset-pipeline` (`pnpm assets:gen`, semilla fija, sin red) | Propio (procedural) | Ninguna    | 2    | `packages/client/public/assets/provisional/ground2.png`                      |
+| Textura de terreno provisional: ceniza/roca (512x512, tileable)                              | Generado por `tools/asset-pipeline` (`pnpm assets:gen`, semilla fija, sin red) | Propio (procedural) | Ninguna    | 2    | `packages/client/public/assets/provisional/ground3.png`                      |
+| Textura de terreno provisional: agua (512x512, tileable)                                     | Generado por `tools/asset-pipeline` (`pnpm assets:gen`, semilla fija, sin red) | Propio (procedural) | Ninguna    | 2    | `packages/client/public/assets/provisional/water.png`                        |
+| Mascara de ruido del splatting (256x256, tileable, 4 canales)                                | Generado por `tools/asset-pipeline` (`pnpm assets:gen`, semilla fija, sin red) | Propio (procedural) | Ninguna    | 2    | `packages/client/public/assets/provisional/noise.png`                        |
+| Atlas provisional de unidades (5 apariencias x 8 direcciones x idle/walk x body/team, 64x96) | Generado por `tools/asset-pipeline` (`pnpm assets:gen`, semilla fija, sin red) | Propio (procedural) | Ninguna    | 2    | `packages/client/public/assets/provisional/units.png (+ units.json)`         |
+| Atlas provisional de edificio (8 direcciones x body/team, 128x128)                           | Generado por `tools/asset-pipeline` (`pnpm assets:gen`, semilla fija, sin red) | Propio (procedural) | Ninguna    | 2    | `packages/client/public/assets/provisional/buildings.png (+ buildings.json)` |
+| Atlas UI provisional: anillo de seleccion, marcador de orden, punto de minimapa              | Generado por `tools/asset-pipeline` (`pnpm assets:gen`, semilla fija, sin red) | Propio (procedural) | Ninguna    | 2    | `packages/client/public/assets/provisional/ui.png (+ ui.json)`               |
+| Manifiesto del conjunto provisional (hashes sha256)                                          | Generado por `tools/asset-pipeline` (`pnpm assets:gen`, semilla fija, sin red) | Propio (procedural) | Ninguna    | 2    | `packages/client/public/assets/provisional/manifest.json`                    |
 
 ## Tipografias previstas (no integradas)
 

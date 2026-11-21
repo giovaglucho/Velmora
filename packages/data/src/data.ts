@@ -20,7 +20,7 @@ import en from '../json/i18n/en.json';
 import { crossCheck, parseSchemas, type GameData, type RawGameData } from './validate.js';
 
 /** Bump on any balance change; recorded in every match and replay (GDD §18.1). */
-export const DATA_VERSION = '0.2.0';
+export const DATA_VERSION = '0.2.1';
 
 export const bundledRaw: RawGameData = {
   resources,

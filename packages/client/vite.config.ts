@@ -22,6 +22,9 @@ export default defineConfig({
       input: {
         main: resolve(import.meta.dirname, 'index.html'),
         'gl-smoke': resolve(import.meta.dirname, 'gl-smoke.html'),
+        // Render lane (R2/R3) fixed-scene harness: terrain + fake units, no worker/UI.
+        'render-harness': resolve(import.meta.dirname, 'render-harness.html'),
+        'worker-smoke': resolve(import.meta.dirname, 'worker-smoke.html'),
       },
     },
   },

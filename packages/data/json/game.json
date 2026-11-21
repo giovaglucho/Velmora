@@ -251,5 +251,14 @@
       "hero": 400,
       "unique": 350
     }
+  },
+  "camera": {
+    "panSpeedPxPerS": 900,
+    "edgeBandPx": 20,
+    "edgeDelayMs": 150,
+    "zoomTauMs": 80
+  },
+  "selection": {
+    "maxUnits": 200
   }
 }

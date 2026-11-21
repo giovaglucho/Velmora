@@ -15,7 +15,7 @@ const tuning: MovementTuning = sim.movement;
 
 describe('buildSimData', () => {
   it('is versioned 0.2.0 and consistent with shared constants', () => {
-    expect(DATA_VERSION).toBe('0.2.0');
+    expect(DATA_VERSION).toBe('0.2.1');
     expect(sim.dataVersion).toBe(DATA_VERSION);
     expect(data.economy.fixedScale).toBe(FX_SCALE);
     expect(TICKS_PER_SECOND).toBe(20);

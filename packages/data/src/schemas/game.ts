@@ -26,6 +26,28 @@ export const MovementTuningFile = z
   });
 export type MovementTuningFile = z.infer<typeof MovementTuningFile>;
 
+/**
+ * Camera input preferences (ADR-006 §4.2). Presentation only: read by the client, never by the sim
+ * (excluded from SimData). Integers; times in ms, speeds in screen px/s.
+ */
+export const CameraTuningFile = z
+  .object({
+    panSpeedPxPerS: PositiveInt,
+    edgeBandPx: PositiveInt,
+    edgeDelayMs: z.number().int().nonnegative(),
+    zoomTauMs: PositiveInt,
+  })
+  .strict();
+export type CameraTuningFile = z.infer<typeof CameraTuningFile>;
+
+/** Selection limits (ADR-006 §5). The hard command cap is MAX_CMD_UNITS = 1024 (ADR-005). */
+export const SelectionTuningFile = z
+  .object({
+    maxUnits: PositiveInt.max(1024),
+  })
+  .strict();
+export type SelectionTuningFile = z.infer<typeof SelectionTuningFile>;
+
 /** Global parameters (§3.5), terrain (§11.3), map pool (§11.2), movement tuning (ADR-005). */
 export const GameFile = z.object({
   mapSizes: z.array(
@@ -70,6 +92,8 @@ export const GameFile = z.object({
     }),
   ),
   movement: MovementTuningFile,
+  camera: CameraTuningFile,
+  selection: SelectionTuningFile,
 });
 export type GameFile = z.infer<typeof GameFile>;
 

@@ -4,7 +4,7 @@
   "seed": 1,
   "generatorVersion": 1,
   "replayFormatVersion": 1,
-  "dataVersion": "0.2.0",
+  "dataVersion": "0.2.1",
   "finalHash": 2674808742,
   "checkpoints": [
     [100, 3090970813],

@@ -1,6 +1,9 @@
 // ADR-006 §8.1 — read-only game view store (10 Hz). Owner: ui-engineer (U4).
-// Exports ONLY useGameView and getGameView; the setter is private to bridge.ts via `publish`.
+// Exports ONLY useGameView and getGameView (+ the GameView type): the writer lives in storeCore.ts and is
+// used by bridge.ts alone. React components never mutate game state; they emit intents (ui/intents.ts).
+import { useSyncExternalStore } from 'react';
 import type { SnapshotMode } from '../worker/protocol';
+import { gameStore } from './storeCore';
 
 export interface GameView {
   tick: number;
@@ -13,8 +16,12 @@ export interface GameView {
 }
 
 export function getGameView(): GameView {
-  throw new Error('TODO(U4): getGameView');
+  return gameStore.getState();
 }
-export function useGameView<T>(_selector: (v: GameView) => T): T {
-  throw new Error('TODO(U4): useGameView');
+
+export function useGameView<T>(selector: (v: GameView) => T): T {
+  // Same contract as zustand's hook (selectors must return stable references), but the server snapshot
+  // is the live state too, so the HUD can be rendered/tested without a DOM.
+  const read = () => selector(gameStore.getState());
+  return useSyncExternalStore(gameStore.subscribe, read, read);
 }

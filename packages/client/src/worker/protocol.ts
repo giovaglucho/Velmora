@@ -13,6 +13,10 @@ export type ToWorker =
       mode: SnapshotMode;
       /** Only mode === 'sab': created by the main thread with sharedSnapshotBytes(capacity). */
       sab?: SharedArrayBuffer;
+      /** The client's own DATA_VERSION; the host refuses to start on mismatch (§3.1 rule 1). */
+      dataVersion?: string;
+      /** Start paused (deterministic tests drive the sim with `ctl step`). Default false. */
+      paused?: boolean;
     }
   | { t: 'cmd'; cmds: Command[] } // SimHost rewrites `turn` (§3.6)
   | { t: 'ctl'; op: 'pause' | 'resume' | 'speed' | 'step'; value?: number }
@@ -33,6 +37,8 @@ export interface PerfInfo {
   tickMsMax: number;
   ticksBehind: number;
   ticksDropped: number;
+  /** transfer mode: publications skipped because every buffer was in flight (steady state: 0). */
+  snapsSkipped: number;
 }
 
 export type FromWorker =
