@@ -18,17 +18,17 @@ Este ADR fija las **interfaces exactas** entre carriles. Cualquier desviación r
 
 ### 1. Resumen
 
-| Tema                | Decisión                                                                                                                                                                                         |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Sim                 | Corre en un **Web Worker** módulo (`sim.worker.ts`); el hilo principal nunca importa el runtime de `@reinos/sim` (solo tipos).                                                                   |
-| Cadencia            | Sim a **20 Hz** (50 ms/tick a velocidad 1,0; `tickIntervalMs = 50 / speed`); render a **rAF** (60+ fps). El render interpola `prev → pos` de cada entidad.                                         |
-| Transporte          | Snapshots de **typed arrays con layout fijo**. `SharedArrayBuffer` (triple buffer con `Atomics`) solo si `crossOriginIsolated`; si no, `ArrayBuffer` **transferible** con reciclado.             |
-| Render              | **PixiJS v8, renderer WebGL** forzado (`preference: 'webgl'`; WebGPU fuera de alcance). Proyección 2:1, casilla 128×64, zooms 0,6/1/1,4.                                                         |
-| Terreno             | Una malla (quad) por chunk de 16×16; **shader de splatting en espacio de rejilla** con 4 capas, textura de pesos por vértice de casilla y máscara de ruido. Sin texturas por chunk.             |
-| Niebla              | **En el cliente en F2** (módulo puro, solo enteros, portable a la sim). Ver §7 para la justificación.                                                                                            |
-| UI                  | React 19 sobre el canvas; store Zustand de **solo lectura** a 10 Hz. Entrada (puntero/teclado) imperativa, fuera de React.                                                                        |
-| Assets              | **Solo generados proceduralmente por nosotros** (Node, semilla fija). Sin descargas. Registrados en `ASSETS_LICENSES.md` como "Propio".                                                          |
-| Pruebas sin GPU     | Playwright Chromium headless con SwiftShader; unit tests en Node de proyección/picking/culling/niebla/codec. FPS en software = **proxy**, no equivale al hardware de referencia (§10).            |
+| Tema            | Decisión                                                                                                                                                                               |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sim             | Corre en un **Web Worker** módulo (`sim.worker.ts`); el hilo principal nunca importa el runtime de `@reinos/sim` (solo tipos).                                                         |
+| Cadencia        | Sim a **20 Hz** (50 ms/tick a velocidad 1,0; `tickIntervalMs = 50 / speed`); render a **rAF** (60+ fps). El render interpola `prev → pos` de cada entidad.                             |
+| Transporte      | Snapshots de **typed arrays con layout fijo**. `SharedArrayBuffer` (triple buffer con `Atomics`) solo si `crossOriginIsolated`; si no, `ArrayBuffer` **transferible** con reciclado.   |
+| Render          | **PixiJS v8, renderer WebGL** forzado (`preference: 'webgl'`; WebGPU fuera de alcance). Proyección 2:1, casilla 128×64, zooms 0,6/1/1,4.                                               |
+| Terreno         | Una malla (quad) por chunk de 16×16; **shader de splatting en espacio de rejilla** con 4 capas, textura de pesos por vértice de casilla y máscara de ruido. Sin texturas por chunk.    |
+| Niebla          | **En el cliente en F2** (módulo puro, solo enteros, portable a la sim). Ver §7 para la justificación.                                                                                  |
+| UI              | React 19 sobre el canvas; store Zustand de **solo lectura** a 10 Hz. Entrada (puntero/teclado) imperativa, fuera de React.                                                             |
+| Assets          | **Solo generados proceduralmente por nosotros** (Node, semilla fija). Sin descargas. Registrados en `ASSETS_LICENSES.md` como "Propio".                                                |
+| Pruebas sin GPU | Playwright Chromium headless con SwiftShader; unit tests en Node de proyección/picking/culling/niebla/codec. FPS en software = **proxy**, no equivale al hardware de referencia (§10). |
 
 ### 2. Estructura de carpetas de `packages/client/src`
 
@@ -89,13 +89,13 @@ e2e/render/                                  # Playwright con SwiftShader (§10)
 
 Reglas de importación (se aplican con `no-restricted-imports` de ESLint por carpeta y un test de dependencias):
 
-| Carpeta            | Puede importar                                                                                  | Prohibido                                                      |
-| ------------------ | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| `worker/`          | `@reinos/sim`, `@reinos/shared`, `@reinos/data`                                                 | `pixi.js`, `react`, DOM                                        |
-| `render/`          | `pixi.js`, `@reinos/shared`, `@reinos/data` (solo tipos/lectura), `worker/snapshot` (**solo** el lector y tipos) | `@reinos/sim` (runtime), `react`, `input/`, `ui/`              |
-| `render/**/*.ts` marcados "puro" (iso, camera, culling, depth, visionGrid, terrainMap) | `@reinos/shared`                             | `pixi.js`, DOM, `Date`, `performance` (reciben tiempo por parámetro) |
-| `input/`           | `render/{iso,camera,culling,depth}`, `worker/{snapshot,client}`, `@reinos/shared`               | `pixi.js` (excepto tipos), `react`                             |
-| `ui/`              | `react`, `zustand`, `ui/store`, tipos                                                           | `render/` runtime, `worker/` runtime (solo el `bridge`)        |
+| Carpeta                                                                                | Puede importar                                                                                                   | Prohibido                                                            |
+| -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `worker/`                                                                              | `@reinos/sim`, `@reinos/shared`, `@reinos/data`                                                                  | `pixi.js`, `react`, DOM                                              |
+| `render/`                                                                              | `pixi.js`, `@reinos/shared`, `@reinos/data` (solo tipos/lectura), `worker/snapshot` (**solo** el lector y tipos) | `@reinos/sim` (runtime), `react`, `input/`, `ui/`                    |
+| `render/**/*.ts` marcados "puro" (iso, camera, culling, depth, visionGrid, terrainMap) | `@reinos/shared`                                                                                                 | `pixi.js`, DOM, `Date`, `performance` (reciben tiempo por parámetro) |
+| `input/`                                                                               | `render/{iso,camera,culling,depth}`, `worker/{snapshot,client}`, `@reinos/shared`                                | `pixi.js` (excepto tipos), `react`                                   |
+| `ui/`                                                                                  | `react`, `zustand`, `ui/store`, tipos                                                                            | `render/` runtime, `worker/` runtime (solo el `bridge`)              |
 
 `@reinos/client` ya puede depender de `sim`, `shared`, `data` (`docs/contracts.md`); hay que **declarar** `@reinos/sim`, `@reinos/shared` y `@reinos/data` en `packages/client/package.json` (hoy no lo están).
 
@@ -103,16 +103,16 @@ Reglas de importación (se aplican con `no-restricted-imports` de ESLint por car
 
 Todas con versión exacta registrada por el lockfile; verificar con `pnpm view <pkg> version peerDependencies` antes de fijar el rango (no se asume la última). Versiones mínimas:
 
-| Paquete                           | Dónde                | Rango objetivo | Uso                                                                              |
-| --------------------------------- | -------------------- | -------------- | -------------------------------------------------------------------------------- |
-| `pixi.js`                         | client (dependency)  | `^8`           | Render (WebGL)                                                                   |
-| `react`, `react-dom`              | client (dependency)  | `^19`          | HUD                                                                              |
-| `zustand`                         | client (dependency)  | `^5`           | Store de solo lectura (`createStore` vanilla + `useStore`)                       |
-| `@vitejs/plugin-react`            | client (dev)         | rama compatible con **Vite 8** (verificar peer) | JSX/Fast Refresh                                |
-| `@types/react`, `@types/react-dom`| client (dev)         | `^19`          | Tipos                                                                            |
-| `@reinos/sim`, `@reinos/shared`, `@reinos/data` | client (`workspace:*`) | —   | Contratos y Worker                                                               |
-| `pngjs`                           | `tools/asset-pipeline` y `e2e` (dev) | `^7` | Escribir PNG de assets procedurales y leer capturas en las métricas de píxel |
-| `gifenc`                          | `tools/devlog` o `e2e` (dev) | `^1`   | GIF del devlog (alternativa: `ffmpeg` si existe; no se asume)                    |
+| Paquete                                         | Dónde                                | Rango objetivo                                  | Uso                                                                          |
+| ----------------------------------------------- | ------------------------------------ | ----------------------------------------------- | ---------------------------------------------------------------------------- |
+| `pixi.js`                                       | client (dependency)                  | `^8`                                            | Render (WebGL)                                                               |
+| `react`, `react-dom`                            | client (dependency)                  | `^19`                                           | HUD                                                                          |
+| `zustand`                                       | client (dependency)                  | `^5`                                            | Store de solo lectura (`createStore` vanilla + `useStore`)                   |
+| `@vitejs/plugin-react`                          | client (dev)                         | rama compatible con **Vite 8** (verificar peer) | JSX/Fast Refresh                                                             |
+| `@types/react`, `@types/react-dom`              | client (dev)                         | `^19`                                           | Tipos                                                                        |
+| `@reinos/sim`, `@reinos/shared`, `@reinos/data` | client (`workspace:*`)               | —                                               | Contratos y Worker                                                           |
+| `pngjs`                                         | `tools/asset-pipeline` y `e2e` (dev) | `^7`                                            | Escribir PNG de assets procedurales y leer capturas en las métricas de píxel |
+| `gifenc`                                        | `tools/devlog` o `e2e` (dev)         | `^1`                                            | GIF del devlog (alternativa: `ffmpeg` si existe; no se asume)                |
 
 Cambios de configuración que acompañan (tarea T0): `tsconfig.json` del cliente con `"jsx": "react-jsx"` y `"types": ["node", "vite/client"]`; `vite.config.ts` con `plugins: [react()]`, `worker: { format: 'es' }`, **cabeceras COOP `same-origin` + COEP `require-corp`** en `server.headers` y `preview.headers` (idénticas a las del Blueprint, ADR-004) y `assetsInlineLimit: 0`. Con COEP `require-corp` todo subrecurso debe ser del mismo origen: por eso los assets son locales (§9) y no hay fuentes/CDN externos en el cliente.
 
@@ -157,7 +157,14 @@ export type FromWorker =
   | { t: 'snap'; tick: number; buffer: ArrayBuffer } // mode 'transfer' (buffer transferido)
   | { t: 'snapSab' } // mode 'sab': aviso opcional; el lector usa los Atomics, no depende de este mensaje
   | { t: 'turn'; turn: number; hash: number; rejected: number } // uno por turno (cada 4 ticks)
-  | { t: 'perf'; tickMsAvg: number; tickMsP95: number; tickMsMax: number; ticksBehind: number; ticksDropped: number } // cada 1000 ms
+  | {
+      t: 'perf';
+      tickMsAvg: number;
+      tickMsP95: number;
+      tickMsMax: number;
+      ticksBehind: number;
+      ticksDropped: number;
+    } // cada 1000 ms
   | { t: 'probe'; id: number; hashFull: number }
   | { t: 'error'; message: string };
 ```
@@ -175,34 +182,34 @@ Una instantánea del estado **renderizable** al final de un tick. Indexada **por
 
 Cabecera (`Int32[16]`, offset 0, 64 bytes):
 
-| Índice | Campo           | Valor                                                                                   |
-| ------ | --------------- | --------------------------------------------------------------------------------------- |
-| 0      | `magic`         | `0x534e4150` ("SNAP")                                                                   |
-| 1      | `version`       | `1` (subir si cambia el layout)                                                         |
-| 2      | `capacity`      | capacidad del mundo                                                                     |
-| 3      | `tick`          | ticks completados (`sim.tick`)                                                          |
-| 4      | `turn`          | `sim.turn`                                                                              |
-| 5      | `highWater`     | columnas válidas en `[0, highWater)`                                                    |
-| 6      | `count`         | entidades vivas                                                                         |
-| 7      | `tickIntervalUs`| intervalo real entre ticks en microsegundos al publicar (`round(50000 / speed)`)        |
-| 8      | `mapW`          | ancho del mapa en tiles                                                                 |
-| 9      | `mapH`          | alto del mapa en tiles                                                                  |
-| 10–15  | reservado       | 0                                                                                       |
+| Índice | Campo            | Valor                                                                            |
+| ------ | ---------------- | -------------------------------------------------------------------------------- |
+| 0      | `magic`          | `0x534e4150` ("SNAP")                                                            |
+| 1      | `version`        | `1` (subir si cambia el layout)                                                  |
+| 2      | `capacity`       | capacidad del mundo                                                              |
+| 3      | `tick`           | ticks completados (`sim.tick`)                                                   |
+| 4      | `turn`           | `sim.turn`                                                                       |
+| 5      | `highWater`      | columnas válidas en `[0, highWater)`                                             |
+| 6      | `count`          | entidades vivas                                                                  |
+| 7      | `tickIntervalUs` | intervalo real entre ticks en microsegundos al publicar (`round(50000 / speed)`) |
+| 8      | `mapW`           | ancho del mapa en tiles                                                          |
+| 9      | `mapH`           | alto del mapa en tiles                                                           |
+| 10–15  | reservado        | 0                                                                                |
 
 Columnas (tras la cabecera, cada una alineada a 4 bytes, en este orden **exacto**; longitud `capacity`):
 
-| Orden | Columna  | Tipo       | Origen en `World` (ADR-005 §3)                                         |
-| ----- | -------- | ---------- | ---------------------------------------------------------------------- |
-| 1     | `posX`   | `Int32`    | `posX` (Fx, fin del tick)                                              |
-| 2     | `posY`   | `Int32`    | `posY`                                                                 |
-| 3     | `prevX`  | `Int32`    | `prevX` (Fx, inicio del tick: origen de la interpolación)              |
-| 4     | `prevY`  | `Int32`    | `prevY`                                                                |
-| 5     | `hp`     | `Int32`    | `hp` (Fx)                                                              |
-| 6     | `gen`    | `Uint16`   | `gen` (con la ranura reconstruye `eid = (gen << 16) \| idx`)           |
-| 7     | `typeId` | `Uint16`   | `typeId`                                                               |
-| 8     | `facing` | `Uint16`   | `facing` (0..1023)                                                     |
-| 9     | `owner`  | `Uint8`    | `owner` (255 = neutral)                                                |
-| 10    | `flags`  | `Uint8`    | bit0 `alive`; bit1 `moving` (`velX \| velY` ≠ 0); bits 2–3 `orderKind` |
+| Orden | Columna  | Tipo     | Origen en `World` (ADR-005 §3)                                         |
+| ----- | -------- | -------- | ---------------------------------------------------------------------- |
+| 1     | `posX`   | `Int32`  | `posX` (Fx, fin del tick)                                              |
+| 2     | `posY`   | `Int32`  | `posY`                                                                 |
+| 3     | `prevX`  | `Int32`  | `prevX` (Fx, inicio del tick: origen de la interpolación)              |
+| 4     | `prevY`  | `Int32`  | `prevY`                                                                |
+| 5     | `hp`     | `Int32`  | `hp` (Fx)                                                              |
+| 6     | `gen`    | `Uint16` | `gen` (con la ranura reconstruye `eid = (gen << 16) \| idx`)           |
+| 7     | `typeId` | `Uint16` | `typeId`                                                               |
+| 8     | `facing` | `Uint16` | `facing` (0..1023)                                                     |
+| 9     | `owner`  | `Uint8`  | `owner` (255 = neutral)                                                |
+| 10    | `flags`  | `Uint8`  | bit0 `alive`; bit1 `moving` (`velX \| velY` ≠ 0); bits 2–3 `orderKind` |
 
 `snapshotLayout(capacity)` (pura, en `worker/snapshot.ts`) devuelve `{ totalBytes, offsets }`; **ambos lados la llaman con el mismo `capacity`** y construyen las vistas con `new Int32Array(buf, offset, capacity)` etc. Tamaño: `64 + capacity × (5×4 + 3×2 + 2×1)` ≈ `64 + 28·capacity` bytes (con relleno de alineación). Con `capacity = 4096` → ~115 KB; transferirlo a 20 Hz es ~2,3 MB/s, despreciable.
 
@@ -248,15 +255,25 @@ export interface SnapshotView {
   readonly tickIntervalUs: number;
   readonly mapW: number;
   readonly mapH: number;
-  readonly posX: Int32Array; readonly posY: Int32Array;
-  readonly prevX: Int32Array; readonly prevY: Int32Array;
+  readonly posX: Int32Array;
+  readonly posY: Int32Array;
+  readonly prevX: Int32Array;
+  readonly prevY: Int32Array;
   readonly hp: Int32Array;
-  readonly gen: Uint16Array; readonly typeId: Uint16Array; readonly facing: Uint16Array;
-  readonly owner: Uint8Array; readonly flags: Uint8Array;
+  readonly gen: Uint16Array;
+  readonly typeId: Uint16Array;
+  readonly facing: Uint16Array;
+  readonly owner: Uint8Array;
+  readonly flags: Uint8Array;
   eid(slot: number): number; // (gen << 16) | slot
 }
 export interface SimClient {
-  start(init: { seed: number; config: SimConfig; speed?: number; mode?: SnapshotMode }): Promise<ReadyInfo>;
+  start(init: {
+    seed: number;
+    config: SimConfig;
+    speed?: number;
+    mode?: SnapshotMode;
+  }): Promise<ReadyInfo>;
   /** Último snapshot; null si no hay. La vista es válida solo hasta la siguiente llamada a latest(). */
   latest(): SnapshotView | null;
   /** Marca de tiempo (performance.now) en que `latest()` observó por primera vez su tick: base de la interpolación. */
@@ -402,21 +419,23 @@ Constantes `uNoiseAmp`, `uSharp` son de **presentación** (módulo de render, no
 
 **Justificación según determinismo:**
 
-1. *Qué exige el determinismo.* Todo lo que alimenta decisiones de juego (objetivos de ataque, IA que "ve", victoria, comandos que dependen de visibilidad) debe vivir en la sim y entrar al hash, porque si dos clientes calculan visibilidad distinta divergen. En F2 **nada** de la sim lee visibilidad (no hay combate ni IA; las órdenes `move` no dependen de ella), por lo que calcularla en el cliente es seguro: un error de niebla produce un error visual, nunca un desync.
-2. *Coste y riesgo si se hiciera ahora en la sim.* Añadiría columnas/rejillas al hash (cambia `hashFull`, golden y `REPLAY_FORMAT_VERSION`), consumiría presupuesto de los 3 ms/tick (400 unidades × disco de ~50 casillas al cambiar de tile) y bloquearía el carril R2 detrás de cambios en `packages/sim` que hoy no tienen consumidor.
-3. *Portabilidad por diseño.* El módulo cumple las reglas de `lint:sim` (enteros, sin `Math.sqrt` salvo `isqrt` de `shared`, iteración por índice ascendente) y no importa nada fuera de `shared`; su API es la que tendrá en la sim. **Migración obligatoria en F4** (combate/IA/condición de victoria leen visibilidad): se mueve a `packages/sim/src/vision/` con test de determinismo y entra al hash; el cliente pasa a **leerla** del snapshot (columna/bitset añadido a §3.2 con `version = 2`). Queda anotado en el plan de F4 como requisito, y en `contracts.md` al cerrar F2.
-4. *Ambigüedad de GDD §11.3* ("calculada en una rejilla de visibilidad por jugador con conteo de referencias"): se respeta la **estructura** (por jugador, con conteo de referencias, incremental, unión con aliados); lo único que se difiere es **dónde** corre.
+1. _Qué exige el determinismo._ Todo lo que alimenta decisiones de juego (objetivos de ataque, IA que "ve", victoria, comandos que dependen de visibilidad) debe vivir en la sim y entrar al hash, porque si dos clientes calculan visibilidad distinta divergen. En F2 **nada** de la sim lee visibilidad (no hay combate ni IA; las órdenes `move` no dependen de ella), por lo que calcularla en el cliente es seguro: un error de niebla produce un error visual, nunca un desync.
+2. _Coste y riesgo si se hiciera ahora en la sim._ Añadiría columnas/rejillas al hash (cambia `hashFull`, golden y `REPLAY_FORMAT_VERSION`), consumiría presupuesto de los 3 ms/tick (400 unidades × disco de ~50 casillas al cambiar de tile) y bloquearía el carril R2 detrás de cambios en `packages/sim` que hoy no tienen consumidor.
+3. _Portabilidad por diseño._ El módulo cumple las reglas de `lint:sim` (enteros, sin `Math.sqrt` salvo `isqrt` de `shared`, iteración por índice ascendente) y no importa nada fuera de `shared`; su API es la que tendrá en la sim. **Migración obligatoria en F4** (combate/IA/condición de victoria leen visibilidad): se mueve a `packages/sim/src/vision/` con test de determinismo y entra al hash; el cliente pasa a **leerla** del snapshot (columna/bitset añadido a §3.2 con `version = 2`). Queda anotado en el plan de F4 como requisito, y en `contracts.md` al cerrar F2.
+4. _Ambigüedad de GDD §11.3_ ("calculada en una rejilla de visibilidad por jugador con conteo de referencias"): se respeta la **estructura** (por jugador, con conteo de referencias, incremental, unión con aliados); lo único que se difiere es **dónde** corre.
 
 ### 7.2 `VisionGrid` (contrato)
 
 ```ts
-export const FOG_UNEXPLORED = 0, FOG_EXPLORED = 1, FOG_VISIBLE = 2;
+export const FOG_UNEXPLORED = 0,
+  FOG_EXPLORED = 1,
+  FOG_VISIBLE = 2;
 export class VisionGrid {
   constructor(width: number, height: number, maxPlayers: number, capacity: number);
   /** Sincroniza con el snapshot: por cada ranura viva, si cambió (tile, radio, dueño, viva) aplica el delta. */
   update(view: SnapshotView, losTilesByType: ArrayLike<number>): boolean; // true si cambió algún conteo
-  refs(player: number): Uint16Array;       // conteo de referencias por tile (length = W*H)
-  explored(player: number): Uint8Array;    // 0/1, monótono: nunca vuelve a 0
+  refs(player: number): Uint16Array; // conteo de referencias por tile (length = W*H)
+  explored(player: number): Uint8Array; // 0/1, monótono: nunca vuelve a 0
   /** Estado combinado (propio ∪ aliados) listo para render: FOG_* por tile. Se recalcula solo si update() devolvió true. */
   viewFor(playerMask: number, out: Uint8Array): void;
 }
@@ -448,9 +467,10 @@ export class VisionGrid {
 
 ```ts
 export interface GameView {
-  tick: number; turn: number;
+  tick: number;
+  turn: number;
   selection: { count: number; byType: Record<string, number>; first60: number[] /* eids */ };
-  controlGroups: Array<{ size: number }>;            // 10 entradas
+  controlGroups: Array<{ size: number }>; // 10 entradas
   camera: { zoomIndex: 0 | 1 | 2 };
   perf: { fps: number; frameMs: number; tickMs: number; drawCalls: number; mode: SnapshotMode };
   localPlayer: number;
@@ -460,7 +480,7 @@ export interface GameView {
 // además, de inmediato ante cambios de selección (evento, nunca por frame).
 ```
 
-- Los componentes React **no** modifican el estado de juego: emiten *intenciones* mediante callbacks que el `bridge` recibe y delega en `input/` (p. ej. "seleccionar grupo 3"). Prohibido llamar a `setState` desde componentes (lo verifica un test que importa el módulo y comprueba que no exporta setter + regla ESLint sobre `ui/`).
+- Los componentes React **no** modifican el estado de juego: emiten _intenciones_ mediante callbacks que el `bridge` recibe y delega en `input/` (p. ej. "seleccionar grupo 3"). Prohibido llamar a `setState` desde componentes (lo verifica un test que importa el módulo y comprueba que no exporta setter + regla ESLint sobre `ui/`).
 - Re-renders: ningún componente se suscribe a algo que cambie por frame; presupuesto: React ≤ 10 renders/s (se mide con `React.Profiler` en `DevOverlay`, expuesto en `__reinos.metrics.reactRendersPerSec`).
 - HUD mínimo de F2: contador y lista de selección (hasta 60 iconos + "+N"), reloj de tick, FPS/Debug overlay (tecla `F2`), host del minimapa, indicador del modo de snapshot (`sab`/`transfer`). Textos en español vía `ui/i18n.ts`. Barra de recursos, cuadrícula de comandos, colas: Fase 3.
 
@@ -478,13 +498,13 @@ El `canvas` recibe `pointerdown/move/up`, `wheel`, `contextmenu` (suprimido), `k
 
 Salidas en `packages/client/public/assets/provisional/` (ignoradas por git salvo `manifest.json` y su hash; se regeneran en build):
 
-| Archivo                         | Contenido                                                                                                                                  |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `ground0.png … ground3.png`     | 512×512 **tileables** (pasto, tierra, arena, roca/ceniza): ruido de valor periódico multi-octava + moteado, paleta sobria; sin costuras (el generador usa coordenadas toroidales; test: diferencia entre bordes opuestos < umbral). |
-| `noise.png`                     | 256×256 tileable, 4 canales de ruido independientes (máscara del splatting)                                                                |
-| `units.png` + `units.json`      | Atlas (formato spritesheet de Pixi) con marcos de 64×96: por apariencia (`civil`, `infantry`, `ranged`, `cavalry`, `generic`) × 8 direcciones × (idle ×1 + walk ×4) × {`body`, `team`}. Siluetas "capsula + cabeza + indicador de dirección" dibujadas con rasterizador propio (elipses/segmentos con antialiasing), sombra elíptica incluida en `body`. |
-| `ui.png` + `ui.json`            | Anillo de selección, marcador de orden (4 cuadros), punto de minimapa                                                                       |
-| `manifest.json`                 | `{ version, dirs: 8, anim: { idle: 1, walk: 4 }, frameSize: [64,96], appearances: { <sprite id de units.json>: <apariencia> }, files: {sha256} }` validado con Zod (`assets/manifest.ts`) |
+| Archivo                     | Contenido                                                                                                                                                                                                                                                                                                                                                |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ground0.png … ground3.png` | 512×512 **tileables** (pasto, tierra, arena, roca/ceniza): ruido de valor periódico multi-octava + moteado, paleta sobria; sin costuras (el generador usa coordenadas toroidales; test: diferencia entre bordes opuestos < umbral).                                                                                                                      |
+| `noise.png`                 | 256×256 tileable, 4 canales de ruido independientes (máscara del splatting)                                                                                                                                                                                                                                                                              |
+| `units.png` + `units.json`  | Atlas (formato spritesheet de Pixi) con marcos de 64×96: por apariencia (`civil`, `infantry`, `ranged`, `cavalry`, `generic`) × 8 direcciones × (idle ×1 + walk ×4) × {`body`, `team`}. Siluetas "capsula + cabeza + indicador de dirección" dibujadas con rasterizador propio (elipses/segmentos con antialiasing), sombra elíptica incluida en `body`. |
+| `ui.png` + `ui.json`        | Anillo de selección, marcador de orden (4 cuadros), punto de minimapa                                                                                                                                                                                                                                                                                    |
+| `manifest.json`             | `{ version, dirs: 8, anim: { idle: 1, walk: 4 }, frameSize: [64,96], appearances: { <sprite id de units.json>: <apariencia> }, files: {sha256} }` validado con Zod (`assets/manifest.ts`)                                                                                                                                                                |
 
 Nombre de marco: `<apariencia>/<body|team>/<dir>/<idle0|walk0..3>`. El cliente resuelve `units.json[i].sprite` → apariencia con `manifest.appearances`; id desconocido → `generic` (sin fallo). Colores de jugador (`playerColors`, 8 entradas) en `render/constants.ts` como preferencia visual.
 
@@ -496,38 +516,38 @@ Nombre de marco: `<apariencia>/<body|team>/<dir>/<idle0|walk0..3>`. El cliente r
 
 El entorno de CI/sesión **no tiene GPU**. Chromium headless corre WebGL por **software (SwiftShader)**: sirve para (a) capturas deterministas, (b) pruebas funcionales (selección, niebla, interpolación), (c) medir costes **de CPU/JS** y **conteos de trabajo de GPU** (draw calls, triángulos, píxeles), (d) detectar regresiones relativas de FPS. **FPS en SwiftShader no equivale al hardware de referencia** (portátil con GPU integrada Iris Xe / Radeon 680M, Chrome; GDD §17.1): la rasterización por CPU suele ser más lenta que una iGPU en fill-rate y más rápida en overhead de comandos, por lo que el número absoluto no se traslada en ninguna dirección con garantías.
 
-**Por tanto el criterio "400 unidades a ≥ 60 fps en el hardware de referencia" se verifica con un *proxy documentado* y queda con un `TODO-HUMANO` hasta medirlo en hardware real. No se marca "cumplido" solo con el proxy.**
+**Por tanto el criterio "400 unidades a ≥ 60 fps en el hardware de referencia" se verifica con un _proxy documentado_ y queda con un `TODO-HUMANO` hasta medirlo en hardware real. No se marca "cumplido" solo con el proxy.**
 
 ### 10.2 Proxy documentado (`pnpm perf:render` → `docs/progress/fase-02/media/perf.md` + `perf.json`)
 
 Escenario fijo: mapa 128×128, 400 unidades en movimiento (2 jugadores), cámara en zoom 1 centrada en la mayor concentración, viewport 1280×720, 10 s tras 3 s de calentamiento; Chromium con `--use-gl=angle --use-angle=swiftshader --enable-unsafe-swiftshader --ignore-gpu-blocklist --disable-gpu-vsync --disable-frame-rate-limit`; modos `sab` y `transfer`; zooms 0,6/1/1,4.
 
-| Métrica del proxy                                        | Umbral (gate)                               | Qué demuestra / límite                                                                                   |
-| -------------------------------------------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `updateMs` p95 (JS por frame: interpolar + culling + zIndex + niebla + sprites, **sin** raster) | ≤ **4 ms** (24 % del presupuesto de 16,6 ms) | El trabajo de CPU del cliente deja ≥ 4× de margen para el driver/GPU. Es heurística: no mide la GPU.    |
-| Draw calls por frame (contador por *monkey patch* de `drawElements/drawArrays` en el contexto)  | ≤ **60** (chunks visibles + 1–3 batches de sprites + niebla + decals) | Trabajo de comandos acotado; una iGPU maneja ≫ 60 draw calls a 60 fps.                                  |
-| Sprites dibujados por frame                              | informativo (≤ 800)                         | Verifica el culling y el batching.                                                                       |
-| Píxeles escritos por frame (estimación = Σ área de capas visibles; overdraw medio)               | informativo, overdraw ≤ 3×                  | Aproxima el fill-rate; compárese contra hoja de la iGPU en la revisión humana.                           |
-| FPS en SwiftShader a 1280×720                            | **informativo**; gate **relativo**: no bajar > 20 % respecto a `perf-baseline.json` | Detecta regresiones. Si resultara ≥ 60 fps incluso en software, es evidencia **a fortiori**; si no, no invalida el criterio. |
-| `tickMs` p95 del worker con 400 unidades                 | ≤ 3 ms (GDD §15.2 / F1)                     | Confirma que el worker en navegador no degrada la sim (mide con `perf` de §3.1).                         |
-| Snapshots omitidos / `ticksDropped`                      | 0 en régimen estacionario                   | El pacing y el reciclado funcionan.                                                                      |
+| Métrica del proxy                                                                               | Umbral (gate)                                                                       | Qué demuestra / límite                                                                                                       |
+| ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `updateMs` p95 (JS por frame: interpolar + culling + zIndex + niebla + sprites, **sin** raster) | ≤ **4 ms** (24 % del presupuesto de 16,6 ms)                                        | El trabajo de CPU del cliente deja ≥ 4× de margen para el driver/GPU. Es heurística: no mide la GPU.                         |
+| Draw calls por frame (contador por _monkey patch_ de `drawElements/drawArrays` en el contexto)  | ≤ **60** (chunks visibles + 1–3 batches de sprites + niebla + decals)               | Trabajo de comandos acotado; una iGPU maneja ≫ 60 draw calls a 60 fps.                                                       |
+| Sprites dibujados por frame                                                                     | informativo (≤ 800)                                                                 | Verifica el culling y el batching.                                                                                           |
+| Píxeles escritos por frame (estimación = Σ área de capas visibles; overdraw medio)              | informativo, overdraw ≤ 3×                                                          | Aproxima el fill-rate; compárese contra hoja de la iGPU en la revisión humana.                                               |
+| FPS en SwiftShader a 1280×720                                                                   | **informativo**; gate **relativo**: no bajar > 20 % respecto a `perf-baseline.json` | Detecta regresiones. Si resultara ≥ 60 fps incluso en software, es evidencia **a fortiori**; si no, no invalida el criterio. |
+| `tickMs` p95 del worker con 400 unidades                                                        | ≤ 3 ms (GDD §15.2 / F1)                                                             | Confirma que el worker en navegador no degrada la sim (mide con `perf` de §3.1).                                             |
+| Snapshots omitidos / `ticksDropped`                                                             | 0 en régimen estacionario                                                           | El pacing y el reciclado funcionan.                                                                                          |
 
 `TODO-HUMANO` (se lista en `STATUS.md`): ejecutar `/?perf=400&debug=1` (o `pnpm preview` + página `perf.html` del mismo build) en el portátil de referencia con Chrome, 60 s, y pegar el JSON que genera el overlay (`__reinos.perfReport()`); aceptación: p5 de FPS ≥ 60 en Alta, 400 unidades, zoom 1. Hasta entonces el criterio figura "proxy verde + hardware real pendiente".
 
 ### 10.3 Tests unitarios en Node (Vitest, entorno `node`, sin Pixi ni DOM)
 
-| Archivo (`packages/client/test/`)    | Verifica                                                                                                                                                                       |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `render/iso.test.ts`                 | `worldToGrid(gridToWorld(g)) ≈ g` (propiedad, 10⁴ casos); esquinas: `(0,0)→(0,0)`, `(W,0)→(W·64, W·32)`; centro de tile; relación 2:1 (`Δwx/Δwy` de una arista); `gridToFx` redondeo y acotado; zoom anclado al cursor.        |
-| `render/culling.test.ts`             | `visibleTileRange` ⊇ conjunto exacto por fuerza bruta (10⁴ cámaras/zooms/mapas aleatorios) y no mayor que +margen; `visibleChunks` correcto en bordes del mapa y mapas no múltiplos de 16; AABB de sprite.                      |
-| `render/depth.test.ts`               | Orden estable; una unidad "más al sur" (mayor x+y) tapa a la anterior; empates por ranura.                                                                                      |
-| `render/fog/visionGrid.test.ts`      | Tamaño de discos (r=1..12) = esperado entero; suma/resta simétrica; unidad que se mueve explora y no "desexplora"; unión con aliados; incremental ≡ recomputación completa (propiedad); muerte resta; 400 unidades `update` ≤ 1 ms. |
-| `input/picking.test.ts`              | `pickPoint` elige la más al frente; no pica enemigas en niebla; `pickBox` solo propias; clic vs caja (umbral 4 px); tope de selección por datos; doble clic = mismo tipo en pantalla. |
-| `input/orders.test.ts`               | Comando generado pasa `validateCommandShape`; `turn: 0`; unitIds ascendentes; partición en 1024; objetivo acotado al mapa.                                                      |
-| `worker/snapshot.test.ts`            | Round trip writer→reader en **ambos** modos; layout (`snapshotLayout`) alineado y sin solapes; triple buffer: simulación de escritor/lector entrelazados (intercalado exhaustivo de pasos) nunca lee una ranura en escritura.  |
-| `worker/host.test.ts`                | Con reloj falso: 20 ticks/s a speed 1; comandos solo en frontera de turno y con `turn` reescrito; latencia orden→primer movimiento ≤ 5 ticks; `hash` por turno **igual al de `createSim` + `step` en Node** (mismo escenario/semilla) ; descarte de comandos mal formados; pausa/step. |
-| `ui/store.test.ts`                   | El módulo no exporta setter; `publish` limita a 10 Hz (reloj falso); selección publica inmediato.                                                                                |
-| `assets/manifest.test.ts`            | `manifest.json` válido; todos los marcos referenciados existen en `units.json`; PNG del generador byte-idénticos entre dos ejecuciones; texturas tileables (borde opuesto).      |
+| Archivo (`packages/client/test/`) | Verifica                                                                                                                                                                                                                                                                               |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `render/iso.test.ts`              | `worldToGrid(gridToWorld(g)) ≈ g` (propiedad, 10⁴ casos); esquinas: `(0,0)→(0,0)`, `(W,0)→(W·64, W·32)`; centro de tile; relación 2:1 (`Δwx/Δwy` de una arista); `gridToFx` redondeo y acotado; zoom anclado al cursor.                                                                |
+| `render/culling.test.ts`          | `visibleTileRange` ⊇ conjunto exacto por fuerza bruta (10⁴ cámaras/zooms/mapas aleatorios) y no mayor que +margen; `visibleChunks` correcto en bordes del mapa y mapas no múltiplos de 16; AABB de sprite.                                                                             |
+| `render/depth.test.ts`            | Orden estable; una unidad "más al sur" (mayor x+y) tapa a la anterior; empates por ranura.                                                                                                                                                                                             |
+| `render/fog/visionGrid.test.ts`   | Tamaño de discos (r=1..12) = esperado entero; suma/resta simétrica; unidad que se mueve explora y no "desexplora"; unión con aliados; incremental ≡ recomputación completa (propiedad); muerte resta; 400 unidades `update` ≤ 1 ms.                                                    |
+| `input/picking.test.ts`           | `pickPoint` elige la más al frente; no pica enemigas en niebla; `pickBox` solo propias; clic vs caja (umbral 4 px); tope de selección por datos; doble clic = mismo tipo en pantalla.                                                                                                  |
+| `input/orders.test.ts`            | Comando generado pasa `validateCommandShape`; `turn: 0`; unitIds ascendentes; partición en 1024; objetivo acotado al mapa.                                                                                                                                                             |
+| `worker/snapshot.test.ts`         | Round trip writer→reader en **ambos** modos; layout (`snapshotLayout`) alineado y sin solapes; triple buffer: simulación de escritor/lector entrelazados (intercalado exhaustivo de pasos) nunca lee una ranura en escritura.                                                          |
+| `worker/host.test.ts`             | Con reloj falso: 20 ticks/s a speed 1; comandos solo en frontera de turno y con `turn` reescrito; latencia orden→primer movimiento ≤ 5 ticks; `hash` por turno **igual al de `createSim` + `step` en Node** (mismo escenario/semilla) ; descarte de comandos mal formados; pausa/step. |
+| `ui/store.test.ts`                | El módulo no exporta setter; `publish` limita a 10 Hz (reloj falso); selección publica inmediato.                                                                                                                                                                                      |
+| `assets/manifest.test.ts`         | `manifest.json` válido; todos los marcos referenciados existen en `units.json`; PNG del generador byte-idénticos entre dos ejecuciones; texturas tileables (borde opuesto).                                                                                                            |
 
 ### 10.4 Playwright con SwiftShader (`playwright.render.config.ts`, specs en `e2e/render/`, `pnpm e2e:render`)
 
@@ -540,14 +560,14 @@ Escenario fijo: mapa 128×128, 400 unidades en movimiento (2 jugadores), cámara
 
 ## 11. Propiedad de archivos (para el trabajo en paralelo)
 
-| Carril | Dueño                         | Edita                                                                                                   | NO edita                                                  |
-| ------ | ----------------------------- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| T0     | `render-engineer`             | `package.json`, `vite.config.ts`, `tsconfig.json`, ESLint del cliente, stubs de contratos                | —                                                         |
-| W      | `sim-engineer`                | `client/src/worker/**`, `client/test/worker/**`; (y `shared`/`sim`/`data` solo en S1–S3)                  | `render/`, `input/`, `ui/`                                |
-| R      | `render-engineer`, `render-engineer (2º)` | `client/src/render/**`, `client/src/assets/loader.ts`, `client/test/render/**`                | `worker/`, `input/`, `ui/`                                |
-| U      | `ui-engineer`                 | `client/src/{input,ui}/**`, tests espejo                                                                | `render/`, `worker/` (consume sus contratos)              |
-| A      | `art-pipeline`                | `tools/asset-pipeline/**`, `client/src/assets/manifest.ts`, `ASSETS_LICENSES.md`                        | `render/`                                                 |
-| Q      | `qa-engineer`                 | `e2e/render/**`, `playwright.render.config.ts`, `boot/debug.ts` (con R), scripts de perf                | código de producto salvo `boot/debug.ts`                  |
+| Carril | Dueño                                     | Edita                                                                                     | NO edita                                     |
+| ------ | ----------------------------------------- | ----------------------------------------------------------------------------------------- | -------------------------------------------- |
+| T0     | `render-engineer`                         | `package.json`, `vite.config.ts`, `tsconfig.json`, ESLint del cliente, stubs de contratos | —                                            |
+| W      | `sim-engineer`                            | `client/src/worker/**`, `client/test/worker/**`; (y `shared`/`sim`/`data` solo en S1–S3)  | `render/`, `input/`, `ui/`                   |
+| R      | `render-engineer`, `render-engineer (2º)` | `client/src/render/**`, `client/src/assets/loader.ts`, `client/test/render/**`            | `worker/`, `input/`, `ui/`                   |
+| U      | `ui-engineer`                             | `client/src/{input,ui}/**`, tests espejo                                                  | `render/`, `worker/` (consume sus contratos) |
+| A      | `art-pipeline`                            | `tools/asset-pipeline/**`, `client/src/assets/manifest.ts`, `ASSETS_LICENSES.md`          | `render/`                                    |
+| Q      | `qa-engineer`                             | `e2e/render/**`, `playwright.render.config.ts`, `boot/debug.ts` (con R), scripts de perf  | código de producto salvo `boot/debug.ts`     |
 
 `packages/data/json/game.json` (bloques `camera`, `selection`): lo edita `content-designer` en T-D1 (una sola vez, antes de U1/U2). Cambios a `protocol.ts`/`snapshot.ts` solo por enmienda de este ADR.
 
@@ -585,3 +605,17 @@ Escenario fijo: mapa 128×128, 400 unidades en movimiento (2 jugadores), cámara
 ## Estado
 
 Propuesto. Se acepta tras la revisión R1 de Fase 2 (diseño) y se enmienda aquí cualquier cambio de contrato durante la fase.
+
+## Nota T0 (2026-11-21) — smoke de Pixi v8 bajo SwiftShader
+
+Riesgo abierto 1 **resuelto en lo esencial**: PixiJS 8.23.0 con `preference: 'webgl'` inicializa **WebGL2** en Chromium headless (SwiftShader/ANGLE-Vulkan: `ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero)), SwiftShader driver)`), compila un shader GLSL ES 3.00 propio (`GlProgram`, atributos `aPosition`/`aGrid`) y dibuja un `Mesh` correctamente (e2e `e2e/render/gl-smoke.spec.ts`, píxeles exactos del tablero rojo/verde). No hace falta fallback WebGL1/canvas. Detalles y flags en `docs/progress/fase-02/swiftshader.md`.
+
+Ajustes de contrato por T0 (sin cambiar semántica):
+
+- `SnapshotView` y el resto de tipos del snapshot viven en `worker/snapshot.ts` (reexportados desde `worker/client.ts`), para que `render/` y `input/` no necesiten importar `worker/client` (la tabla de §2 solo permite `worker/snapshot` a `render/`).
+- `render/types.ts` (nuevo, puro): `Camera`, `Viewport`, `Vec2`, `TileRange`, `ZoomIndex`; `render/constants.ts` también expone `PLAYER_COLORS`, `FOG_FADE_PER_S`, `TERRAIN_TEX_PERIOD_TILES`.
+- `ReadyInfo`/`PerfInfo`/`PostFn` se declaran en `worker/protocol.ts`.
+- Config de pruebas de render: `playwright.render.config.ts` (puerto 4174, `vite preview` con COOP/COEP); la config principal ignora `e2e/render/`. Se mantiene el Vitest del cliente en `vitest.config.ts` propio (Vitest 2 trae Vite 5; la app usa Vite 8 + plugin-react 6).
+- `@vitejs/plugin-react@6.3.0` declara peer `vite ^8.0.0`: compatible con Vite 8.3.8 (verificado con build).
+- Las reglas de §2 se aplican con `@typescript-eslint/no-restricted-imports` en `eslint.config.js` (bloque `clientBoundaries`, con `allowTypeImports`) y con `packages/client/test/deps.test.ts`.
+- Página `gl-smoke.html` (entrada extra de `vite build`) es solo del smoke de T0; Q1 puede retirarla cuando `smoke.spec.ts` cubra lo mismo.

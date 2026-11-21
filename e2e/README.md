@@ -21,3 +21,7 @@ PW_ALL_BROWSERS=1 pnpm test:det:browsers    # además Firefox y WebKit
 
 - Firefox y WebKit **no se pueden correr en este entorno** (no hay binarios y no se debe ejecutar `playwright install`); solo los activa `PW_ALL_BROWSERS=1`, que pone el job `test-det-browsers` de CI. Sin esa variable solo corre Chromium.
 - Informe: `docs/progress/fase-01/determinismo.md`.
+
+## Render (`e2e/render/`, WebGL por software)
+
+Config aparte: `playwright.render.config.ts` (la principal ignora esa carpeta). `pnpm e2e:render` construye el cliente, levanta `vite preview` (puerto 4174, con COOP/COEP) y corre Chromium con SwiftShader. Flags y notas: `docs/progress/fase-02/swiftshader.md`. Hoy solo contiene el smoke de T0 (`gl-smoke.spec.ts`); Q1 añade el resto.

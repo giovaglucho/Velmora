@@ -20,13 +20,19 @@
     "devlog": "pnpm --filter @reinos/devlog run build",
     "e2e": "playwright test --trace off",
     "bench": "pnpm --filter @reinos/headless run bench",
-    "test:det:browsers": "pnpm --filter @reinos/headless run test:det:browsers"
+    "test:det:browsers": "pnpm --filter @reinos/headless run test:det:browsers",
+    "e2e:render": "pnpm --filter @reinos/client build && playwright test -c playwright.render.config.ts --trace off",
+    "perf:render": "node -e \"console.error('perf:render: TODO(Q2) not implemented yet'); process.exit(1)\"",
+    "assets:gen": "node -e \"console.error('assets:gen: TODO(A1) not implemented yet'); process.exit(1)\""
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@playwright/test": "^1.49.0",
     "@types/node": "^22.10.0",
+    "@types/pngjs": "^6.0.5",
     "eslint": "^9.17.0",
+    "gifenc": "^1.0.3",
+    "pngjs": "^7.0.0",
     "prettier": "^3.4.2",
     "turbo": "^2.3.3",
     "typescript": "^5.7.2",
