@@ -6,7 +6,9 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json --noEmit",
+    "dev": "vite",
+    "build": "pnpm --filter @reinos/devlog run build && vite build",
+    "preview": "vite preview --port 4173",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --passWithNoTests"
   },

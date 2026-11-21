@@ -1,0 +1,11 @@
+{
+  "name": "@reinos/lint-sim",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./lint.mjs",
+  "scripts": {
+    "lint": "node run.mjs",
+    "test": "vitest run"
+  }
+}

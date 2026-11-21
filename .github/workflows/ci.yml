@@ -1,0 +1,64 @@
+name: CI
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4 # version from packageManager in package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm test:det
+      - run: pnpm data:check
+      - run: pnpm build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: client-dist
+          path: packages/client/dist
+          if-no-files-found: warn
+
+  e2e:
+    # Optional: runs only once an e2e/ suite and playwright config exist.
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: has
+        run: |
+          if [ -d e2e ] && ls playwright.config.* >/dev/null 2>&1; then echo "run=true" >> "$GITHUB_OUTPUT"; else echo "run=false" >> "$GITHUB_OUTPUT"; echo "No e2e suite yet; skipping."; fi
+      - if: steps.has.outputs.run == 'true'
+        uses: pnpm/action-setup@v4
+      - if: steps.has.outputs.run == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - if: steps.has.outputs.run == 'true'
+        run: pnpm install --frozen-lockfile
+      - if: steps.has.outputs.run == 'true'
+        run: pnpm exec playwright install --with-deps chromium
+      - if: steps.has.outputs.run == 'true'
+        run: pnpm --filter @reinos/client build
+      - if: steps.has.outputs.run == 'true'
+        run: |
+          pnpm --filter @reinos/client preview &
+          npx --yes wait-on http://localhost:4173 && pnpm e2e
+      - if: steps.has.outputs.run == 'true' && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+          if-no-files-found: ignore

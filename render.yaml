@@ -1,0 +1,93 @@
+# Render Blueprint (GDD 15.5). Validate in the Render dashboard on first "New > Blueprint".
+# Region: frankfurt (EU players + Atlas EU cluster). Change `region` in ALL services together:
+# services and Key Value must share a region to talk over the private network. See docs/adr/ADR-004-render-blueprint.md.
+services:
+  # --- Static client + devlog (free plan is fine) ---
+  - type: web
+    runtime: static
+    name: reinos-web
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm --filter @reinos/client build
+    staticPublishPath: packages/client/dist
+    # Cross-origin isolation (SharedArrayBuffer / Web Worker sim). Every third-party asset must then send CORP/CORS.
+    headers:
+      - path: /*
+        name: Cross-Origin-Opener-Policy
+        value: same-origin
+      - path: /*
+        name: Cross-Origin-Embedder-Policy
+        value: require-corp
+    routes:
+      # Keep the static devlog out of the SPA fallback (first match wins).
+      - type: rewrite
+        source: /devlog/*
+        destination: /devlog/*
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: VITE_API_URL # TODO-HUMANO: public URL of reinos-api once deployed
+        sync: false
+      - key: VITE_RELAY_URL # TODO-HUMANO: wss:// URL of reinos-relay once deployed
+        sync: false
+
+  # --- REST API ---
+  - type: web
+    runtime: node
+    name: reinos-api
+    region: frankfurt
+    # starter = paid, no spin-down. Free plan sleeps after inactivity (GDD 15.5).
+    plan: starter
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm --filter @reinos/server build
+    startCommand: pnpm --filter @reinos/server start:api
+    healthCheckPath: /health
+    autoDeploy: false # deploys are triggered by GitHub Actions (deploy-staging.yml) via deploy hook
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: reinos-kv
+          property: connectionString
+      - key: MONGODB_URI # TODO-HUMANO: MongoDB Atlas connection string
+        sync: false
+      - key: JWT_SECRET # TODO-HUMANO: long random string
+        sync: false
+      - key: CORS_ORIGIN # TODO-HUMANO: public URL of reinos-web
+        sync: false
+      - key: OAUTH_GOOGLE_CLIENT_ID # TODO-HUMANO
+        sync: false
+      - key: OAUTH_GOOGLE_CLIENT_SECRET # TODO-HUMANO
+        sync: false
+
+  # --- WebSocket lockstep relay ---
+  - type: web
+    runtime: node
+    name: reinos-relay
+    region: frankfurt
+    # MUST be a paid plan: a suspended relay drops live matches (GDD 15.5).
+    plan: starter
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm --filter @reinos/server build
+    startCommand: pnpm --filter @reinos/server start:relay
+    healthCheckPath: /health
+    autoDeploy: false
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: reinos-kv
+          property: connectionString
+      - key: JWT_SECRET # TODO-HUMANO: same value as reinos-api
+        sync: false
+
+  # --- Redis-compatible Key Value (matchmaking queues, presence, sessions) ---
+  - type: keyvalue
+    name: reinos-kv
+    region: frankfurt
+    plan: starter
+    maxmemoryPolicy: noeviction
+    ipAllowList: [] # private network only

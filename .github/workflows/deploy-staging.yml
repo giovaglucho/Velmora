@@ -1,0 +1,24 @@
+name: Deploy staging
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      HOOK_API: ${{ secrets.RENDER_DEPLOY_HOOK_API }}
+      HOOK_RELAY: ${{ secrets.RENDER_DEPLOY_HOOK_RELAY }}
+      HOOK_WEB: ${{ secrets.RENDER_DEPLOY_HOOK_WEB }}
+    steps:
+      - name: Trigger Render deploy hooks
+        run: |
+          for name in API RELAY WEB; do
+            var="HOOK_$name"
+            url="${!var}"
+            if [ -z "$url" ]; then
+              echo "::notice::TODO-HUMANO: secret RENDER_DEPLOY_HOOK_$name not set; skipping."
+              continue
+            fi
+            curl -fsS -X POST "$url" >/dev/null && echo "Triggered $name" || echo "::warning::Hook $name failed"
+          done
