@@ -8,14 +8,14 @@ Autor: `architect`. Fecha: 2026-11-21. Alcance: `packages/shared/src`, `packages
 
 ## Contraste con GDD §15.2
 
-| Requisito GDD §15.2                                                                     | Estado                                                                                                                                                                                       |
-| --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ECS con arrays tipados SoA, capacidad fija                                              | Cumple (`ecs/world.ts`, `columns.ts` con registro y guardas de compilación y test: cada clave de `World` en exactamente una lista).                                                          |
-| Orden de iteración por id ascendente                                                    | Cumple con matiz (M1): el bucle recorre por índice de ranura; los `unitIds` de un comando se ordenan por eid.                                                                                |
-| Comandos como única entrada `{turn, playerId, type, unitIds, target, payload}`          | Cumple exacto (`shared/commands.ts`); claves exactas, enteros acotados, `payload` null en F1. La sim solo lee comandos vía `step`/`stepTick`.                                                  |
-| Hash FNV-1a por turno sobre componentes clave; desync con dump                          | Cumple: `hash()` por turno en `TurnResult`, `hashFull()` para dump/golden. Cobertura parcial documentada (B2).                                                                              |
-| Sin floats / `Math.random` / `Date.now` / trig en la sim; PRNG de partida               | Cumple en `shared`+`sim` (bloqueado por `lint:sim`); PRNG xoshiro128** con estado en el hash.                                                                                                |
-| Comandos con ejecución en turno n+2 (§15.3)                                             | La sim exige `cmd.turn === turno actual` y rechaza el resto íntegro; la política n+2 es del relay/cliente. Coherente.                                                                         |
+| Requisito GDD §15.2                                                            | Estado                                                                                                                                        |
+| ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| ECS con arrays tipados SoA, capacidad fija                                     | Cumple (`ecs/world.ts`, `columns.ts` con registro y guardas de compilación y test: cada clave de `World` en exactamente una lista).           |
+| Orden de iteración por id ascendente                                           | Cumple con matiz (M1): el bucle recorre por índice de ranura; los `unitIds` de un comando se ordenan por eid.                                 |
+| Comandos como única entrada `{turn, playerId, type, unitIds, target, payload}` | Cumple exacto (`shared/commands.ts`); claves exactas, enteros acotados, `payload` null en F1. La sim solo lee comandos vía `step`/`stepTick`. |
+| Hash FNV-1a por turno sobre componentes clave; desync con dump                 | Cumple: `hash()` por turno en `TurnResult`, `hashFull()` para dump/golden. Cobertura parcial documentada (B2).                                |
+| Sin floats / `Math.random` / `Date.now` / trig en la sim; PRNG de partida      | Cumple en `shared`+`sim` (bloqueado por `lint:sim`); PRNG xoshiro128** con estado en el hash.                                                 |
+| Comandos con ejecución en turno n+2 (§15.3)                                    | La sim exige `cmd.turn === turno actual` y rechaza el resto íntegro; la política n+2 es del relay/cliente. Coherente.                         |
 
 ## Revisión del ECS (ADR-005 §3-4)
 
@@ -57,12 +57,12 @@ Ninguno.
 
 ## Requisitos que dejo registrados
 
-| Id | Para    | Requisito                                                                                                                               |
-| -- | ------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| H1 | F9      | Topes de comandos/unidades por turno y jugador, ratio, `playerId` = identidad de la conexión, límites de `totalTurns`/bytes en repeticiones, ejecución con presupuesto. |
-| H2 | F9      | `hashFull()` periódico o bajo demanda para el dump de desync.                                                                           |
-| H3 | F2 / F9 | `simDataHash` en `Replay` y protocolo; comprobación en `createSim`/`runReplay`.                                                          |
-| H4 | F2      | Test en navegador de `buildSimData` con empates .5 (o redondeo entero explícito).                                                       |
+| Id  | Para    | Requisito                                                                                                                                                               |
+| --- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| H1  | F9      | Topes de comandos/unidades por turno y jugador, ratio, `playerId` = identidad de la conexión, límites de `totalTurns`/bytes en repeticiones, ejecución con presupuesto. |
+| H2  | F9      | `hashFull()` periódico o bajo demanda para el dump de desync.                                                                                                           |
+| H3  | F2 / F9 | `simDataHash` en `Replay` y protocolo; comprobación en `createSim`/`runReplay`.                                                                                         |
+| H4  | F2      | Test en navegador de `buildSimData` con empates .5 (o redondeo entero explícito).                                                                                       |
 
 ## Cambios hechos en esta revisión (solo documentación)
 

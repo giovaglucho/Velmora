@@ -8,11 +8,11 @@ Fuente: `docs/PLAN.md` Fase 1, GDD §15.2 y §7/§8, ADR-003, **ADR-005** (contr
 
 ## 1. Criterios de fase (del PLAN) y cómo se verifican
 
-| #   | Criterio                                                                               | Verificación (comando / evidencia)                                                                                                                                     | Tareas        |
-| --- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| #   | Criterio                                                                               | Verificación (comando / evidencia)                                                                                                                                      | Tareas        |
+| --- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
 | K1  | 1000 unidades × 10 000 ticks producen el mismo `finalHash` en los entornos disponibles | `pnpm test:det` (Node) + `pnpm test:det:browsers` (Chromium local; Firefox y WebKit en CI). Evidencia: `docs/progress/fase-01/determinismo.md` con tabla entorno → hash | D2, D4, E1–E3 |
-| K2  | Tick ≤ 3 ms con 400 unidades                                                           | `pnpm --filter @reinos/headless run bench` → `docs/progress/fase-01/media/bench.md` (p95 por tick ≤ 3 ms, 400 unidades en movimiento, Node 22)                                   | D3            |
-| K3  | 0 violaciones de `lint:sim`                                                            | `pnpm lint:sim` sale 0 con `fixed.ts`, `sim/src/**` completos; además `pnpm lint`, `pnpm typecheck`                                                                    | todas         |
+| K2  | Tick ≤ 3 ms con 400 unidades                                                           | `pnpm --filter @reinos/headless run bench` → `docs/progress/fase-01/media/bench.md` (p95 por tick ≤ 3 ms, 400 unidades en movimiento, Node 22)                          | D3            |
+| K3  | 0 violaciones de `lint:sim`                                                            | `pnpm lint:sim` sale 0 con `fixed.ts`, `sim/src/**` completos; además `pnpm lint`, `pnpm typecheck`                                                                     | todas         |
 
 **Entornos (honestidad de evidencia).** Aquí solo hay Node 22.23 y Chromium (`/opt/pw-browsers/chromium`, y `/usr/bin/google-chrome`); **no** hay Firefox ni WebKit y `playwright install` no se ejecuta en este entorno (ver `e2e/README.md`). Por tanto:
 
@@ -220,7 +220,7 @@ Dueños: `architect`, `sim-engineer` (carril A y B), `sim-engineer (2º)` (carri
 | D4    | qa-engineer           | 0,5  | D2         | `pnpm test:det` con hash dorado (K1-Node)                         |
 | E1    | qa-engineer           | 1    | D2         | Node = Chromium (hilo y Worker)                                   |
 | E2    | qa-engineer           | 0,5  | E1         | Firefox/WebKit en CI (no ejecutables aquí)                        |
-| E3    | qa-engineer           | 0,25 | E1, E2     | `determinismo.md` honesto                                          |
+| E3    | qa-engineer           | 0,25 | E1, E2     | `determinismo.md` honesto                                         |
 | F1    | devlog-reporter       | 1    | D3, C5     | GIF de debug ≥ 60 fotogramas                                      |
 | F2    | devlog-reporter       | 0,5  | D3, F1     | `pnpm devlog` con GIF + tabla                                     |
 | R2    | reviewer              | 0,5  | D4, E3, F2 | informe sin bloqueantes abiertos                                  |

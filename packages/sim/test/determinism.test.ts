@@ -29,10 +29,10 @@ import {
   hashInts,
   type Command,
   type SimConfig,
+  type SimData,
   type SpawnSpec,
 } from '@reinos/shared';
 import { createSim, createStubMovement, type MovementFactory } from '../src/index';
-import type { SimData } from '@reinos/shared';
 import { TEST_DATA, moveCmd, rleFromBlocked, stopCmd } from './helpers/fixtures';
 
 const SCENARIO_UNITS = 200;
