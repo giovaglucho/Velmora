@@ -7,7 +7,6 @@ services:
   - type: web
     runtime: static
     name: reinos-web
-    plan: free
     buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm --filter @reinos/client build
     staticPublishPath: packages/client/dist
     autoDeploy: true
