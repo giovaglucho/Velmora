@@ -21,10 +21,6 @@ services:
         name: Cross-Origin-Embedder-Policy
         value: require-corp
     routes:
-      # Keep the static devlog out of the SPA fallback (first match wins).
-      - type: rewrite
-        source: /devlog/*
-        destination: /devlog/*
       - type: rewrite
         source: /*
         destination: /index.html
