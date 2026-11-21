@@ -38,7 +38,7 @@ export const RoadmapSchema = z.object({
 
 export type Roadmap = z.infer<typeof RoadmapSchema>;
 
-export const HITOS:{ n: number; nombre: string; desde: number; hasta: number }[] = [
+export const HITOS: { n: number; nombre: string; desde: number; hasta: number }[] = [
   { n: 1, nombre: 'Prototipo', desde: 0, hasta: 3 },
   { n: 2, nombre: 'MVP vs IA', desde: 4, hasta: 5 },
   { n: 3, nombre: 'Aspecto AAA', desde: 6, hasta: 7 },
