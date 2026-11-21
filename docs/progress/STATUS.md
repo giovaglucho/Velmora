@@ -23,7 +23,7 @@ Evidencia: `docs/progress/fase-00/`. Pendiente: URL desplegada en Render (TODO-H
 
 | Criterio                                                | Estado              | Evidencia                                                                                                                                                                                                       |
 | ------------------------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1000 unidades × 10 000 ticks → mismo hash en 4 entornos | **2/4 verificados** | Golden `0x9f6e57a6` (`tools/headless/golden.json`). Coinciden: Node, Node `--jitless`, Chromium hilo principal, Chromium Worker. **Firefox y WebKit solo en CI** (`test-det-browsers`); no hay en este entorno. |
+| 1000 unidades × 10 000 ticks → mismo hash en 4 entornos | **4/4 verificados** (CI run 44948949919, job `test-det-browsers`: Chromium, Firefox, WebKit) | Golden `0x9f6e57a6` (`tools/headless/golden.json`). Coinciden: Node, Node `--jitless`, Chromium hilo principal, Chromium Worker. **Firefox y WebKit solo en CI** (`test-det-browsers`); no hay en este entorno. |
 | Tick ≤ 3 ms con 400 unidades                            | ✅                  | Media 0,64–0,71 ms, p95 1,5–1,7 ms (`docs/progress/fase-01/media/bench.md`); p99 ≈ 3,2–3,5 ms.                                                                                                                  |
 | 0 violaciones lint:sim                                  | ✅                  | `lint:sim OK`.                                                                                                                                                                                                  |
 
@@ -45,12 +45,12 @@ Desviación del PLAN: sprites/terreno provisionales **procedurales propios** (`t
 
 ## Puertas humanas pendientes (TODO-HUMANO)
 
-- [ ] **Push/merge a `main` + primera corrida de CI en GitHub** → cierra K1 de F1 (Firefox/WebKit) y valida el workflow.
+- [x] Push a `main` y CI en GitHub: `verify`, `e2e` y `test-det-browsers` en verde (run 44948949919). Cierra K1 de F1.
 - [ ] **Medición de FPS en hardware de referencia** (portátil Iris Xe/AMD 680M, Chrome) → cierra K1 de F2.
 - [x] Render desplegado con Blueprint (plan free, autoDeploy desde `main`). URLs: web `https://reinos-web-4bcg.onrender.com/`, API `https://reinos-api.onrender.com/health` (OK), relay `https://reinos-relay.onrender.com/health` (OK). `reinos-kv` es privado (sin URL). Los deploy hooks de GitHub ya no hacen falta.
 - [ ] Verificar `/devlog/` en la URL de `reinos-web` (el rewrite de devlog se quitó: revisar que cargue).
 - [ ] Aprobar `.claude/settings.json` (propuesta en `docs/settings.proposed.json`).
-- [ ] Clúster MongoDB Atlas + `MONGODB_URI` (Fase 8).
+- [x] Clúster MongoDB Atlas `Cluster0` (M0, AWS Frankfurt), usuario de base de datos y acceso `0.0.0.0/0` creados. `MONGODB_URI` todavía NO está cargado en Render: se carga por formulario seguro cuando arranque la Fase 8.
 - [ ] Packs de arte/audio y herramientas de IA para assets (puerta de Fase 6; conviene empezar ya).
 - [ ] Decidir si "Valhalla" y "Caravanserai" (GDD §10) se mantienen; revisar interpretaciones AMBIGUO de `packages/data/COVERAGE.md`.
 
