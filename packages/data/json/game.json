@@ -226,5 +226,29 @@
       "release": "1.0",
       "scriptAvailable": false
     }
-  ]
+  ],
+  "movement": {
+    "pathBudgetPerTick": 16,
+    "arriveDistFx": 100,
+    "groupArriveDistFx": 1500,
+    "stuckTicks": 20,
+    "repathCooldownTicks": 10,
+    "separationPermille": 700,
+    "neighborRangeFx": 400,
+    "defaultRadiusFx": 350,
+    "radiusFxByClass": {
+      "civil": 250,
+      "infantry": 300,
+      "spear": 300,
+      "archer": 300,
+      "cavalry": 450,
+      "cavalry_archer": 450,
+      "camel_like": 450,
+      "siege": 700,
+      "custodian": 350,
+      "gunpowder": 300,
+      "hero": 400,
+      "unique": 350
+    }
+  }
 }

@@ -3,7 +3,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ZodError } from 'zod';
 import { crossCheck, formatZodError, parseSchemas, type RawGameData } from './validate.js';
-import { bundledRaw } from './data.js';
+import { bundledRaw, DATA_VERSION } from './data.js';
+import { buildSimData } from './simdata.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', 'json');
 const errors: string[] = [];
@@ -77,6 +78,10 @@ if (errors.length === 0) {
       Object.entries(counts)
         .map(([k, v]) => `${k}=${v}`)
         .join(' '),
+    );
+    const sim = buildSimData(data);
+    console.log(
+      `data:check simdata -> version=${DATA_VERSION} units=${sim.unitIds.length} movement keys=${Object.keys(sim.movement).length}`,
     );
     if (x.warnings.length)
       console.log(

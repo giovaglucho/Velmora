@@ -1,7 +1,31 @@
 import { z } from 'zod';
-import { Id, LocalizedName, ArmorClass, Notes } from './common.js';
+import { Id, LocalizedName, ArmorClass, Notes, UnitClass } from './common.js';
 
-/** Global parameters (§3.5), terrain (§11.3), map pool (§11.2). */
+const PositiveInt = z.number().int().positive();
+
+/**
+ * Movement tuning (ADR-005 §6). Integers only; distances in fixed point (1/1000 tile).
+ * `radiusFxByClass` and `defaultRadiusFx` are consumed only by buildSimData.
+ */
+export const MovementTuningFile = z
+  .object({
+    pathBudgetPerTick: PositiveInt,
+    arriveDistFx: PositiveInt,
+    groupArriveDistFx: PositiveInt,
+    stuckTicks: PositiveInt,
+    repathCooldownTicks: z.number().int().nonnegative(),
+    separationPermille: z.number().int().min(0).max(4000),
+    neighborRangeFx: PositiveInt,
+    defaultRadiusFx: PositiveInt,
+    radiusFxByClass: z.partialRecord(UnitClass, PositiveInt),
+  })
+  .strict()
+  .refine((m) => m.arriveDistFx <= m.groupArriveDistFx, {
+    message: 'arriveDistFx must be <= groupArriveDistFx',
+  });
+export type MovementTuningFile = z.infer<typeof MovementTuningFile>;
+
+/** Global parameters (§3.5), terrain (§11.3), map pool (§11.2), movement tuning (ADR-005). */
 export const GameFile = z.object({
   mapSizes: z.array(
     z.object({
@@ -44,6 +68,7 @@ export const GameFile = z.object({
       scriptAvailable: z.boolean(),
     }),
   ),
+  movement: MovementTuningFile,
 });
 export type GameFile = z.infer<typeof GameFile>;
 
