@@ -1979,10 +1979,10 @@
       "notes": "AMBIGUO: costo y tiempo \"Varía\" en §9.3: no especificados."
     },
     {
-      "id": "valhalla",
+      "id": "lavahall",
       "name": {
-        "es": "Valhalla",
-        "en": "Valhalla"
+        "es": "Lavahall",
+        "en": "Lavahall"
       },
       "age": 4,
       "building": "bastion",
@@ -2000,10 +2000,10 @@
       "notes": "AMBIGUO: costo y tiempo \"Varía\" en §9.3: no especificados. Radio de \"cercanos\" no especificado."
     },
     {
-      "id": "caravanserai",
+      "id": "ravanasciera",
       "name": {
-        "es": "Caravanserai",
-        "en": "Caravanserai"
+        "es": "Ravanasciera",
+        "en": "Ravanasciera"
       },
       "age": 3,
       "building": "bastion",

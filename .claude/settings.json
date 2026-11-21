@@ -1,17 +1,8 @@
 {
   "permissions": {
-    "allow": [
-      "Bash(pnpm *)",
-      "Bash(npx playwright *)",
-      "Bash(blender -b *)"
-    ],
-    "ask": [
-      "Bash(rm *)"
-    ],
-    "deny": [
-      "Bash(git push --force*)",
-      "Bash(git push -f*)"
-    ]
+    "allow": ["Bash(pnpm *)", "Bash(npx playwright *)", "Bash(blender -b *)"],
+    "ask": ["Bash(rm *)"],
+    "deny": ["Bash(git push --force*)", "Bash(git push -f*)"]
   },
   "hooks": {
     "PostToolUse": [

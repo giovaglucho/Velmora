@@ -95,7 +95,7 @@
   },
   "uniqueTechs": {
     "castle": "runas_de_guerra",
-    "aether": "valhalla"
+    "aether": "lavahall"
   },
   "disabledUnits": ["jinete_arquero", "caballero_real", "bombarda_de_eter"],
   "disabledTechs": [],

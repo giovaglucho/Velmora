@@ -87,7 +87,7 @@
     "eliteVersion": true
   },
   "uniqueTechs": {
-    "castle": "caravanserai",
+    "castle": "ravanasciera",
     "aether": "zoco_imperial"
   },
   "disabledUnits": ["paladin", "campeon_ceniciento", "onagro_de_asedio"],
