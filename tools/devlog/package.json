@@ -6,9 +6,10 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json --noEmit",
+    "build": "tsx src/build.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "capture": "tsx src/capture.ts"
   },
   "devDependencies": {
     "playwright": "^1.65.1",

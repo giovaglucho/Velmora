@@ -1,0 +1,10 @@
+{
+  "fase": 0,
+  "titulo": "Fundaciones",
+  "porcentaje": 7,
+  "fecha": "2026-11-21",
+  "ahoraSePuede": "ver el placeholder desplegado y esta página /devlog",
+  "metricas": { "fps": null, "tick": null, "tests": null, "nota": "aún sin medir; un script las actualizará" },
+  "siguiente": "Fase 1: simulación determinista (punto fijo, tick y comandos).",
+  "imagenes": [{ "archivo": "devlog.png", "alt": "Página /devlog de la Fase 0" }]
+}
