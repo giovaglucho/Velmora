@@ -8,6 +8,10 @@
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "test:det": "vitest run test/determinism.test.ts"
+  },
+  "dependencies": {
+    "@reinos/shared": "workspace:*"
   }
 }

@@ -47,6 +47,10 @@ importers:
       zod:
         specifier: ^4.6.7
         version: 4.6.7
+    devDependencies:
+      tsx:
+        specifier: ^4.23.15
+        version: 4.23.15
 
   packages/server:
     dependencies:
@@ -75,7 +79,11 @@ importers:
 
   packages/shared: {}
 
-  packages/sim: {}
+  packages/sim:
+    dependencies:
+      '@reinos/shared':
+        specifier: workspace:*
+        version: link:../shared
 
   tools/asset-pipeline: {}
 
@@ -93,6 +101,8 @@ importers:
         version: 4.23.15
 
   tools/headless: {}
+
+  tools/lint-sim: {}
 
 packages:
 

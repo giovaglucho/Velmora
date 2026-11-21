@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* global process, console */
 // Uso: node tools/lint-sim/run.mjs [archivos o carpetas...]   (sin args: packages/sim/src y shared/src/{fixed,prng,hash}*)
 import path from "node:path";
 import fs from "node:fs";
