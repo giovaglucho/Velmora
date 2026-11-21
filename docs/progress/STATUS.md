@@ -1,6 +1,6 @@
 # STATUS — Reinos de Ceniza
 
-**Fase actual:** 3 — Economía y construcción (Eras I–II). **Sin arrancar**: ver "Próximos pasos".
+**Fase actual:** 3 — Economía y construcción (Eras I–II). **Planificada, sin código**: `docs/progress/fase-03/plan.md` (42 tareas) + `docs/adr/ADR-007-economia-y-construccion.md` (Propuesto).
 **Última actualización:** 2026-11-21
 **Rama de trabajo:** `claude/focused-cannon-rggng5` (tags locales `fase-00`, `fase-01`; `fase-02` al cerrar). No hay merge a `main`.
 
@@ -63,6 +63,12 @@ Desviación del PLAN: sprites/terreno provisionales **procedurales propios** (`t
 - Datos pendientes del GDD en `packages/data/COVERAGE.md` (31 warnings de `data:check`).
 - Medios del devlog duplicados (`docs/` y `packages/client/public/devlog`, ~34 MB): evaluar Git LFS o excluir.
 
-## Próximos pasos
+## Próximos pasos (retomar con `/estado` y luego `/fase 3`)
+
+Contexto de la sesión anterior llegó al límite (regla PLAN §4.1): se guardó el estado aquí. El plan de Fase 3 ya existe; **no empezar de cero**: leer `docs/progress/fase-03/plan.md` y ADR-007, pasar el ADR a Aceptado tras revisión R1 del architect y lanzar las olas (T0 stubs primero).
+Decisiones del architect a confirmar (ver ADR-007): hito de Era II medido como _clic_ de subida con 21 de población (ventana CI 9200–10500 ticks) porque 7:55–8:30 como _llegada_ es imposible con los tiempos del GDD (si no entra con los valores AMBIGUO, hace falta un ADR); jabalí diferido a F4; 9 edificios construibles (no 12); valores no dados por el GDD marcados AMBIGUO (stock inicial 200/200/100/200, madera por árbol 100, etc.).
+Riesgos: steering de F1 sin probar con 150 colonos junto a bloqueos; equidad ±5 % del generador (medir con 1000 semillas); cambio mínimo en `steer/` (usar `w.speed[i]`); subida de formatos (REPLAY_FORMAT_VERSION 3, DATA_VERSION 0.3.0, SNAPSHOT_VERSION 2) con re-pineo del golden solo tras test de equivalencia.
+
+Resumen de la Fase 3 según PLAN:
 
 Fase 3 (PLAN): colonos con recolección y caminata real, construcción 3t/(n+2), eras I–II, generador de mapas "Llanuras de Ceniza" con validación de equidad, HUD económico, bot de build order de scouts (Era II ≈ 7:55–8:30 ±15 s) como test de CI. Termina con puerta humana de revisión de hito (Hito 1; si no hay respuesta en 24 h rige la recomendación del reviewer).
