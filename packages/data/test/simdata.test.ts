@@ -64,6 +64,7 @@ describe('buildSimData', () => {
       repathCooldownTicks: mv.repathCooldownTicks,
       separationPermille: mv.separationPermille,
       neighborRangeFx: mv.neighborRangeFx,
+      minProgressPermille: mv.minProgressPermille,
     });
     expect(Object.keys(sim.movement)).not.toContain('radiusFxByClass');
   });

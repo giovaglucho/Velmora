@@ -16,6 +16,7 @@ export const MovementTuningFile = z
     repathCooldownTicks: z.number().int().nonnegative(),
     separationPermille: z.number().int().min(0).max(4000),
     neighborRangeFx: PositiveInt,
+    minProgressPermille: z.number().int().min(1).max(1000),
     defaultRadiusFx: PositiveInt,
     radiusFxByClass: z.partialRecord(UnitClass, PositiveInt),
   })

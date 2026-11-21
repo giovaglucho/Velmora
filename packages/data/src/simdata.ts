@@ -19,6 +19,7 @@ export interface BuiltSimData {
     repathCooldownTicks: number;
     separationPermille: number;
     neighborRangeFx: number;
+    minProgressPermille: number;
   };
 }
 
@@ -59,6 +60,7 @@ export function buildSimData(data: GameData): BuiltSimData {
       repathCooldownTicks: mv.repathCooldownTicks,
       separationPermille: mv.separationPermille,
       neighborRangeFx: mv.neighborRangeFx,
+      minProgressPermille: mv.minProgressPermille,
     },
   };
 }

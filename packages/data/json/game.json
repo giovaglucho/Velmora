@@ -235,6 +235,7 @@
     "repathCooldownTicks": 10,
     "separationPermille": 700,
     "neighborRangeFx": 400,
+    "minProgressPermille": 250,
     "defaultRadiusFx": 350,
     "radiusFxByClass": {
       "civil": 250,

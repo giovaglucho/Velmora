@@ -21,6 +21,7 @@ export const TEST_DATA: SimData = {
     repathCooldownTicks: 10,
     separationPermille: 700,
     neighborRangeFx: 400,
+    minProgressPermille: 250,
   },
 };
 

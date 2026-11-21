@@ -6,7 +6,7 @@
 // posX/posY/velX/velY/facing/stuck/pathIdx and per-slot decision flags. Order/path state
 // transitions (and enqueues) are applied in pass 2, ascending by slot. So the result does not
 // depend on the order pass 1 visits entities (tests run it reversed).
-import { atan2Idx, dist, fxToTile, isqrt, mulDiv, type SimData } from '@reinos/shared';
+import { atan2Idx, dist, fxToTile, isqrt, mulDiv, TILE_FX, type SimData } from '@reinos/shared';
 import {
   MAX_WAYPOINTS,
   ORDER_MOVE,
@@ -45,6 +45,13 @@ export interface MovementSystemImpl extends MovementSystem {
 }
 
 // decision flags written by pass 1, consumed by pass 2
+/** Scale of every `*Permille` tuning value (1000 = 1.0). */
+const PERMILLE = 1000;
+/** Each unit of a pair covers half of the pair's resolved overlap: divisor = 2 * PERMILLE. */
+const PAIR_SHARE_DENOM = 2 * PERMILLE;
+/** Bias that turns truncating division by TILE_FX into a ceiling: TILE_FX - 1. */
+const TILE_CEIL_BIAS = TILE_FX - 1;
+
 const FLAG_NONE = 0;
 const FLAG_DONE = 1; // order finished (arrived)
 const FLAG_REPATH = 2; // ask for a new route
@@ -71,7 +78,7 @@ export function createMovementSystemWith(
   let maxRadius = 0;
   for (let k = 0; k < data.radiusFx.length; k++)
     maxRadius = Math.max(maxRadius, data.radiusFx[k] as number);
-  const reach = Math.trunc((2 * maxRadius + mv.neighborRangeFx + 999) / 1000);
+  const reach = Math.trunc((2 * maxRadius + mv.neighborRangeFx + TILE_CEIL_BIAS) / TILE_FX);
   const sepK = mv.separationPermille;
 
   const sys: MovementSystemImpl = {
@@ -243,7 +250,7 @@ export function createMovementSystemWith(
             // close to the waypoint, or already past it (closer to the next one than it is)
             if (
               (d <= ri || dist(nxX - px, nxY - py) <= dist(nxX - wx, nxY - wy)) &&
-              lineOfSight(grid, px, py, nxX, nxY, 1000)
+              lineOfSight(grid, px, py, nxX, nxY, TILE_FX)
             ) {
               idx++;
               continue;
@@ -310,7 +317,7 @@ export function createMovementSystemWith(
           const d = isqrt(d2);
           // each unit of a pair covers half the overlap fraction (sepK / 1000) per tick: the pair
           // resolves `sepK` permille of the overlap, which keeps dense crowds from oscillating
-          const m = mulDiv(range - d, sepK, 2000);
+          const m = mulDiv(range - d, sepK, PAIR_SHARE_DENOM);
           if (d > 0) {
             sx += mulDiv(dx, m, d);
             sy += mulDiv(dy, m, d);
@@ -404,7 +411,7 @@ export function createMovementSystemWith(
     // --- stuck counter: no progress towards the current waypoint (while following a route) -----
     if (following && flags[i] === FLAG_NONE) {
       const progress = desLen > 0 ? desLen - dist(tgtX - nx, tgtY - ny) : 0;
-      if (progress * 4 < speed) {
+      if (progress * PERMILLE < speed * mv.minProgressPermille) {
         if (stuck < 65535) w.stuck[i] = stuck + 1;
       } else if (stuck > 0) w.stuck[i] = stuck - 1; // leaky: jittering without net progress still accumulates
     }

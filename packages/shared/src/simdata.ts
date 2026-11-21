@@ -17,6 +17,8 @@ export interface MovementTuning {
   separationPermille: number;
   /** Neighbour query radius (sum of radii + margin). */
   neighborRangeFx: Fx;
+  /** Stuck detection: a tick counts as "no progress" below this permille of the unit speed. */
+  minProgressPermille: number;
 }
 
 export interface SimData {
