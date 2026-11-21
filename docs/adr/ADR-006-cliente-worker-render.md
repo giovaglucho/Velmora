@@ -1,6 +1,6 @@
 # ADR-006: Cliente — Worker de simulación, render PixiJS, niebla, UI y pruebas sin GPU (Fase 2)
 
-Estado: **Propuesto** (pasa a Aceptado tras la revisión R1 de Fase 2 por `architect`/`reviewer`). Fecha: 2026-11-21. Contexto: PLAN Fase 2, GDD §11.3, §13.2–13.3, §15.2, §15.4, §17.1; ADR-004 (COOP/COEP), ADR-005 (ECS, comandos, loop; **aceptado**), `docs/contracts.md`.
+Estado: **Aceptado** (2026-11-21, tras la revisión de Fase 2 por `reviewer`; las enmiendas W, R, I1/A3 y B1 de abajo forman parte del contrato). Fecha: 2026-11-21. Contexto: PLAN Fase 2, GDD §11.3, §13.2–13.3, §15.2, §15.4, §17.1; ADR-004 (COOP/COEP), ADR-005 (ECS, comandos, loop; **aceptado**), `docs/contracts.md`.
 
 ## Contexto
 
@@ -604,7 +604,7 @@ Escenario fijo: mapa 128×128, 400 unidades en movimiento (2 jugadores), cámara
 
 ## Estado
 
-Propuesto. Se acepta tras la revisión R1 de Fase 2 (diseño) y se enmienda aquí cualquier cambio de contrato durante la fase.
+**Aceptado el 2026-11-21** (revisión de Fase 2 por `reviewer`). Cualquier cambio de contrato posterior se enmienda aquí.
 
 ## Nota T0 (2026-11-21) — smoke de Pixi v8 bajo SwiftShader
 
@@ -670,3 +670,21 @@ Notas y riesgos abiertos:
 - **Nitidez del suelo**: con `TERRAIN_TEX_PERIOD_TILES = 4` y texturas de 512 px, el suelo se minifica ≈ 1,8× a zoom 1 (una arista de tile mide ≈ 71,5 px en pantalla frente a 128 texels) y ≈ 3× a zoom 0,6, por lo que el trilineal lo suaviza; no hay filtrado anisótropo en el camino Pixi/WebGL por defecto. Con arte real de A1 conviene revisar el periodo (p. ej. 2 tiles) o añadir sesgo de LOD en Fase 6; no afecta a los bordes (la métrica lo confirma) pero sí a la sensación de detalle.
 - Las capturas `render-*.png` de `docs/progress/fase-02/media/` son del arnés (datos y unidades falsos con atlas provisional); las capturas de devlog finales (Q4/F1) las hará la integración (I1).
 - Pendiente de otros carriles: niebla (R5–R7) usa `layers.fog`; el loader de A3 debe construir `TerrainTextures` y `UnitAtlas`; la integración (I1) pasa `zoomTauMs` y `unitRadiusFx` desde `@reinos/data` y llama a `setSelected`/`spawnMarker` desde `input/`.
+
+## Enmiendas I1/A3 (render-engineer + art-pipeline, 2026-11-21) — integración, vista en caché y cargador
+
+Desvíos respecto del texto original, registrados tras la revisión de Fase 2:
+
+1. **Hooks del `Renderer`** (`render/renderer.ts`, `RendererOptions`): el renderer no conoce ni la niebla, ni el minimapa, ni la entrada. La integración (`boot/game.ts`) se engancha con `beforeFrame(dtMs)` (movimiento de cámara: `CameraController.step`; con este hook el renderer **no** avanza el zoom por su cuenta), `onFrame({ view, alpha, dtMs, nowMs })` (después de conocer el snapshot del frame y antes de actualizar sprites: niebla, minimapa a 10 Hz, puente del HUD), `afterRender(nowMs)` (sondas de latencia input→marcador y muestras de rendimiento) y `slotVisible(slot)` (la niebla oculta sprites enemigos en casillas no visibles). Orden por frame fijo: `beforeFrame → onFrame → sprites → render → afterRender`.
+2. **Vista en caché (`cached-view`)**: `SimClient.latest()` **invalida** la vista del frame anterior (triple buffer / reciclado de buffers, §3.3). Por eso **solo el renderer llama a `latest()` una vez por frame**; `boot/game.ts` envuelve el cliente en un `feed` que guarda esa vista (`current`) y todos los demás consumidores (entrada/picking, niebla, minimapa, puente del HUD, API de depuración) leen la copia en caché del frame. Ningún consumidor llama a `latest()` por su cuenta.
+3. **Cargador (`assets/loader.ts`) por `fetch`, no por `PIXI.Assets`**: el plan A3 decía "PIXI.Assets"; se implementó con `fetch` + `createImageBitmap` porque (a) el control del alfa debe ser explícito (terreno y ruido **sin premultiplicar**: el ruido empaca 4 canales independientes; el atlas de unidades **premultiplicado**), (b) todo es del mismo origen (COEP `require-corp`) y (c) permite inyectar `fetchFn` en tests. El manifest se valida con Zod (`assets/manifest.ts`, espejo del esquema del generador) y las apariencias desconocidas caen a `generic` (§9). Si el set provisional no carga, `game.ts` usa el fallback procedural en memoria (`assets: 'procedural'`).
+4. **API `window.__reinos`** (§10.4): solo existe en el servidor de desarrollo o en un build **no productivo** con `VITE_ENABLE_DEBUG=1` **y** `?debug=1`. Los scripts `e2e:render`, `perf:render` y `media:render` compilan con esa variable; el build de Render no la define (`readBootParams(search, dev, debugBuild)`).
+
+## Enmienda B1 (render-engineer, 2026-11-21) — los obstáculos se distinguen en pantalla
+
+La revisión de Fase 2 halló que los tiles bloqueados de la sim se pintaban con la capa de roca, igual que los parches de roca caminables, y que `water.png` no se cargaba. Cambios (solo cliente; la sim, `shared` y `data` no se tocan):
+
+1. **Seis capas de terreno**: 0 pasto, 1 tierra, 2 arena, 3 roca/ceniza (**caminable**), 4 agua (lagos), 5 bosque. Las capas 4 y 5 usan una segunda textura de pesos por vértice (`splat2`, R = agua, G = bosque) y dos samplers más (`uWater`, `uForest`); mismo muestreo en espacio de rejilla y misma mezcla con ruido que las 4 primeras, así que no hay costuras (K4 se mantiene, ver evidencia en el devlog).
+2. **Clasificación lago/bosque, solo en el cliente**: la sim solo conoce "bloqueado". `worker/scenarios.ts` publica `buildScenarioObstacles(name, seed)` (0 libre / 1 lago / 2 bosque por tile; el conjunto bloqueado es idéntico al de `blockedRle`, un test lo comprueba) y `buildTerrainMap(..., obstacles)` lo traduce a capas. Un bloqueado sin clase cae en bosque. Cuando F3 traiga `MapSpec`, la clase saldrá de los tipos de terreno del mapa.
+3. **Arte**: el agua usa `water.png` del set provisional (cargado por `assets/loader.ts` y expuesto en `TerrainTextures.water`) con fallback procedural azul; el bosque es una textura procedural verde-ceniza oscura (`procGen.generateForest`, sin asset en el manifest todavía). `LoadedAssets.layerRgb` pasa a 6 colores (minimapa).
+4. **Prueba**: `e2e/render/render-obstacles.spec.ts` mide por píxeles que un tile de lago es azulado, uno de bosque es oscuro/verde y ambos difieren de pasto y de roca caminable, con arte procedural y con el set provisional.

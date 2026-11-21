@@ -4,10 +4,12 @@
 // explicit: terrain/noise are uploaded straight (no premultiply; the noise packs 4 independent channels), the
 // unit atlas is premultiplied (what Pixi's blending expects). Everything is same-origin (COEP require-corp).
 import { ImageSource, Rectangle, Texture } from 'pixi.js';
+import { PROC_GROUND_SIZE, generateForest } from '../render/terrain/procGen';
 import {
   prepareGroundTexture,
   prepareNoiseTexture,
   type TerrainTextures,
+  proceduralForestTexture,
 } from '../render/terrain/textures';
 import type { UnitAtlas } from '../render/entities/atlas';
 import {
@@ -24,8 +26,8 @@ export interface LoadedAssets {
   readonly manifest: AssetManifest;
   readonly terrain: TerrainTextures;
   readonly unitAtlas: UnitAtlas;
-  /** Mean colour (0xRRGGBB) of ground0..3: the minimap's terrain colours. */
-  readonly layerRgb: readonly [number, number, number, number];
+  /** Mean colour (0xRRGGBB) of the 6 terrain layers (ground0..3, water, forest): the minimap's colours. */
+  readonly layerRgb: readonly [number, number, number, number, number, number];
   destroy(): void;
 }
 
@@ -83,6 +85,21 @@ function meanRgb(bmp: ImageBitmap): number {
   return (Math.round(r / px) << 16) | (Math.round(g / px) << 8) | Math.round(b / px);
 }
 
+/** Mean RGB of raw RGBA bytes (sparse sampling). */
+export function meanRgbaBytes(d: Uint8Array): number {
+  let r = 0;
+  let g = 0;
+  let b = 0;
+  let n = 0;
+  for (let i = 0; i < d.length; i += 4 * 97) {
+    r += d[i] ?? 0;
+    g += d[i + 1] ?? 0;
+    b += d[i + 2] ?? 0;
+    n++;
+  }
+  return (Math.round(r / n) << 16) | (Math.round(g / n) << 8) | Math.round(b / n);
+}
+
 function imageSource(bmp: ImageBitmap, alphaMode: 'no-premultiply-alpha' | 'premultiplied-alpha') {
   return new ImageSource({ resource: bmp, alphaMode });
 }
@@ -99,12 +116,19 @@ export async function loadProvisionalAssets(opts: LoadAssetsOptions): Promise<Lo
   if (missing.length > 0)
     throw new Error(`units atlas is missing ${missing.length} frames (first: ${missing[0]})`);
 
-  const [grounds, noiseBmp, atlasBmp] = await Promise.all([
+  const [grounds, waterBmp, noiseBmp, atlasBmp] = await Promise.all([
     Promise.all(manifest.textures.ground.map((n) => loadBitmap(f, url(n), 'straight'))),
+    loadBitmap(f, url(manifest.textures.water), 'straight'),
     loadBitmap(f, url(manifest.textures.noise), 'straight'),
     loadBitmap(f, url(manifest.atlases.units.image), 'premultiplied'),
   ]);
-  const layerRgb = grounds.map(meanRgb) as unknown as LoadedAssets['layerRgb'];
+  // Forest has no art in the provisional set yet: it stays procedural (same generator as the fallback).
+  const forestData = generateForest(PROC_GROUND_SIZE);
+  const layerRgb = [
+    ...grounds.map(meanRgb),
+    meanRgb(waterBmp),
+    meanRgbaBytes(forestData),
+  ] as unknown as LoadedAssets['layerRgb'];
 
   const owned: Array<{ destroy(d?: boolean): void }> = [];
   const groundTex = grounds.map((b) => {
@@ -116,7 +140,18 @@ export async function loadProvisionalAssets(opts: LoadAssetsOptions): Promise<Lo
     new Texture({ source: imageSource(noiseBmp, 'no-premultiply-alpha') }),
   );
   owned.push(noiseTex);
-  const terrain: TerrainTextures = { ground: groundTex, noise: noiseTex };
+  const waterTex = prepareGroundTexture(
+    new Texture({ source: imageSource(waterBmp, 'no-premultiply-alpha') }),
+  );
+  owned.push(waterTex);
+  const forestTex = proceduralForestTexture(forestData, PROC_GROUND_SIZE);
+  owned.push(forestTex);
+  const terrain: TerrainTextures = {
+    ground: groundTex,
+    water: waterTex,
+    forest: forestTex,
+    noise: noiseTex,
+  };
 
   // Unit atlas: one Texture per frame of every used appearance (a few hundred small views of one source).
   const atlasSource = imageSource(atlasBmp, 'premultiplied-alpha');
@@ -159,7 +194,7 @@ export async function loadProvisionalAssets(opts: LoadAssetsOptions): Promise<Lo
     destroy() {
       unitAtlas.destroy();
       for (const t of owned) t.destroy(true);
-      for (const b of [...grounds, noiseBmp]) b.close();
+      for (const b of [...grounds, waterBmp, noiseBmp]) b.close();
     },
   };
 }

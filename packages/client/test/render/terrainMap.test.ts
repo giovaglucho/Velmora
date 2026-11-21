@@ -1,11 +1,22 @@
 import { describe, expect, it } from 'vitest';
 import {
+  KIND_FOREST,
   KIND_ROCK,
+  KIND_WATER,
+  OBSTACLE_FOREST,
+  OBSTACLE_LAKE,
   buildHardSplat,
   buildSplatWeights,
   buildTerrainMap,
   decodeBlockedRle,
 } from '../../src/render/terrain/terrainMap';
+import {
+  OBSTACLE_FOREST as SC_FOREST,
+  OBSTACLE_LAKE as SC_LAKE,
+  SCENARIO_NAMES,
+  buildScenario,
+  buildScenarioObstacles,
+} from '../../src/worker/scenarios';
 import { generateGround, generateNoise } from '../../src/render/terrain/procGen';
 
 describe('terrain map (ADR-006 §4.6)', () => {
@@ -24,7 +35,7 @@ describe('terrain map (ADR-006 §4.6)', () => {
     expect(a.kind.length).toBe(64 * 48);
     expect(a.splat.length).toBe(65 * 49 * 4);
   });
-  it('uses all of grass/dirt/sand on a 128² map and marks blocked tiles as rock', () => {
+  it('uses all of grass/dirt/sand on a 128² map and marks blocked tiles as forest/water, not rock', () => {
     const W = 128;
     const rle = [10 * W + 10, 5, W - 5, 5, W * W - (10 * W + 10 + 5 + W - 5 + 5)];
     const m = buildTerrainMap(W, W, rle, 1);
@@ -33,8 +44,9 @@ describe('terrain map (ADR-006 §4.6)', () => {
     expect(hist[0]).toBeGreaterThan(W * W * 0.3);
     expect(hist[1]).toBeGreaterThan(200);
     expect(hist[2]).toBeGreaterThan(200);
+    expect(hist[KIND_ROCK]).toBeGreaterThan(0); // natural walkable rock patches still exist
     const blocked = decodeBlockedRle(rle, W * W);
-    for (let i = 0; i < blocked.length; i++) if (blocked[i]) expect(m.kind[i]).toBe(KIND_ROCK);
+    for (let i = 0; i < blocked.length; i++) if (blocked[i]) expect(m.kind[i]).toBe(KIND_FOREST);
   });
   it('per-vertex weights: share of each layer among the tiles around the vertex, ≈ sum 255', () => {
     // 2×2 map: kinds [0,1 / 2,3]
@@ -71,10 +83,52 @@ describe('terrain map (ADR-006 §4.6)', () => {
     expect(worst).toBeLessThanOrEqual(129);
   });
   it('hard (control) splat is one-hot per tile', () => {
-    const h = buildHardSplat(new Uint8Array([0, 1, 2, 3]), 2, 2);
+    const h = buildHardSplat(new Uint8Array([0, 1, 2, 3]), 2, 2).splat;
     expect([...h.subarray(0, 4)]).toEqual([255, 0, 0, 0]);
     expect([...h.subarray(4, 8)]).toEqual([0, 255, 0, 0]);
     expect([...h.subarray(3 * 4, 3 * 4 + 4)]).toEqual([0, 0, 255, 0]);
+    const o = buildHardSplat(new Uint8Array([4, 5, 0, 0]), 2, 2);
+    expect([...o.splat2.subarray(0, 4)]).toEqual([255, 0, 0, 0]);
+    expect([...o.splat2.subarray(4, 8)]).toEqual([0, 255, 0, 0]);
+  });
+  it('blocked tiles are water/forest by obstacle class (forest by default) and never natural rock', () => {
+    const W = 32;
+    const obstacles = new Uint8Array(W * W);
+    obstacles.fill(OBSTACLE_LAKE, 0, 4); // tiles 0..3 lake, 4..7 forest, 8..11 blocked w/o class
+    obstacles.fill(OBSTACLE_FOREST, 4, 8);
+    const m = buildTerrainMap(W, W, [0, 12, W * W - 12], 4, obstacles);
+    for (let i = 0; i < 4; i++) expect(m.kind[i]).toBe(KIND_WATER);
+    for (let i = 4; i < 8; i++) expect(m.kind[i]).toBe(KIND_FOREST);
+    const noClass = buildTerrainMap(W, W, [0, 12, W * W - 12], 4);
+    for (let i = 0; i < 12; i++) expect(noClass.kind[i]).toBe(KIND_FOREST);
+    // walkable tiles may be natural rock but never water/forest
+    for (let i = 12; i < W * W; i++) expect(m.kind[i]).toBeLessThan(KIND_WATER);
+    // weights of both splat textures sum to ≈255 per vertex
+    for (let v = 0; v < 33 * 33; v++) {
+      let sum = 0;
+      for (let c = 0; c < 4; c++) sum += (m.splat[v * 4 + c] ?? 0) + (m.splat2[v * 4 + c] ?? 0);
+      expect(Math.abs(sum - 255)).toBeLessThanOrEqual(3);
+    }
+  });
+  it('obstacle class ids match the scenario classification (worker/scenarios.ts)', () => {
+    expect(OBSTACLE_LAKE).toBe(SC_LAKE);
+    expect(OBSTACLE_FOREST).toBe(SC_FOREST);
+  });
+  it('scenario classes cover exactly the sim-blocked tiles (same blocked set as blockedRle)', () => {
+    for (const name of SCENARIO_NAMES) {
+      const cfg = buildScenario(name, 1);
+      const obs = buildScenarioObstacles(name, 1);
+      const blocked = decodeBlockedRle(cfg.map.blockedRle, obs.length);
+      let lakes = 0;
+      let forests = 0;
+      for (let i = 0; i < obs.length; i++) {
+        expect(obs[i] !== 0).toBe(blocked[i] === 1);
+        if (obs[i] === SC_LAKE) lakes++;
+        if (obs[i] === SC_FOREST) forests++;
+      }
+      expect(lakes).toBeGreaterThan(50);
+      expect(forests).toBeGreaterThan(20);
+    }
   });
 });
 

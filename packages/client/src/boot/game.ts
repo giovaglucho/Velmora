@@ -6,7 +6,7 @@
 //   units.update → enemy sprites hidden by FogSystem.isSlotVisible
 //   afterRender  → input→marker latency probe, perf samples
 import { buildSimData, loadGameData } from '@reinos/data';
-import { loadProvisionalAssets, type LoadedAssets } from '../assets/loader';
+import { loadProvisionalAssets, meanRgbaBytes, type LoadedAssets } from '../assets/loader';
 import { createRenderer, type Renderer } from '../render/renderer';
 import { centerOnGrid } from '../render/camera';
 import { screenToGrid, worldToScreen, gridToWorld, interpolatedPos } from '../render/iso';
@@ -15,7 +15,12 @@ import { FogRenderer } from '../render/fog/fogRenderer';
 import { FogSystem } from '../render/fog/fogSystem';
 import { FOG_VISIBLE } from '../render/fog/visionGrid';
 import { Minimap } from '../render/minimap/minimap';
-import { PROC_GROUND_SIZE, generateGround } from '../render/terrain/procGen';
+import {
+  PROC_GROUND_SIZE,
+  generateForest,
+  generateGround,
+  generateWater,
+} from '../render/terrain/procGen';
 import { buildTerrainMap } from '../render/terrain/terrainMap';
 import { createProceduralTerrainTextures } from '../render/terrain/textures';
 import type { Camera, Viewport } from '../render/types';
@@ -29,7 +34,7 @@ import { reactRendersPerSec } from '../ui/metrics';
 import { mountHud } from '../ui/mount';
 import { createSimClient, type SimClient } from '../worker/client';
 import type { ReadyInfo } from '../worker/protocol';
-import { buildScenario } from '../worker/scenarios';
+import { buildScenario, buildScenarioObstacles } from '../worker/scenarios';
 import { FLAG_ALIVE, type SnapshotView } from '../worker/snapshot';
 import type { PerfReport, ReinosMetrics, ReinosUnit } from './debug';
 import type { BootParams } from './isolation';
@@ -60,18 +65,13 @@ export interface GameRuntime {
 }
 
 function meanProceduralRgb(layer: number): number {
-  const d = generateGround(layer, PROC_GROUND_SIZE);
-  let r = 0;
-  let g = 0;
-  let b = 0;
-  let n = 0;
-  for (let i = 0; i < d.length; i += 4 * 97) {
-    r += d[i] ?? 0;
-    g += d[i + 1] ?? 0;
-    b += d[i + 2] ?? 0;
-    n++;
-  }
-  return (Math.round(r / n) << 16) | (Math.round(g / n) << 8) | Math.round(b / n);
+  const d =
+    layer === 4
+      ? generateWater(PROC_GROUND_SIZE)
+      : layer === 5
+        ? generateForest(PROC_GROUND_SIZE)
+        : generateGround(layer, PROC_GROUND_SIZE);
+  return meanRgbaBytes(d);
 }
 
 function percentile(sorted: Float32Array, n: number, p: number): number {
@@ -116,8 +116,15 @@ export async function startGame(params: BootParams, root: HTMLElement): Promise<
   } catch (e) {
     console.warn('[assets] provisional set unavailable, using in-memory procedural art:', e);
   }
-  const terrain = buildTerrainMap(mapW, mapH, config.map.blockedRle ?? [], params.seed);
-  const layerRgb = loaded?.layerRgb ?? [0, 1, 2, 3].map(meanProceduralRgb);
+  // Lake/forest classes of the blocked tiles are client-side presentation data (the sim only knows "blocked").
+  const terrain = buildTerrainMap(
+    mapW,
+    mapH,
+    config.map.blockedRle ?? [],
+    params.seed,
+    buildScenarioObstacles(params.scenario, params.seed),
+  );
+  const layerRgb = loaded?.layerRgb ?? [0, 1, 2, 3, 4, 5].map(meanProceduralRgb);
   const terrainTextures = loaded?.terrain ?? createProceduralTerrainTextures();
   const unitAtlas = loaded?.unitAtlas ?? createProceduralUnitAtlas();
 

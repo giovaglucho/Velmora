@@ -2,10 +2,17 @@
 // Presentation only: it never feeds the sim nor the hash. F3 will replace the generator with real MapSpec kinds.
 import { createPrng } from '@reinos/shared';
 
-export type TerrainKind = 0 | 1 | 2 | 3; // grass, dirt, sand, rock/ash
-export const TERRAIN_LAYERS = 4;
-/** Layer used as the visual marker of sim-blocked tiles. */
+// grass, dirt, sand, rock/ash (walkable ground) + water, forest (sim-blocked obstacles). Natural rock is walkable and
+// must never look like an obstacle, so blocked tiles use their own layers.
+export type TerrainKind = 0 | 1 | 2 | 3 | 4 | 5;
+export const TERRAIN_LAYERS = 6;
+/** Walkable rock/ash patch (NOT an obstacle). */
 export const KIND_ROCK: TerrainKind = 3;
+export const KIND_WATER: TerrainKind = 4;
+export const KIND_FOREST: TerrainKind = 5;
+/** Obstacle classes as published by the scenario (worker/scenarios.ts OBSTACLE_*; kept equal by a test). */
+export const OBSTACLE_LAKE = 1;
+export const OBSTACLE_FOREST = 2;
 
 export interface TerrainMap {
   readonly width: number;
@@ -14,6 +21,8 @@ export interface TerrainMap {
   readonly kind: Uint8Array;
   /** (W+1)*(H+1)*4 RGBA8: per-vertex layer weights (R,G,B,A = layers 0..3). */
   readonly splat: Uint8Array;
+  /** (W+1)*(H+1)*4 RGBA8: per-vertex weights of the obstacle layers (R = water, G = forest, B/A = 0). */
+  readonly splat2: Uint8Array;
 }
 
 /** Expands alternating run lengths (starting with FREE) into a 0/1 mask of length W*H. */
@@ -52,27 +61,27 @@ function makeValueNoise(rand: () => number, w: number, h: number, cell: number) 
   };
 }
 
-/** Per-vertex layer weights: share of each layer among the (up to 4) tiles around the vertex. */
-export function buildSplatWeights(kind: Uint8Array, width: number, height: number): Uint8Array {
+/** Per-vertex share (0..255) of each of the 6 layers among the (up to 4) tiles around the vertex. */
+function vertexShares(kind: Uint8Array, width: number, height: number): Uint8Array {
   const vw = width + 1;
   const vh = height + 1;
-  const out = new Uint8Array(vw * vh * 4);
-  const counts = [0, 0, 0, 0];
+  const out = new Uint8Array(vw * vh * TERRAIN_LAYERS);
+  const counts = new Array<number>(TERRAIN_LAYERS).fill(0);
   for (let j = 0; j < vh; j++) {
     for (let i = 0; i < vw; i++) {
-      counts[0] = counts[1] = counts[2] = counts[3] = 0;
+      counts.fill(0);
       let n = 0;
       for (let dj = -1; dj <= 0; dj++) {
         for (let di = -1; di <= 0; di++) {
           const x = i + di;
           const y = j + dj;
           if (x < 0 || y < 0 || x >= width || y >= height) continue;
-          const k = (kind[y * width + x] ?? 0) & 3;
+          const k = Math.min(TERRAIN_LAYERS - 1, kind[y * width + x] ?? 0);
           counts[k] = (counts[k] ?? 0) + 1;
           n++;
         }
       }
-      const o = (j * vw + i) * 4;
+      const o = (j * vw + i) * TERRAIN_LAYERS;
       for (let k = 0; k < TERRAIN_LAYERS; k++)
         out[o + k] = Math.round(((counts[k] ?? 0) * 255) / n);
     }
@@ -80,11 +89,30 @@ export function buildSplatWeights(kind: Uint8Array, width: number, height: numbe
   return out;
 }
 
+function packShares(shares: Uint8Array, from: number, count: number): Uint8Array {
+  const verts = shares.length / TERRAIN_LAYERS;
+  const out = new Uint8Array(verts * 4);
+  for (let v = 0; v < verts; v++)
+    for (let c = 0; c < count; c++) out[v * 4 + c] = shares[v * TERRAIN_LAYERS + from + c] ?? 0;
+  return out;
+}
+
+/** Per-vertex weights of the walkable layers 0..3 (RGBA). Together with `buildSplatWeights2` they sum to ≈255. */
+export function buildSplatWeights(kind: Uint8Array, width: number, height: number): Uint8Array {
+  return packShares(vertexShares(kind, width, height), 0, 4);
+}
+/** Per-vertex weights of the obstacle layers (R = water, G = forest). */
+export function buildSplatWeights2(kind: Uint8Array, width: number, height: number): Uint8Array {
+  return packShares(vertexShares(kind, width, height), 4, 2);
+}
+
 export function buildTerrainMap(
   width: number,
   height: number,
   blockedRle: readonly number[],
   seed: number,
+  /** Client-side obstacle classes (OBSTACLE_LAKE / OBSTACLE_FOREST per tile); blocked tiles without a class are forest. */
+  obstacles?: Uint8Array,
 ): TerrainMap {
   const rng = createPrng((seed ^ 0x7e44a1) >>> 0);
   const rand = () => rng.nextU32() / 4294967296;
@@ -97,7 +125,7 @@ export function buildTerrainMap(
     for (let x = 0; x < width; x++) {
       const i = y * width + x;
       if (blocked[i]) {
-        kind[i] = KIND_ROCK;
+        kind[i] = obstacles?.[i] === OBSTACLE_LAKE ? KIND_WATER : KIND_FOREST;
         continue;
       }
       const v = big(x, y) * 0.65 + mid(x, y) * 0.35;
@@ -109,14 +137,29 @@ export function buildTerrainMap(
       kind[i] = k;
     }
   }
-  return { width, height, kind, splat: buildSplatWeights(kind, width, height) };
+  return {
+    width,
+    height,
+    kind,
+    splat: buildSplatWeights(kind, width, height),
+    splat2: buildSplatWeights2(kind, width, height),
+  };
 }
 
 /** Control for the seam metric (Q3): one-hot weights per TILE (hard borders at integer grid lines). */
-export function buildHardSplat(kind: Uint8Array, width: number, height: number): Uint8Array {
+export function buildHardSplat(
+  kind: Uint8Array,
+  width: number,
+  height: number,
+): { splat: Uint8Array; splat2: Uint8Array } {
   const vw = width + 1;
-  const out = new Uint8Array(vw * (height + 1) * 4);
+  const splat = new Uint8Array(vw * (height + 1) * 4);
+  const splat2 = new Uint8Array(vw * (height + 1) * 4);
   for (let j = 0; j < height; j++)
-    for (let i = 0; i < width; i++) out[(j * vw + i) * 4 + ((kind[j * width + i] ?? 0) & 3)] = 255;
-  return out;
+    for (let i = 0; i < width; i++) {
+      const k = kind[j * width + i] ?? 0;
+      if (k < 4) splat[(j * vw + i) * 4 + k] = 255;
+      else splat2[(j * vw + i) * 4 + (k - 4)] = 255;
+    }
+  return { splat, splat2 };
 }

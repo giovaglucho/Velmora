@@ -9,7 +9,11 @@ import { ZOOMS } from '../render/constants';
 const root = document.getElementById('app');
 if (root === null) throw new Error('#app not found');
 
-const params = readBootParams(location.search, import.meta.env.DEV);
+const params = readBootParams(
+  location.search,
+  import.meta.env.DEV,
+  (import.meta.env as Record<string, unknown>).VITE_ENABLE_DEBUG === '1',
+);
 let current: GameRuntime | null = null;
 let api: ReinosDebugApi | null = null;
 

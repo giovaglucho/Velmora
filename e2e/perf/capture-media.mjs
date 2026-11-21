@@ -1,4 +1,4 @@
-// Q4/F1 — devlog media for Fase 2 (K6). `pnpm media:render` (needs a built client: `pnpm --filter @reinos/client build`).
+// Q4/F1 — devlog media for Fase 2 (K6). `pnpm media:render` (needs a built client: `VITE_ENABLE_DEBUG=1 pnpm --filter @reinos/client build`).
 // Drives the integrated client (?scenario=demo200&debug=1: 100 OWN units per player) in Chromium + SwiftShader at
 // 1920x1080 (DPR 1) and writes iso-z0.6/z1/z1.4, fog, minimap PNGs and select-move-100.gif into
 // docs/progress/fase-02/media/. The GIF uses ffmpeg (palette) over screenshots with their real timestamps.

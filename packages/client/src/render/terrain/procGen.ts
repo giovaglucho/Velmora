@@ -81,3 +81,48 @@ export function generateNoise(size = PROC_NOISE_SIZE): Uint8Array {
   }
   return out;
 }
+
+/** Tileable RGBA8 water (fallback when water.png is unavailable): blue, horizontally stretched ripples. */
+export function generateWater(size = PROC_GROUND_SIZE): Uint8Array {
+  const rng = createPrng(0x3a7e91c5);
+  const rand = () => rng.nextU32() / 4294967296;
+  const n1 = periodicNoise(rand, size, 4);
+  const n2 = periodicNoise(rand, size, 16);
+  const out = new Uint8Array(size * size * 4);
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      // sample x on a coarser lattice than y → stretched ripples
+      const f = n1((x * 0.5) % size, y) * 0.6 + n2((x * 0.5) % size, y) * 0.4;
+      const o = (y * size + x) * 4;
+      out[o] = Math.round(24 + f * 42);
+      out[o + 1] = Math.round(70 + f * 58);
+      out[o + 2] = Math.round(120 + f * 56);
+      out[o + 3] = 255;
+    }
+  }
+  return out;
+}
+
+/** Tileable RGBA8 dense dark canopy (forest obstacle): green-ash, clumpy, much darker than grass. */
+export function generateForest(size = PROC_GROUND_SIZE): Uint8Array {
+  const rng = createPrng(0x6f0e57a3);
+  const rand = () => rng.nextU32() / 4294967296;
+  const clump = periodicNoise(rand, size, 32);
+  const fine = periodicNoise(rand, size, 64);
+  const broad = periodicNoise(rand, size, 8);
+  const out = new Uint8Array(size * size * 4);
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const c = clump(x, y);
+      // round canopies: lit crowns (c high) over dark gaps (c low)
+      const crown = Math.max(0, Math.min(1, (c - 0.35) * 3));
+      const f = crown * 0.55 + fine(x, y) * 0.25 + broad(x, y) * 0.2;
+      const o = (y * size + x) * 4;
+      out[o] = Math.round(16 + f * 34);
+      out[o + 1] = Math.round(30 + f * 52);
+      out[o + 2] = Math.round(22 + f * 30);
+      out[o + 3] = 255;
+    }
+  }
+  return out;
+}

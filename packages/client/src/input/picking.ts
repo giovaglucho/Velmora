@@ -99,7 +99,7 @@ export function rectIsClick(r: ScreenRect): boolean {
 
 /**
  * Own units whose foot falls inside `rect`, ascending by eid. A rect under the click threshold is treated
- * as a click on its centre (any owner, single unit), as in AoE2-style RTS input.
+ * as a click on its centre (any owner, single unit), (classic RTS click-to-select).
  */
 export function pickBox(ctx: PickContext, rect: ScreenRect): number[] {
   if (rectIsClick(rect)) {

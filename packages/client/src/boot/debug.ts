@@ -1,4 +1,5 @@
-// ADR-006 §10.4 — window.__reinos test API (only with ?debug=1 or import.meta.env.DEV). Owners: Q + R.
+// ADR-006 §10.4 — window.__reinos test API. Only in the Vite dev server, or in a NON-production test build
+// (VITE_ENABLE_DEBUG=1, set by the e2e/perf scripts) together with ?debug=1. Render's production build never sets it. Owners: Q + R.
 // The object is installed once by main.ts and delegates to the running game (it survives `loadScenario`).
 import type { SnapshotMode } from '../worker/protocol';
 import type { PerfInfo } from '../worker/protocol';

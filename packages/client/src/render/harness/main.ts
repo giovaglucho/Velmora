@@ -1,11 +1,12 @@
 // e2e/dev harness for the render lane (R2/R3): a fixed terrain + N fake units scene, no worker/UI.
 // Query params: units, moving(0|1), loop(0|1), gx, gy, zoom(0..2), w, h, ctl(1 = hard-tile control),
-// bg(hex), select(N own units), seed, markerX/markerY.
+// bg(hex), select(N own units), seed, markerX/markerY, art(provisional = generated set via the real loader).
 // Exposes window.__renderHarness for Playwright (separate from the final window.__reinos API of Q1).
 import { gridToWorld, worldToScreen } from '../iso';
 import { createRenderer, type Renderer } from '../renderer';
 import { ZOOMS } from '../constants';
 import { createFakeFeed, type FakeFeed } from './fakeFeed';
+import { loadProvisionalAssets } from '../../assets/loader';
 import { buildTerrainMap } from '../terrain/terrainMap';
 import type { ZoomIndex } from '../types';
 
@@ -17,16 +18,19 @@ const num = (k: string, d: number): number => {
 
 const MAP = 128;
 /** Lakes/forest stand-ins (blocked tiles) as alternating RLE, FREE first (SimConfig.map.blockedRle format). */
-function demoBlockedRle(w: number, h: number): number[] {
-  const rects: Array<[number, number, number, number]> = [
-    [20, 24, 14, 10],
-    [90, 30, 12, 16],
-    [30, 92, 18, 12],
-    [96, 96, 10, 10],
-  ];
-  const mask = new Uint8Array(w * h);
-  for (const [x0, y0, rw, rh] of rects)
-    for (let y = y0; y < y0 + rh; y++) for (let x = x0; x < x0 + rw; x++) mask[y * w + x] = 1;
+/** Rects: [x0, y0, w, h, class]; class 1 = lake, 2 = forest (same as worker/scenarios.ts OBSTACLE_*). */
+export const HARNESS_OBSTACLES: ReadonlyArray<readonly [number, number, number, number, number]> = [
+  [20, 24, 14, 10, 1],
+  [90, 30, 12, 16, 2],
+  [30, 92, 18, 12, 1],
+  [96, 96, 10, 10, 2],
+];
+function demoObstacles(w: number, h: number): { rle: number[]; obstacles: Uint8Array } {
+  const obstacles = new Uint8Array(w * h);
+  for (const [x0, y0, rw, rh, cls] of HARNESS_OBSTACLES)
+    for (let y = y0; y < y0 + rh; y++)
+      for (let x = x0; x < x0 + rw; x++) obstacles[y * w + x] = cls;
+  const mask = obstacles.map((c) => (c === 0 ? 0 : 1));
   const rle: number[] = [];
   let cur = 0;
   let run = 0;
@@ -39,7 +43,7 @@ function demoBlockedRle(w: number, h: number): number[] {
     }
   }
   rle.push(run);
-  return rle;
+  return { rle, obstacles };
 }
 
 export interface RenderHarness {
@@ -61,6 +65,8 @@ export interface RenderHarness {
     }>
   >;
   eids(): number[];
+  /** Terrain layer of a tile (0 grass, 1 dirt, 2 sand, 3 walkable rock, 4 water, 5 forest). */
+  kindAt(tx: number, ty: number): number;
 }
 declare global {
   interface Window {
@@ -75,7 +81,11 @@ async function main(): Promise<void> {
   canvas.style.width = w + 'px';
   canvas.style.height = h + 'px';
   const seed = num('seed', 1);
-  const terrain = buildTerrainMap(MAP, MAP, demoBlockedRle(MAP, MAP), seed);
+  const demo = demoObstacles(MAP, MAP);
+  const terrain = buildTerrainMap(MAP, MAP, demo.rle, seed, demo.obstacles);
+  // art=provisional → the generated set (water.png via the real loader); default → in-memory procedural.
+  const art =
+    q.get('art') === 'provisional' ? await loadProvisionalAssets({ unitSprites: [] }) : null;
   const unitCount = num('units', 400);
   const feed = createFakeFeed({
     units: unitCount,
@@ -90,6 +100,7 @@ async function main(): Promise<void> {
     canvas,
     simClient: feed,
     terrain,
+    ...(art ? { terrainTextures: art.terrain } : {}),
     zoomTauMs: 80, // harness-local (the app passes game.json camera.zoomTauMs)
     unitRadiusFx: [350, 400, 450, 500, 600],
     hardTerrainTiles: q.get('ctl') === '1',
@@ -157,6 +168,7 @@ async function main(): Promise<void> {
         poll();
       }),
     eids,
+    kindAt: (tx, ty) => terrain.kind[ty * MAP + tx] ?? 0,
   };
   window.__renderHarness = api;
   setCamera(num('gx', MAP / 2), num('gy', MAP / 2), num('zoom', 1) as ZoomIndex);

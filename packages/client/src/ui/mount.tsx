@@ -11,8 +11,12 @@ const HUD_CSS = `
 .hud-selection ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:2px}
 .hud-icon{width:14px;height:14px;background:#d9763a;border-radius:2px}
 .hud-more{padding:0 4px;color:#f0b968}
-.hud-groups{margin-top:6px!important}.hud-groups button{min-width:26px;cursor:pointer}
-.hud-groups button:disabled{opacity:.4;cursor:default}.hud-groups small{margin-left:2px;opacity:.7}
+.hud-groups{margin-top:6px!important}
+.hud-groups button{min-width:30px;padding:2px 6px;font:600 13px/1.3 system-ui,sans-serif;cursor:pointer;color:#fff3d6;background:#4a3420;border:1px solid #f0b968;border-radius:3px}
+.hud-groups button:hover:not(:disabled){background:#6a4a2a}
+.hud-groups button:focus-visible{outline:2px solid #fff3d6;outline-offset:1px}
+.hud-groups button:disabled{color:#b9ab96;background:#1f1913;border-color:#6b5a45;cursor:default}
+.hud-groups small{margin-left:3px;font-weight:700;color:#ffd48a}.hud-groups button:disabled small{color:#b9ab96}
 .hud-minimap{position:absolute;right:8px;bottom:8px;width:256px;height:128px;background:#0008;border-radius:4px}
 .hud-dev{position:absolute;top:8px;right:8px;padding:6px 10px;background:#14100dd9;border-radius:6px}
 .hud-dev dl{display:grid;grid-template-columns:auto auto;gap:0 12px;margin:4px 0}.hud-dev dd{margin:0;text-align:right}

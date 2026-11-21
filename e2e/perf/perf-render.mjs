@@ -4,7 +4,7 @@
 //
 // Usage: node e2e/perf/perf-render.mjs [--reps N] [--warmup S] [--window S] [--scenarios a,b] [--modes sab,transfer]
 //        [--zooms 0,1,2] [--update-baseline] [--no-write]
-// Requires a built client (`pnpm --filter @reinos/client build`, done by `pnpm perf:render`).
+// Requires a client built with VITE_ENABLE_DEBUG=1 (done by `pnpm perf:render`).
 import { chromium } from '@playwright/test';
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';

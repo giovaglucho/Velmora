@@ -21,6 +21,7 @@ export class TerrainView {
   private readonly meshes: Array<Mesh<Geometry, Shader>> = [];
   private readonly shown: Uint8Array;
   private readonly ownedSplat;
+  private readonly ownedSplat2;
 
   constructor(
     readonly container: Container,
@@ -34,8 +35,9 @@ export class TerrainView {
     this.shown = new Uint8Array(this.chunksX * this.chunksY);
 
     const hard = opts.hardTiles === true;
-    const splatData = hard ? buildHardSplat(map.kind, W, H) : map.splat;
-    this.ownedSplat = createSplatTexture(splatData, W, H, hard);
+    const hardData = hard ? buildHardSplat(map.kind, W, H) : null;
+    this.ownedSplat = createSplatTexture(hardData?.splat ?? map.splat, W, H, hard);
+    this.ownedSplat2 = createSplatTexture(hardData?.splat2 ?? map.splat2, W, H, hard);
     const uniforms = new UniformGroup({
       uSplatInv: { value: new Float32Array([1 / (W + 1), 1 / (H + 1)]), type: 'vec2<f32>' },
     });
@@ -48,6 +50,9 @@ export class TerrainView {
       resources: {
         terrainUniforms: uniforms,
         uSplat: this.ownedSplat.source,
+        uSplat2: this.ownedSplat2.source,
+        uWater: textures.water.source,
+        uForest: textures.forest.source,
         uNoise: textures.noise.source,
         uG0: textures.ground[0].source,
         uG1: textures.ground[1].source,
@@ -114,5 +119,6 @@ export class TerrainView {
     for (const m of this.meshes) m.destroy();
     this.meshes.length = 0;
     this.ownedSplat.destroy(true);
+    this.ownedSplat2.destroy(true);
   }
 }

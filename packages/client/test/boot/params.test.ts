@@ -20,7 +20,7 @@ describe('readBootParams', () => {
   });
 
   it('reads scenario, snap, debug and seed', () => {
-    const p = readBootParams('?scenario=demo100&snap=transfer&debug=1&seed=7');
+    const p = readBootParams('?scenario=demo100&snap=transfer&debug=1&seed=7', false, true);
     expect(p).toMatchObject({ scenario: 'demo100', snap: 'transfer', debug: true, seed: 7 });
   });
 
@@ -33,6 +33,16 @@ describe('readBootParams', () => {
     expect(readBootParams('?perf=100')).toMatchObject({ perf: 100, scenario: 'demo100' });
     expect(readBootParams('?perf=100&scenario=demo400').scenario).toBe('demo400');
     expect(readBootParams('?perf=abc').perf).toBeNull();
+  });
+
+  it('production builds ignore ?debug=1 (window.__reinos is never exposed)', () => {
+    expect(readBootParams('?debug=1').debug).toBe(false);
+    expect(readBootParams('?debug=1', false, false).debug).toBe(false);
+  });
+
+  it('test builds (VITE_ENABLE_DEBUG=1) need ?debug=1 explicitly', () => {
+    expect(readBootParams('', false, true).debug).toBe(false);
+    expect(readBootParams('?debug=1', false, true).debug).toBe(true);
   });
 
   it('dev builds always enable the debug API', () => {

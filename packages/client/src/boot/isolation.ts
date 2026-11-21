@@ -26,8 +26,13 @@ export function chooseSnapshotMode(requested: SnapshotMode | 'auto'): SnapshotMo
   return sab ? 'sab' : 'transfer';
 }
 
-/** Parses `?scenario=demo100|demo200|demo400&snap=sab|transfer&debug=1&perf=400&seed=N`; unknown values fall back. */
-export function readBootParams(search: string, dev = false): BootParams {
+/**
+ * Parses `?scenario=demo100|demo200|demo400&snap=sab|transfer&debug=1&perf=400&seed=N`; unknown values fall back.
+ * `dev`: Vite dev server (debug always on). `debugBuild`: a non-production test build compiled with
+ * VITE_ENABLE_DEBUG=1 (e2e/perf/media scripts), where `?debug=1` opts in. A production build (neither flag) can
+ * never expose `window.__reinos`, whatever the query string says.
+ */
+export function readBootParams(search: string, dev = false, debugBuild = false): BootParams {
   const q = new URLSearchParams(search);
   const perfRaw = q.get('perf');
   const perf = perfRaw !== null && /^\d+$/.test(perfRaw) ? Number(perfRaw) : null;
@@ -38,5 +43,5 @@ export function readBootParams(search: string, dev = false): BootParams {
   const snap = snapRaw === 'sab' || snapRaw === 'transfer' ? snapRaw : 'auto';
   const seedRaw = q.get('seed');
   const seed = seedRaw !== null && /^\d+$/.test(seedRaw) ? Number(seedRaw) >>> 0 : DEFAULT_SEED;
-  return { scenario, snap, debug: dev || q.get('debug') === '1', perf, seed };
+  return { scenario, snap, debug: dev || (debugBuild && q.get('debug') === '1'), perf, seed };
 }

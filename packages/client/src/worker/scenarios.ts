@@ -21,6 +21,11 @@ const SPAWN_PAD = 4;
 const LAKES = 6;
 const FOREST_CLUMPS = 40;
 
+/** Client-only obstacle classes (presentation; the sim only knows "blocked"). 0 = free. */
+export const OBSTACLE_FREE = 0;
+export const OBSTACLE_LAKE = 1;
+export const OBSTACLE_FOREST = 2;
+
 export function isScenarioName(s: string): s is ScenarioName {
   return (SCENARIO_NAMES as readonly string[]).includes(s);
 }
@@ -42,27 +47,30 @@ function blockedBitmap(
         (x >= rightX - SPAWN_PAD && x < rightX + cols + SPAWN_PAD))
     );
   };
-  const disc = (cx: number, cy: number, rx: number, ry: number): void => {
+  const disc = (cx: number, cy: number, rx: number, ry: number, kindOfDisc: number): void => {
     for (let y = cy - ry; y <= cy + ry; y++)
       for (let x = cx - rx; x <= cx + rx; x++) {
         if (x < 0 || y < 0 || x >= MAP_SIDE || y >= MAP_SIDE || inSpawnZone(x, y)) continue;
         const dx = x - cx;
         const dy = y - cy;
-        if (dx * dx * ry * ry + dy * dy * rx * rx <= rx * rx * ry * ry)
-          blocked[y * MAP_SIDE + x] = 1;
+        if (dx * dx * ry * ry + dy * dy * rx * rx <= rx * rx * ry * ry) {
+          const i = y * MAP_SIDE + x;
+          // Lakes win over overlapping forests; the blocked SET is identical to the pre-classification one.
+          if (kindOfDisc === OBSTACLE_LAKE || blocked[i] === OBSTACLE_FREE) blocked[i] = kindOfDisc;
+        }
       }
   };
   // Lakes: large ellipses in the central band (always created in the same PRNG order).
   for (let i = 0; i < LAKES; i++) {
     const cx = 36 + prng.nextInt(56);
     const cy = 8 + prng.nextInt(MAP_SIDE - 16);
-    disc(cx, cy, 3 + prng.nextInt(5), 3 + prng.nextInt(6));
+    disc(cx, cy, 3 + prng.nextInt(5), 3 + prng.nextInt(6), OBSTACLE_LAKE);
   }
   // Forests: small clumps anywhere.
   for (let i = 0; i < FOREST_CLUMPS; i++) {
     const cx = 2 + prng.nextInt(MAP_SIDE - 4);
     const cy = 2 + prng.nextInt(MAP_SIDE - 4);
-    disc(cx, cy, 1 + prng.nextInt(3), 1 + prng.nextInt(3));
+    disc(cx, cy, 1 + prng.nextInt(3), 1 + prng.nextInt(3), OBSTACLE_FOREST);
   }
   return blocked;
 }
@@ -73,10 +81,11 @@ function toRle(blocked: Uint8Array): number[] {
   let cur = 0;
   let len = 0;
   for (let i = 0; i < blocked.length; i++) {
-    if (blocked[i] === cur) len++;
+    const b = blocked[i] === OBSTACLE_FREE ? 0 : 1;
+    if (b === cur) len++;
     else {
       runs.push(len);
-      cur = blocked[i] as number;
+      cur = b;
       len = 1;
     }
   }
@@ -84,11 +93,27 @@ function toRle(blocked: Uint8Array): number[] {
   return runs;
 }
 
+function scenarioObstacles(name: ScenarioName, seed: number): Uint8Array {
+  const army = ARMY[name];
+  const armyY = Math.trunc((MAP_SIDE - army.rows) / 2);
+  const rightX = MAP_SIDE - 8 - army.cols;
+  return blockedBitmap(army.cols, army.rows, armyY, rightX, seed);
+}
+
+/**
+ * Client-only terrain classes of the blocked tiles (row-major, length W*H: OBSTACLE_FREE / LAKE / FOREST).
+ * Presentation data for the renderer; never part of SimConfig nor the hash. A tile is non-free iff the
+ * sim sees it as blocked in `buildScenario(name, seed).map.blockedRle`.
+ */
+export function buildScenarioObstacles(name: ScenarioName, seed: number): Uint8Array {
+  return scenarioObstacles(name, seed);
+}
+
 export function buildScenario(name: ScenarioName, seed: number): SimConfig {
   const army = ARMY[name];
   const armyY = Math.trunc((MAP_SIDE - army.rows) / 2);
   const rightX = MAP_SIDE - 8 - army.cols;
-  const blocked = blockedBitmap(army.cols, army.rows, armyY, rightX, seed);
+  const blocked = scenarioObstacles(name, seed);
   const spawns: SpawnSpec[] = [];
   for (let owner = 0; owner < 2; owner++) {
     const x0 = owner === 0 ? 8 : rightX;
