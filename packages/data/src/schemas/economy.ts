@@ -22,7 +22,9 @@ export const ResourceSource = z.object({
   tilesPerPatch: z.number().int().optional(),
   /** Distance to the Ciudadela in tiles. */
   dist: Range.optional(),
-  placements: z.array(z.object({ count: z.number().int(), tiles: z.number().int().optional(), dist: Range })).optional(),
+  placements: z
+    .array(z.object({ count: z.number().int(), tiles: z.number().int().optional(), dist: Range }))
+    .optional(),
   rotPerSecond: z.number().optional(),
   cost: Cost.optional(),
   size: z.number().int().optional(),
@@ -42,7 +44,12 @@ export const EconomyFile = z.object({
   }),
   gatherRates: z.array(GatherRate),
   rateModel: z.string(),
-  farm: z.object({ bufferMax: z.number(), bufferRatePerSecond: z.number(), takePerHitFraction: z.number(), notes: Notes }),
+  farm: z.object({
+    bufferMax: z.number(),
+    bufferRatePerSecond: z.number(),
+    takePerHitFraction: z.number(),
+    notes: Notes,
+  }),
   sources: z.array(ResourceSource),
   market: z.object({
     basePrice: z.number().int(),
@@ -59,11 +66,20 @@ export const EconomyFile = z.object({
   }),
   tradeCart: z.object({
     unit: Id,
-    formula: z.object({ coefficient: z.number(), offset: z.number(), minDistTiles: z.number().int() }),
+    formula: z.object({
+      coefficient: z.number(),
+      offset: z.number(),
+      minDistTiles: z.number().int(),
+    }),
     cogPenaltyPct: z.number(),
     notes: Notes,
   }),
   tribute: z.object({ baseFeePct: z.number(), notes: Notes }),
-  crownShards: z.object({ perStandardMap: z.number().int(), aetherPerSecondEach: z.number(), carrier: z.string(), notes: Notes }),
+  crownShards: z.object({
+    perStandardMap: z.number().int(),
+    aetherPerSecondEach: z.number(),
+    carrier: z.string(),
+    notes: Notes,
+  }),
 });
 export type EconomyFile = z.infer<typeof EconomyFile>;

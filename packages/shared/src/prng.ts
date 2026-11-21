@@ -45,7 +45,8 @@ export function createPrngFromState(state: readonly [number, number, number, num
   };
 
   const nextInt = (bound: number): number => {
-    if (!Number.isInteger(bound) || bound < 1 || bound > 0x100000000) throw new RangeError("nextInt: bound invalido");
+    if (!Number.isInteger(bound) || bound < 1 || bound > 0x100000000)
+      throw new RangeError('nextInt: bound invalido');
     if (bound === 0x100000000) return nextU32();
     // rechazo: descartamos la zona final que causaria sesgo de modulo
     const limit = 0x100000000 - (0x100000000 % bound);

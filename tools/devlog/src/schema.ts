@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 const metric = z.number().nonnegative().nullable();
 
@@ -20,9 +20,9 @@ export const DevlogSchema = z.object({
 export type Devlog = z.infer<typeof DevlogSchema>;
 
 export const HITOS: { n: number; nombre: string; desde: number; hasta: number }[] = [
-  { n: 1, nombre: "Prototipo", desde: 0, hasta: 3 },
-  { n: 2, nombre: "MVP vs IA", desde: 4, hasta: 5 },
-  { n: 3, nombre: "Aspecto AAA", desde: 6, hasta: 7 },
-  { n: 4, nombre: "Online", desde: 8, hasta: 9 },
-  { n: 5, nombre: "Lanzamiento", desde: 10, hasta: 13 },
+  { n: 1, nombre: 'Prototipo', desde: 0, hasta: 3 },
+  { n: 2, nombre: 'MVP vs IA', desde: 4, hasta: 5 },
+  { n: 3, nombre: 'Aspecto AAA', desde: 6, hasta: 7 },
+  { n: 4, nombre: 'Online', desde: 8, hasta: 9 },
+  { n: 5, nombre: 'Lanzamiento', desde: 10, hasta: 13 },
 ];

@@ -1,0 +1,14 @@
+{
+  "rules": [
+    {
+      "id": "train_settler",
+      "when": ["age == 1", "canTrain('colono')", "idleQueue('ciudadela')"],
+      "do": ["train('colono')"]
+    },
+    {
+      "id": "set_food_pct",
+      "when": ["true"],
+      "do": ["setSN('food_pct', 60)", "disableSelf()"]
+    }
+  ]
+}

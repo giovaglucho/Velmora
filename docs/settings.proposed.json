@@ -6,7 +6,18 @@
     "deny": ["Bash(git push --force*)", "Bash(git push -f*)"]
   },
   "hooks": {
-    "PostToolUse": [{ "matcher": "Edit|Write", "hooks": [{ "type": "command", "command": "pnpm -s lint:sim" }] }],
-    "Stop": [{ "hooks": [{ "type": "command", "command": "echo 'Recordatorio: actualizá docs/progress/STATUS.md' >&2" }] }]
+    "PostToolUse": [
+      { "matcher": "Edit|Write", "hooks": [{ "type": "command", "command": "pnpm -s lint:sim" }] }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Recordatorio: actualizá docs/progress/STATUS.md' >&2"
+          }
+        ]
+      }
+    ]
   }
 }

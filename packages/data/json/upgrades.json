@@ -1,0 +1,267 @@
+{
+  "upgrades": [
+    {
+      "id": "up_guerrero",
+      "kind": "unit",
+      "from": "recluta",
+      "to": "guerrero",
+      "building": "cuartel",
+      "age": 2,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_espada_larga",
+      "kind": "unit",
+      "from": "guerrero",
+      "to": "espada_larga",
+      "building": "cuartel",
+      "age": 3,
+      "cost": {
+        "food": 200,
+        "aether": 65
+      },
+      "researchTime": 45,
+      "notes": "§7.2 ejemplo (costo y tiempo \"como en AoE2\")."
+    },
+    {
+      "id": "up_gran_espada",
+      "kind": "unit",
+      "from": "espada_larga",
+      "to": "gran_espada",
+      "building": "cuartel",
+      "age": 4,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_campeon_ceniciento",
+      "kind": "unit",
+      "from": "gran_espada",
+      "to": "campeon_ceniciento",
+      "building": "cuartel",
+      "age": 4,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_piquero",
+      "kind": "unit",
+      "from": "lancero",
+      "to": "piquero",
+      "building": "cuartel",
+      "age": 3,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_alabardero",
+      "kind": "unit",
+      "from": "piquero",
+      "to": "alabardero",
+      "building": "cuartel",
+      "age": 4,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_ballestero",
+      "kind": "unit",
+      "from": "arquero",
+      "to": "ballestero",
+      "building": "arqueria",
+      "age": 3,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_arbalestero",
+      "kind": "unit",
+      "from": "ballestero",
+      "to": "arbalestero",
+      "building": "arqueria",
+      "age": 4,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_escaramuzador_veterano",
+      "kind": "unit",
+      "from": "escaramuzador",
+      "to": "escaramuzador_veterano",
+      "building": "arqueria",
+      "age": 3,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_jinete_arquero_pesado",
+      "kind": "unit",
+      "from": "jinete_arquero",
+      "to": "jinete_arquero_pesado",
+      "building": "arqueria",
+      "age": 4,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_jinete_ligero",
+      "kind": "unit",
+      "from": "batidor",
+      "to": "jinete_ligero",
+      "building": "establo",
+      "age": 3,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_husar",
+      "kind": "unit",
+      "from": "jinete_ligero",
+      "to": "husar",
+      "building": "establo",
+      "age": 4,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_caballero_real",
+      "kind": "unit",
+      "from": "caballero",
+      "to": "caballero_real",
+      "building": "establo",
+      "age": 4,
+      "cost": {
+        "food": 300,
+        "aether": 300
+      },
+      "researchTime": 100,
+      "notes": "§7.2 ejemplo (costo y tiempo \"como en AoE2\")."
+    },
+    {
+      "id": "up_paladin",
+      "kind": "unit",
+      "from": "caballero_real",
+      "to": "paladin",
+      "building": "establo",
+      "age": 4,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_ariete_blindado",
+      "kind": "unit",
+      "from": "ariete",
+      "to": "ariete_blindado",
+      "building": "taller_de_asedio",
+      "age": 4,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_ariete_de_asedio",
+      "kind": "unit",
+      "from": "ariete_blindado",
+      "to": "ariete_de_asedio",
+      "building": "taller_de_asedio",
+      "age": 4,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_onagro",
+      "kind": "unit",
+      "from": "lanzapiedras",
+      "to": "onagro",
+      "building": "taller_de_asedio",
+      "age": 4,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_onagro_de_asedio",
+      "kind": "unit",
+      "from": "onagro",
+      "to": "onagro_de_asedio",
+      "building": "taller_de_asedio",
+      "age": 4,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_escorpion_pesado",
+      "kind": "unit",
+      "from": "escorpion",
+      "to": "escorpion_pesado",
+      "building": "taller_de_asedio",
+      "age": 4,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_galera_de_guerra",
+      "kind": "unit",
+      "from": "galera",
+      "to": "galera_de_guerra",
+      "building": "puerto",
+      "age": 3,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "up_galeon",
+      "kind": "unit",
+      "from": "galera_de_guerra",
+      "to": "galeon",
+      "building": "puerto",
+      "age": 4,
+      "notes": "Costo y tiempo no especificados en el GDD (§7.2: \"como en AoE2\"); pendiente, ver COVERAGE.md."
+    },
+    {
+      "id": "muralla_reforzada",
+      "name": {
+        "es": "Muralla reforzada",
+        "en": "Fortified Wall"
+      },
+      "kind": "building",
+      "from": "muralla_de_piedra",
+      "result": {
+        "hp": 3000,
+        "armor": {
+          "melee": 12,
+          "pierce": 12
+        }
+      },
+      "notes": "§6 Mejoras de defensas. Costo/tiempo/edad no especificados."
+    },
+    {
+      "id": "porton_reforzado",
+      "name": {
+        "es": "Portón reforzado",
+        "en": "Fortified Gate"
+      },
+      "kind": "building",
+      "from": "porton",
+      "result": {
+        "hp": 4000
+      },
+      "notes": "§6: solo PV 4000; armadura no especificada."
+    },
+    {
+      "id": "torre_de_guardia",
+      "name": {
+        "es": "Torre de guardia",
+        "en": "Guard Tower"
+      },
+      "kind": "building",
+      "from": "torre_de_vigia",
+      "result": {
+        "hp": 1500,
+        "armor": {
+          "melee": 2,
+          "pierce": 8
+        }
+      },
+      "notes": "§6. Costo/tiempo/edad no especificados."
+    },
+    {
+      "id": "torreon",
+      "name": {
+        "es": "Torreón",
+        "en": "Keep Tower"
+      },
+      "kind": "building",
+      "from": "torre_de_guardia",
+      "result": {
+        "hp": 2250,
+        "armor": {
+          "melee": 3,
+          "pierce": 9
+        }
+      },
+      "notes": "§6. Costo/tiempo/edad no especificados."
+    }
+  ]
+}

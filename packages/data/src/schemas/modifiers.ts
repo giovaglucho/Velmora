@@ -7,16 +7,43 @@ import { Age, ResourceId } from './common.js';
  * `buildings:<group>` | `resource:<id>` | `global`.
  */
 export const MODIFIER_STATS = [
-  'hp', 'attack', 'attack_building', 'armor_melee', 'armor_pierce', 'range', 'speed', 'los', 'accuracy',
-  'fire_rate', 'reload', 'carry', 'gather_rate', 'farm_amount', 'cost', 'cost_stone', 'cost_wood',
-  'build_speed', 'research_speed', 'production_speed', 'tribute_fee', 'market_fee', 'trade_speed',
-  'trade_income', 'age_cost', 'aether_income', 'min_range', 'unlock', 'script',
+  'hp',
+  'attack',
+  'attack_building',
+  'armor_melee',
+  'armor_pierce',
+  'range',
+  'speed',
+  'los',
+  'accuracy',
+  'fire_rate',
+  'reload',
+  'carry',
+  'gather_rate',
+  'farm_amount',
+  'cost',
+  'cost_stone',
+  'cost_wood',
+  'build_speed',
+  'research_speed',
+  'production_speed',
+  'tribute_fee',
+  'market_fee',
+  'trade_speed',
+  'trade_income',
+  'age_cost',
+  'aether_income',
+  'min_range',
+  'unlock',
+  'script',
 ] as const;
 export const ModifierOp = z.enum(['add', 'mul_pct', 'set', 'script']);
 
 export const Modifier = z
   .object({
-    target: z.string().regex(/^(unit|line|class|building|buildings|resource|global)(:[a-z0-9_]+)?$/),
+    target: z
+      .string()
+      .regex(/^(unit|line|class|building|buildings|resource|global)(:[a-z0-9_]+)?$/),
     stat: z.enum(MODIFIER_STATS),
     op: ModifierOp,
     /** Numeric value. mul_pct is a percentage delta (+20 = +20%, -25 = -25%). */
@@ -31,5 +58,8 @@ export const Modifier = z
     scope: z.enum(['self', 'allies']).optional(),
   })
   .strict()
-  .refine((m) => m.op === 'script' || m.value !== undefined || m.valueByAge !== undefined, 'value or valueByAge required');
+  .refine(
+    (m) => m.op === 'script' || m.value !== undefined || m.valueByAge !== undefined,
+    'value or valueByAge required',
+  );
 export type Modifier = z.infer<typeof Modifier>;

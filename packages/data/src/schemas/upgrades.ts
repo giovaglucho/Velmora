@@ -1,10 +1,11 @@
 import { z } from 'zod';
-import { Id, Age, Cost, Notes } from './common.js';
+import { Id, LocalizedName, Age, Cost, Notes } from './common.js';
 
 /** Line upgrade (GDD §7.2): unit -> unit, or building -> stronger building variant (§6 "Mejoras de defensas"). */
 export const UpgradeDef = z
   .object({
     id: Id,
+    name: LocalizedName.optional(),
     kind: z.enum(['unit', 'building']),
     from: Id,
     to: Id.optional(),

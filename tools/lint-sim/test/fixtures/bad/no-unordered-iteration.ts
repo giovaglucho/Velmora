@@ -5,7 +5,9 @@ export function a(): number {
   for (const [k] of m) t += k;
   for (const v of s) t += v;
   for (const k of m.keys()) t += k;
-  m.forEach((v) => { t += v; });
+  m.forEach((v) => {
+    t += v;
+  });
   const arr = [...s];
   const arr2 = Array.from(m.values());
   const ent = m.entries();

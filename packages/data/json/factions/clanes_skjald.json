@@ -1,0 +1,103 @@
+{
+  "id": "clanes_skjald",
+  "name": {
+    "es": "Clanes Skjald",
+    "en": "Skjald Clans"
+  },
+  "launch": true,
+  "inspiration": "Escandinavia y Britania del norte",
+  "gameplayIdea": "Infantería agresiva, barcos fuertes, economía de madera",
+  "aoe2Role": "Vikingos / Godos",
+  "architecture": "Madera tallada, techos nevados (set: Norte de madera)",
+  "voiceLanguage": "Idioma inventado de raíz nórdica",
+  "bonuses": [
+    {
+      "id": "colonos_taladores",
+      "text": "Colonos talan +15%",
+      "modifiers": [
+        {
+          "target": "unit:colono",
+          "stat": "gather_rate",
+          "op": "mul_pct",
+          "value": 15,
+          "resource": "wood"
+        }
+      ]
+    },
+    {
+      "id": "infanteria_robusta",
+      "text": "Infantería +10% PV en Era II, +15% en III, +20% en IV",
+      "modifiers": [
+        {
+          "target": "class:infantry",
+          "stat": "hp",
+          "op": "mul_pct",
+          "valueByAge": {
+            "2": 10,
+            "3": 15,
+            "4": 20
+          }
+        }
+      ],
+      "notes": "AMBIGUO: porcentajes por era interpretados como no acumulativos (el valor de la era reemplaza al anterior)."
+    },
+    {
+      "id": "barcos_baratos",
+      "text": "Barcos de guerra −15% costo",
+      "modifiers": [
+        {
+          "target": "line:galley",
+          "stat": "cost",
+          "op": "mul_pct",
+          "value": -15
+        }
+      ],
+      "notes": "AMBIGUO: \"Barcos de guerra\" = línea Galera/Galera de guerra/Galeón."
+    },
+    {
+      "id": "sin_casas",
+      "text": "Sin Casas hasta Era II (pob. 15)",
+      "modifiers": [],
+      "rules": {
+        "housesDisabledUntilAge": 2,
+        "populationCapWithoutHouses": 15
+      }
+    }
+  ],
+  "teamBonus": {
+    "id": "puertos_aliados",
+    "text": "Puertos aliados −15% madera",
+    "modifiers": [
+      {
+        "target": "building:puerto",
+        "stat": "cost_wood",
+        "op": "mul_pct",
+        "value": -15,
+        "resource": "wood",
+        "scope": "allies"
+      }
+    ]
+  },
+  "uniqueUnit": {
+    "id": "berserker_de_fiordo",
+    "name": {
+      "es": "Berserker de Fiordo",
+      "en": "Fjord Berserker"
+    },
+    "building": "bastion",
+    "description": "Infantería que regenera 1 PV/s y gana velocidad de ataque al bajar de 50% PV",
+    "mechanics": {
+      "regenPerSecond": 1,
+      "lowHpThresholdPct": 50
+    },
+    "statsPending": true,
+    "eliteVersion": true
+  },
+  "uniqueTechs": {
+    "castle": "runas_de_guerra",
+    "aether": "valhalla"
+  },
+  "disabledUnits": ["jinete_arquero", "caballero_real", "bombarda_de_eter"],
+  "disabledTechs": [],
+  "notes": "AMBIGUO: \"Jinete arquero\" deshabilitado: su mejora (jinete_arquero_pesado) queda inalcanzable; el GDD no la lista explícitamente."
+}

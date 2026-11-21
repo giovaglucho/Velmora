@@ -1,0 +1,258 @@
+{
+  "fixedScale": 1000,
+  "settler": {
+    "unit": "colono",
+    "startUnits": {
+      "colono": 3,
+      "batidor": 1
+    },
+    "carry": {
+      "default": 10,
+      "hunt": 35
+    },
+    "notes": "§4.2: se empieza con 3 colonos y un Batidor (Shen: 6 colonos, facción posterior). Carga 10 de todo, salvo caza: 35."
+  },
+  "gatherRates": [
+    {
+      "id": "pesca_orilla",
+      "resource": "food",
+      "perSecond": 0.43,
+      "perMinute": 25.8
+    },
+    {
+      "id": "caza",
+      "resource": "food",
+      "perSecond": 0.41,
+      "perMinute": 24.6
+    },
+    {
+      "id": "pastoreo",
+      "resource": "food",
+      "perSecond": 0.33,
+      "perMinute": 19.8
+    },
+    {
+      "id": "granja",
+      "resource": "food",
+      "perSecond": 0.32,
+      "perMinute": 19.2,
+      "notes": "\"0,32 efectivo\" (§4.3)."
+    },
+    {
+      "id": "bayas",
+      "resource": "food",
+      "perSecond": 0.31,
+      "perMinute": 18.6
+    },
+    {
+      "id": "tala",
+      "resource": "wood",
+      "perSecond": 0.39,
+      "perMinute": 23.4
+    },
+    {
+      "id": "mineria_eter",
+      "resource": "aether",
+      "perSecond": 0.38,
+      "perMinute": 22.8
+    },
+    {
+      "id": "cantera",
+      "resource": "stone",
+      "perSecond": 0.36,
+      "perMinute": 21.6
+    },
+    {
+      "id": "fragmento_santuario",
+      "resource": "aether",
+      "perSecond": 0.5,
+      "perMinute": 30,
+      "notes": "Por Fragmento Coronal en Santuario."
+    }
+  ],
+  "rateModel": "tasa_efectiva = tasa_base × Π m_tecnología × Π m_facción (§4.3)",
+  "farm": {
+    "bufferMax": 15,
+    "bufferRatePerSecond": 0.4,
+    "takePerHitFraction": 0.25,
+    "notes": "§4.3: búfer invisible de hasta 15 a 0,4/s; el colono toma 1/4 de su capacidad por golpe."
+  },
+  "sources": [
+    {
+      "id": "sheep",
+      "name": {
+        "es": "Oveja",
+        "en": "Sheep"
+      },
+      "resource": "food",
+      "amount": 100,
+      "count": 8,
+      "dist": [10, 12],
+      "placements": [
+        {
+          "count": 8,
+          "dist": [10, 12]
+        },
+        {
+          "count": 4,
+          "dist": [14, 30]
+        }
+      ],
+      "notes": "8 por jugador en 1v1; se capturan por visión; 4 más a 14–30."
+    },
+    {
+      "id": "deer",
+      "name": {
+        "es": "Ciervo",
+        "en": "Deer"
+      },
+      "resource": "food",
+      "amount": 140,
+      "count": [3, 4],
+      "dist": [14, 30],
+      "rotPerSecond": 0.25,
+      "notes": "Se pudre a 0,25/s."
+    },
+    {
+      "id": "boar",
+      "name": {
+        "es": "Jabalí",
+        "en": "Boar"
+      },
+      "resource": "food",
+      "amount": 340,
+      "count": 2,
+      "dist": [16, 22],
+      "rotPerSecond": 0.4,
+      "notes": "Hay que atraerlo; pudre a 0,4/s."
+    },
+    {
+      "id": "berries",
+      "name": {
+        "es": "Bayas",
+        "en": "Berries"
+      },
+      "resource": "food",
+      "amount": 125,
+      "count": 6,
+      "dist": [8, 10],
+      "notes": "6 arbustos, 125 c/u."
+    },
+    {
+      "id": "farm",
+      "name": {
+        "es": "Granja",
+        "en": "Farm"
+      },
+      "resource": "food",
+      "amount": 175,
+      "amountMax": 550,
+      "cost": {
+        "wood": 60
+      },
+      "size": 3,
+      "buildTime": 15,
+      "requires": "molino",
+      "notes": "175 base (550 con todo, §4.4)."
+    },
+    {
+      "id": "fish_trap",
+      "name": {
+        "es": "Trampa de peces",
+        "en": "Fish Trap"
+      },
+      "resource": "food",
+      "amount": 715,
+      "cost": {
+        "wood": 100
+      }
+    },
+    {
+      "id": "aether_vein",
+      "name": {
+        "es": "Veta de éter",
+        "en": "Aether Vein"
+      },
+      "resource": "aether",
+      "amount": 800,
+      "placements": [
+        {
+          "count": 1,
+          "tiles": 7,
+          "dist": [8, 10]
+        },
+        {
+          "count": 2,
+          "tiles": 4,
+          "dist": [18, 26]
+        }
+      ],
+      "notes": "800 por casilla; \"1 de 7 casillas a 8–10; 2 de 4 a 18–26\". Brillo cian."
+    },
+    {
+      "id": "quarry",
+      "name": {
+        "es": "Cantera",
+        "en": "Quarry"
+      },
+      "resource": "stone",
+      "amount": 350,
+      "placements": [
+        {
+          "count": 1,
+          "tiles": 5,
+          "dist": [10, 24]
+        },
+        {
+          "count": 1,
+          "tiles": 4,
+          "dist": [10, 24]
+        }
+      ],
+      "notes": "AMBIGUO: 350 por casilla; \"1 de 5 y 1 de 4 a 10–24\": el rango de distancia se aplica a ambas."
+    },
+    {
+      "id": "crown_shard",
+      "name": {
+        "es": "Fragmento Coronal",
+        "en": "Crown Shard"
+      },
+      "resource": "aether",
+      "count": 5,
+      "notes": "5 en mapas estándar (§4.6, total del mapa); los recoge un Custodio."
+    }
+  ],
+  "market": {
+    "basePrice": 100,
+    "stonePrice": 130,
+    "commissionPct": 30,
+    "tradeLot": 100,
+    "priceStep": 3,
+    "minPrice": 20,
+    "maxPrice": 9999,
+    "tradable": ["food", "wood", "stone"],
+    "currency": "aether",
+    "sharedPrices": true,
+    "notes": "§4.6: compra/venta de víveres, madera y piedra por éter; ±3 por operación de 100 unidades."
+  },
+  "tradeCart": {
+    "unit": "carreta_de_comercio",
+    "formula": {
+      "coefficient": 0.46,
+      "offset": 0.3,
+      "minDistTiles": 5
+    },
+    "cogPenaltyPct": -25,
+    "notes": "éter = 0,46 × d × (d/L + 0,3); mínimo 5 casillas para generar 1. Cocas de comercio rinden 25% menos y son más rápidas (sin unidad en §7.1)."
+  },
+  "tribute": {
+    "baseFeePct": 30,
+    "notes": "Enviar 100 retira 130. Acuñación 20%, Banca 0% (techs)."
+  },
+  "crownShards": {
+    "perStandardMap": 5,
+    "aetherPerSecondEach": 0.5,
+    "carrier": "custodio",
+    "notes": "§4.6: solo los recoge un Custodio."
+  }
+}

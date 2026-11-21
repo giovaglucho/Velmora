@@ -1,0 +1,777 @@
+{
+  "buildings": [
+    {
+      "id": "ciudadela",
+      "name": {
+        "es": "Ciudadela",
+        "en": "Citadel"
+      },
+      "age": 1,
+      "cost": {
+        "wood": 275,
+        "stone": 100
+      },
+      "buildTime": 150,
+      "hp": {
+        "1": 2400,
+        "2": 2400,
+        "3": 2400,
+        "4": 2400
+      },
+      "armor": {
+        "melee": 3,
+        "pierce": 5
+      },
+      "armorPerAge": 1,
+      "size": {
+        "w": 4,
+        "h": 4
+      },
+      "popProvided": 5,
+      "garrison": 15,
+      "role": "economy",
+      "function": "+5 pob., guarnición 15, colonos, eras, dispara flechas",
+      "aoe2Equivalent": "Centro urbano",
+      "sprite": "buildings/ciudadela",
+      "notes": "Armadura 3/5 (+1 por era). Valores sin Albañilería ni Arquitectura (§6)."
+    },
+    {
+      "id": "casa",
+      "name": {
+        "es": "Casa",
+        "en": "House"
+      },
+      "age": 1,
+      "cost": {
+        "wood": 25
+      },
+      "buildTime": 25,
+      "hp": {
+        "1": 550,
+        "2": 750,
+        "3": 900,
+        "4": 900
+      },
+      "armor": {
+        "melee": 0,
+        "pierce": 7
+      },
+      "armorPerAge": 1,
+      "size": {
+        "w": 2,
+        "h": 2
+      },
+      "popProvided": 5,
+      "role": "economy",
+      "function": "+5 pob.",
+      "aoe2Equivalent": "Casa",
+      "sprite": "buildings/casa",
+      "notes": "PV 550/750/900/900 por era (§5); la tabla §6 dice \"550–900\"."
+    },
+    {
+      "id": "molino",
+      "name": {
+        "es": "Molino",
+        "en": "Mill"
+      },
+      "age": 1,
+      "cost": {
+        "wood": 100
+      },
+      "buildTime": 35,
+      "hp": {
+        "1": 600,
+        "2": 800,
+        "3": 1000
+      },
+      "armor": {
+        "melee": 0,
+        "pierce": 7
+      },
+      "armorPerAge": 1,
+      "size": {
+        "w": 2,
+        "h": 2
+      },
+      "dropsOff": ["food"],
+      "role": "economy",
+      "function": "Depósito de víveres",
+      "sprite": "buildings/molino",
+      "notes": "PV 600/800/1000 por era desde la de desbloqueo; Era IV no especificada. Valores sin Albañilería ni Arquitectura (§6).",
+      "aoe2Equivalent": "Molino"
+    },
+    {
+      "id": "aserradero",
+      "name": {
+        "es": "Aserradero",
+        "en": "Lumber Camp"
+      },
+      "age": 1,
+      "cost": {
+        "wood": 100
+      },
+      "buildTime": 35,
+      "hp": {
+        "1": 600,
+        "2": 800,
+        "3": 1000
+      },
+      "armor": {
+        "melee": 0,
+        "pierce": 7
+      },
+      "armorPerAge": 1,
+      "size": {
+        "w": 2,
+        "h": 2
+      },
+      "dropsOff": ["wood"],
+      "role": "economy",
+      "function": "Depósito de madera",
+      "sprite": "buildings/aserradero",
+      "notes": "PV 600/800/1000 por era desde la de desbloqueo; Era IV no especificada. Valores sin Albañilería ni Arquitectura (§6).",
+      "aoe2Equivalent": "Campamento maderero"
+    },
+    {
+      "id": "campamento_minero",
+      "name": {
+        "es": "Campamento minero",
+        "en": "Mining Camp"
+      },
+      "age": 1,
+      "cost": {
+        "wood": 100
+      },
+      "buildTime": 35,
+      "hp": {
+        "1": 600,
+        "2": 800,
+        "3": 1000
+      },
+      "armor": {
+        "melee": 0,
+        "pierce": 7
+      },
+      "armorPerAge": 1,
+      "size": {
+        "w": 2,
+        "h": 2
+      },
+      "dropsOff": ["aether", "stone"],
+      "role": "economy",
+      "function": "Depósito de éter y piedra",
+      "sprite": "buildings/campamento_minero",
+      "notes": "PV 600/800/1000 por era desde la de desbloqueo; Era IV no especificada. Valores sin Albañilería ni Arquitectura (§6).",
+      "aoe2Equivalent": "Campamento minero"
+    },
+    {
+      "id": "puerto",
+      "name": {
+        "es": "Puerto",
+        "en": "Harbor"
+      },
+      "age": 1,
+      "cost": {
+        "wood": 150
+      },
+      "buildTime": 35,
+      "hp": {
+        "1": 1800,
+        "2": 1800,
+        "3": 1800,
+        "4": 1800
+      },
+      "armor": {
+        "melee": 0,
+        "pierce": 7
+      },
+      "armorPerAge": 1,
+      "size": {
+        "w": 3,
+        "h": 3
+      },
+      "dropsOff": ["food"],
+      "role": "naval",
+      "function": "Barcos, pesca, depósito",
+      "aoe2Equivalent": "Puerto",
+      "sprite": "buildings/puerto",
+      "notes": "AMBIGUO: \"depósito\" sin recurso explícito; se asume víveres (pesca)."
+    },
+    {
+      "id": "cuartel",
+      "name": {
+        "es": "Cuartel",
+        "en": "Barracks"
+      },
+      "age": 1,
+      "cost": {
+        "wood": 175
+      },
+      "buildTime": 50,
+      "hp": {
+        "1": 1200,
+        "2": 1500,
+        "3": 1800,
+        "4": 2100
+      },
+      "armor": {
+        "melee": 0,
+        "pierce": 7
+      },
+      "armorPerAge": 1,
+      "size": {
+        "w": 3,
+        "h": 3
+      },
+      "role": "military",
+      "function": "Infantería",
+      "aoe2Equivalent": "Cuartel",
+      "sprite": "buildings/cuartel",
+      "notes": "PV 1200/1500/1800/2100 por era (§5). §6 muestra \"1200–2100\"."
+    },
+    {
+      "id": "granja",
+      "name": {
+        "es": "Granja",
+        "en": "Farm"
+      },
+      "age": 1,
+      "cost": {
+        "wood": 60
+      },
+      "buildTime": 15,
+      "hp": {
+        "1": 480,
+        "2": 480,
+        "3": 480,
+        "4": 480
+      },
+      "armor": {
+        "melee": 0,
+        "pierce": 0
+      },
+      "armorPerAge": 0,
+      "size": {
+        "w": 3,
+        "h": 3
+      },
+      "role": "economy",
+      "function": "Víveres infinitos con resiembra",
+      "aoe2Equivalent": "Granja",
+      "sprite": "buildings/granja",
+      "notes": "Requiere Molino (§4.4)."
+    },
+    {
+      "id": "empalizada",
+      "name": {
+        "es": "Empalizada",
+        "en": "Palisade"
+      },
+      "age": 1,
+      "cost": {
+        "wood": 3
+      },
+      "buildTime": 6,
+      "hp": {
+        "1": 150,
+        "2": 250
+      },
+      "armor": {
+        "melee": 2,
+        "pierce": 5
+      },
+      "armorPerAge": 0,
+      "size": {
+        "w": 1,
+        "h": 1
+      },
+      "role": "wall",
+      "function": "Muro",
+      "aoe2Equivalent": "Empalizada",
+      "sprite": "buildings/empalizada",
+      "notes": "PV \"150/250\" por era desde la de desbloqueo (I, II)."
+    },
+    {
+      "id": "puerta_de_empalizada",
+      "name": {
+        "es": "Puerta de empalizada",
+        "en": "Palisade Gate"
+      },
+      "age": 1,
+      "cost": {
+        "wood": 20
+      },
+      "buildTime": 30,
+      "hp": {
+        "1": 240,
+        "2": 400
+      },
+      "armor": {
+        "melee": 2,
+        "pierce": 2
+      },
+      "armorPerAge": 0,
+      "size": {
+        "w": 4,
+        "h": 1
+      },
+      "role": "wall",
+      "function": "Paso aliado",
+      "aoe2Equivalent": "Ídem",
+      "sprite": "buildings/puerta_de_empalizada",
+      "notes": "PV \"240/400\" por era (I, II)."
+    },
+    {
+      "id": "atalaya",
+      "name": {
+        "es": "Atalaya",
+        "en": "Watchtower"
+      },
+      "age": 1,
+      "cost": {
+        "wood": 25,
+        "stone": 5
+      },
+      "buildTime": 15,
+      "hp": {
+        "1": 500,
+        "2": 500,
+        "3": 500,
+        "4": 500
+      },
+      "armor": {
+        "melee": 0,
+        "pierce": 0
+      },
+      "armorPerAge": 0,
+      "size": {
+        "w": 1,
+        "h": 1
+      },
+      "los": {
+        "1": 6,
+        "2": 8,
+        "3": 10,
+        "4": 12
+      },
+      "role": "defense",
+      "function": "Visión 6/8/10/12",
+      "aoe2Equivalent": "Puesto avanzado",
+      "sprite": "buildings/atalaya"
+    },
+    {
+      "id": "arqueria",
+      "name": {
+        "es": "Arquería",
+        "en": "Archery Range"
+      },
+      "age": 2,
+      "cost": {
+        "wood": 175
+      },
+      "buildTime": 50,
+      "hp": {
+        "2": 1500,
+        "3": 1800,
+        "4": 2100
+      },
+      "armor": {
+        "melee": 1,
+        "pierce": 8
+      },
+      "armorPerAge": 1,
+      "size": {
+        "w": 3,
+        "h": 3
+      },
+      "role": "military",
+      "function": "Arqueros",
+      "aoe2Equivalent": "Galería de tiro",
+      "sprite": "buildings/arqueria",
+      "notes": "PV 1500/1800/2100 (Eras II–IV) derivados de §5 (1200/1500/1800/2100); §6 muestra \"1500–2100\"."
+    },
+    {
+      "id": "establo",
+      "name": {
+        "es": "Establo",
+        "en": "Stable"
+      },
+      "age": 2,
+      "cost": {
+        "wood": 175
+      },
+      "buildTime": 50,
+      "hp": {
+        "2": 1500,
+        "3": 1800,
+        "4": 2100
+      },
+      "armor": {
+        "melee": 1,
+        "pierce": 8
+      },
+      "armorPerAge": 1,
+      "size": {
+        "w": 3,
+        "h": 3
+      },
+      "role": "military",
+      "function": "Caballería",
+      "aoe2Equivalent": "Establo",
+      "sprite": "buildings/establo",
+      "notes": "Ídem Arquería (§5/§6)."
+    },
+    {
+      "id": "forja",
+      "name": {
+        "es": "Forja",
+        "en": "Forge"
+      },
+      "age": 2,
+      "cost": {
+        "wood": 150
+      },
+      "buildTime": 40,
+      "hp": {
+        "2": 1800,
+        "3": 2100
+      },
+      "armor": {
+        "melee": 1,
+        "pierce": 8
+      },
+      "armorPerAge": 1,
+      "size": {
+        "w": 3,
+        "h": 3
+      },
+      "role": "support",
+      "function": "Mejoras de ataque y armadura",
+      "aoe2Equivalent": "Herrería",
+      "sprite": "buildings/forja",
+      "notes": "PV \"1800/2100\" (II, III). Era IV no especificada para PV. "
+    },
+    {
+      "id": "mercado",
+      "name": {
+        "es": "Mercado",
+        "en": "Market"
+      },
+      "age": 2,
+      "cost": {
+        "wood": 175
+      },
+      "buildTime": 60,
+      "hp": {
+        "2": 1800,
+        "3": 2100
+      },
+      "armor": {
+        "melee": 1,
+        "pierce": 8
+      },
+      "armorPerAge": 1,
+      "size": {
+        "w": 4,
+        "h": 4
+      },
+      "role": "economy",
+      "function": "Comercio",
+      "aoe2Equivalent": "Mercado",
+      "sprite": "buildings/mercado",
+      "notes": "PV \"1800/2100\" (II, III). Era IV no especificada para PV. "
+    },
+    {
+      "id": "trampa_de_peces",
+      "name": {
+        "es": "Trampa de peces",
+        "en": "Fish Trap"
+      },
+      "age": 2,
+      "cost": {
+        "wood": 100
+      },
+      "buildTime": 40,
+      "hp": {
+        "2": 50,
+        "3": 50,
+        "4": 50
+      },
+      "armor": {
+        "melee": 0,
+        "pierce": 0
+      },
+      "armorPerAge": 0,
+      "size": {
+        "w": 1,
+        "h": 1
+      },
+      "role": "naval",
+      "function": "715 víveres",
+      "aoe2Equivalent": "Ídem",
+      "sprite": "buildings/trampa_de_peces"
+    },
+    {
+      "id": "torre_de_vigia",
+      "name": {
+        "es": "Torre de vigía",
+        "en": "Lookout Tower"
+      },
+      "age": 2,
+      "cost": {
+        "wood": 35,
+        "stone": 125
+      },
+      "buildTime": 80,
+      "hp": {
+        "2": 850,
+        "3": 1020
+      },
+      "armor": {
+        "melee": 1,
+        "pierce": 7
+      },
+      "armorPerAge": 0,
+      "size": {
+        "w": 1,
+        "h": 1
+      },
+      "garrison": 5,
+      "role": "defense",
+      "function": "Guarnición 5",
+      "aoe2Equivalent": "Torre de vigilancia",
+      "sprite": "buildings/torre_de_vigia",
+      "notes": "PV \"850/1020\" (II, III). Era IV no especificada para PV. "
+    },
+    {
+      "id": "muralla_de_piedra",
+      "name": {
+        "es": "Muralla de piedra",
+        "en": "Stone Wall"
+      },
+      "age": 2,
+      "cost": {
+        "stone": 5
+      },
+      "buildTime": 10,
+      "hp": {
+        "2": 1080,
+        "3": 1800
+      },
+      "armor": {
+        "melee": 8,
+        "pierce": 10
+      },
+      "armorPerAge": 0,
+      "size": {
+        "w": 1,
+        "h": 1
+      },
+      "role": "wall",
+      "function": "Muro",
+      "aoe2Equivalent": "Ídem",
+      "sprite": "buildings/muralla_de_piedra",
+      "notes": "PV \"1080/1800\" (II, III)."
+    },
+    {
+      "id": "porton",
+      "name": {
+        "es": "Portón",
+        "en": "Gate"
+      },
+      "age": 2,
+      "cost": {
+        "stone": 30
+      },
+      "buildTime": 70,
+      "hp": {
+        "2": 1650,
+        "3": 2700
+      },
+      "armor": {
+        "melee": 6,
+        "pierce": 6
+      },
+      "armorPerAge": 0,
+      "size": {
+        "w": 4,
+        "h": 1
+      },
+      "role": "wall",
+      "function": "Paso aliado",
+      "aoe2Equivalent": "Puerta",
+      "sprite": "buildings/porton",
+      "notes": "PV \"1650/2700\" (II, III)."
+    },
+    {
+      "id": "santuario",
+      "name": {
+        "es": "Santuario",
+        "en": "Sanctuary"
+      },
+      "age": 3,
+      "cost": {
+        "wood": 175
+      },
+      "buildTime": 40,
+      "hp": {
+        "3": 2100,
+        "4": 2100
+      },
+      "armor": {
+        "melee": 2,
+        "pierce": 9
+      },
+      "armorPerAge": 1,
+      "size": {
+        "w": 3,
+        "h": 3
+      },
+      "role": "military",
+      "function": "Custodios, Fragmentos",
+      "aoe2Equivalent": "Monasterio",
+      "sprite": "buildings/santuario"
+    },
+    {
+      "id": "academia",
+      "name": {
+        "es": "Academia",
+        "en": "Academy"
+      },
+      "age": 3,
+      "cost": {
+        "wood": 200
+      },
+      "buildTime": 60,
+      "hp": {
+        "3": 2100,
+        "4": 2100
+      },
+      "armor": {
+        "melee": 2,
+        "pierce": 9
+      },
+      "armorPerAge": 1,
+      "size": {
+        "w": 4,
+        "h": 4
+      },
+      "role": "support",
+      "function": "Tecnologías de edificios y balística",
+      "aoe2Equivalent": "Universidad",
+      "sprite": "buildings/academia"
+    },
+    {
+      "id": "taller_de_asedio",
+      "name": {
+        "es": "Taller de asedio",
+        "en": "Siege Workshop"
+      },
+      "age": 3,
+      "cost": {
+        "wood": 200
+      },
+      "buildTime": 40,
+      "hp": {
+        "3": 1500,
+        "4": 2100
+      },
+      "armor": {
+        "melee": 1,
+        "pierce": 8
+      },
+      "armorPerAge": 1,
+      "size": {
+        "w": 4,
+        "h": 4
+      },
+      "role": "military",
+      "function": "Asedio",
+      "aoe2Equivalent": "Ídem",
+      "sprite": "buildings/taller_de_asedio",
+      "notes": "AMBIGUO: PV \"1500–2100\" para Eras III–IV (sin valor intermedio): se asigna 1500 (III) y 2100 (IV); §5 solo lista Cuartel/Arquería/Establo."
+    },
+    {
+      "id": "bastion",
+      "name": {
+        "es": "Bastión",
+        "en": "Bastion"
+      },
+      "age": 3,
+      "cost": {
+        "stone": 650
+      },
+      "buildTime": 200,
+      "hp": {
+        "3": 4800,
+        "4": 4800
+      },
+      "armor": {
+        "melee": 8,
+        "pierce": 11
+      },
+      "armorPerAge": 0,
+      "size": {
+        "w": 4,
+        "h": 4
+      },
+      "popProvided": 20,
+      "garrison": 20,
+      "role": "defense",
+      "function": "+20 pob., guarnición 20, únicos, Fundíbulo",
+      "aoe2Equivalent": "Castillo",
+      "sprite": "buildings/bastion"
+    },
+    {
+      "id": "faro_celeste",
+      "name": {
+        "es": "Faro Celeste",
+        "en": "Celestial Beacon"
+      },
+      "age": 4,
+      "cost": {
+        "wood": 1000,
+        "aether": 1000,
+        "stone": 1000
+      },
+      "buildTime": 3500,
+      "hp": {
+        "4": 4800
+      },
+      "armor": {
+        "melee": 3,
+        "pierce": 10
+      },
+      "armorPerAge": 0,
+      "size": {
+        "w": 5,
+        "h": 5
+      },
+      "role": "wonder",
+      "function": "Victoria por maravilla",
+      "aoe2Equivalent": "Maravilla",
+      "sprite": "buildings/faro_celeste"
+    },
+    {
+      "id": "torre_de_bombarda_de_eter",
+      "name": {
+        "es": "Torre de bombarda de éter",
+        "en": "Aether Bombard Tower"
+      },
+      "age": 4,
+      "cost": {
+        "aether": 100,
+        "stone": 125
+      },
+      "hp": {
+        "4": 2220
+      },
+      "armorPerAge": 0,
+      "requiresTech": "torre_de_bombarda",
+      "role": "defense",
+      "function": "Torre de bombarda de éter (§6 Mejoras de defensas)",
+      "sprite": "buildings/torre_de_bombarda_de_eter",
+      "notes": "AMBIGUO: §6 solo da costo (125 pie. 100 éter) y PV 2220; tiempo, armadura y tamaño no especificados; era IV por la tecnología Torre de bombarda (§9.3)."
+    }
+  ]
+}

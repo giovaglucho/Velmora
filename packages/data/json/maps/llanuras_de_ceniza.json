@@ -1,0 +1,47 @@
+{
+  "id": "llanuras_de_ceniza",
+  "name": {
+    "es": "Llanuras de Ceniza",
+    "en": "Ashen Plains"
+  },
+  "baseTerrain": "grass",
+  "players": {
+    "landPercent": 25,
+    "baseSize": 9,
+    "fuzz": 20
+  },
+  "elevation": {
+    "hills": 14,
+    "maxHeight": 3
+  },
+  "forests": {
+    "clumps": 22,
+    "size": [30, 80],
+    "avoidPlayers": 12
+  },
+  "objects": [
+    {
+      "type": "sheep",
+      "perPlayer": 8,
+      "dist": [10, 12],
+      "group": 4
+    },
+    {
+      "type": "boar",
+      "perPlayer": 2,
+      "dist": [16, 22]
+    },
+    {
+      "type": "aether_vein",
+      "perPlayer": 1,
+      "tiles": 7,
+      "dist": [8, 10]
+    },
+    {
+      "type": "crown_shard",
+      "total": 5,
+      "avoidPlayers": 30
+    }
+  ],
+  "notes": "Transcrito verbatim del ejemplo de §11.4 (el GDD lo llama \"ejemplo\"; ciervos, bayas, canteras y 2 vetas extra de §4.4 no aparecen en el script de ejemplo)."
+}

@@ -1,0 +1,157 @@
+{
+  "fixedScale": 1000,
+  "armorClasses": [
+    "melee",
+    "pierce",
+    "infantry",
+    "archer",
+    "cavalry",
+    "cavalry_archer",
+    "spear",
+    "siege",
+    "building",
+    "stone_defense",
+    "wall",
+    "ship",
+    "custodian",
+    "gunpowder",
+    "unique",
+    "camel_like",
+    "hero"
+  ],
+  "minDamage": 1,
+  "elevation": {
+    "higher": 1.25,
+    "lower": 0.75
+  },
+  "nonClassArmor": 1000,
+  "areaDamage": [
+    {
+      "id": "lanzapiedras",
+      "unit": "lanzapiedras",
+      "radius": 1,
+      "alliedDamage": true,
+      "notes": "Daña aliados; puede atacar al suelo."
+    },
+    {
+      "id": "onagro",
+      "unit": "onagro",
+      "radius": 1.25,
+      "alliedDamage": true
+    },
+    {
+      "id": "onagro_de_asedio",
+      "unit": "onagro_de_asedio",
+      "radius": 1.5,
+      "alliedDamage": true
+    },
+    {
+      "id": "ariete_blindado",
+      "unit": "ariete_blindado",
+      "radius": 1.5,
+      "buildingsOnly": true,
+      "notes": "Fila \"Ariete blindado / de asedio\": 1,5 / 2."
+    },
+    {
+      "id": "ariete_de_asedio",
+      "unit": "ariete_de_asedio",
+      "radius": 2,
+      "buildingsOnly": true
+    },
+    {
+      "id": "bombarda_de_eter",
+      "unit": "bombarda_de_eter",
+      "radius": 0.5
+    },
+    {
+      "id": "barco_de_demolicion",
+      "unit": "barco_de_demolicion",
+      "radius": 2.5,
+      "notes": "Caída lineal por distancia, se destruye."
+    },
+    {
+      "id": "barco_de_demolicion_pesado",
+      "unit": "barco_de_demolicion_pesado",
+      "radius": 3.5,
+      "unitPending": true,
+      "notes": "Unidad sin fila en §7.1."
+    }
+  ],
+  "garrison": {
+    "healPerSecondTower": 0.1,
+    "healPerSecondBastion": 0.2,
+    "ejectBelowHpPct": 20,
+    "settlerArrowDps": 2.5,
+    "ramCapacity": 4,
+    "villageBellRadius": 23,
+    "notes": "§8.5. Flechas extra: floor(Σ dps_unidad / dps_edificio); solo arqueros, jinetes arqueros y pólvora. Caballería solo en Bastión."
+  },
+  "custodian": {
+    "healAmount": 1,
+    "healIntervalSeconds": 0.4,
+    "faithRechargePerSecond": 1.6,
+    "resonance": {
+      "minSeconds": 5,
+      "maxSeconds": 12,
+      "successPct": 28,
+      "rollIntervalSeconds": 1.2,
+      "buildingMinSeconds": 18,
+      "buildingMaxSeconds": 29,
+      "buildingSuccessPct": 9,
+      "lightCavalrySuccessPct": 5,
+      "notes": "Fe al 100% requerida; edificios requieren Redención; Iluminación +87,5% recarga de fe."
+    }
+  },
+  "construction": {
+    "multiBuilderNumerator": 3,
+    "multiBuilderOffset": 2,
+    "repairFirstPerMinute": 750,
+    "repairExtraPerMinute": 375,
+    "siegeShipRepairPct": 25,
+    "repairCostPct": 50
+  },
+  "counters": [
+    {
+      "unit": "Lanceros",
+      "strongAgainst": "Caballería",
+      "weakAgainst": "Arqueros, espadas"
+    },
+    {
+      "unit": "Espadas",
+      "strongAgainst": "Infantería, edificios",
+      "weakAgainst": "Arqueros, caballería pesada"
+    },
+    {
+      "unit": "Arqueros",
+      "strongAgainst": "Infantería, lanceros",
+      "weakAgainst": "Escaramuzadores, caballería, Lanzapiedras"
+    },
+    {
+      "unit": "Escaramuzadores",
+      "strongAgainst": "Arqueros",
+      "weakAgainst": "Caballería, infantería"
+    },
+    {
+      "unit": "Caballería",
+      "strongAgainst": "Arqueros, asedio",
+      "weakAgainst": "Lanceros, Custodios"
+    },
+    {
+      "unit": "Lanzapiedras / Onagro",
+      "strongAgainst": "Masas de arqueros e infantería",
+      "weakAgainst": "Caballería, arietes"
+    },
+    {
+      "unit": "Ariete",
+      "strongAgainst": "Edificios",
+      "weakAgainst": "Cuerpo a cuerpo"
+    },
+    {
+      "unit": "Custodio",
+      "strongAgainst": "Unidades caras y lentas",
+      "weakAgainst": "Caballería ligera"
+    }
+  ],
+  "stances": ["aggressive", "defensive", "stand_ground", "no_attack"],
+  "formations": ["line", "box", "staggered", "flank"]
+}

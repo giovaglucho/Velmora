@@ -1,0 +1,25 @@
+{
+  "locale": "es",
+  "strings": {
+    "app.title": "Reinos de Ceniza",
+    "res.food": "Víveres",
+    "res.wood": "Madera",
+    "res.aether": "Éter",
+    "res.stone": "Piedra",
+    "age.1": "Era de Ceniza",
+    "age.2": "Era del Hierro",
+    "age.3": "Era de los Bastiones",
+    "age.4": "Era del Éter",
+    "term.settler": "Colono",
+    "term.custodian": "Custodio",
+    "term.sanctuary": "Santuario",
+    "term.citadel": "Ciudadela",
+    "term.bastion": "Bastión",
+    "term.crown_shard": "Fragmento Coronal",
+    "term.resonance": "Resonancia",
+    "term.celestial_beacon": "Faro Celeste",
+    "menu.campaign": "Campaña",
+    "menu.quick_match": "Partida rápida contra IA",
+    "menu.multiplayer": "Multijugador online"
+  }
+}

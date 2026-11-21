@@ -1,0 +1,25 @@
+{
+  "locale": "en",
+  "strings": {
+    "app.title": "Realms of Ash",
+    "res.food": "Food",
+    "res.wood": "Wood",
+    "res.aether": "Aether",
+    "res.stone": "Stone",
+    "age.1": "Age of Ash",
+    "age.2": "Iron Age",
+    "age.3": "Age of Bastions",
+    "age.4": "Age of Aether",
+    "term.settler": "Settler",
+    "term.custodian": "Custodian",
+    "term.sanctuary": "Sanctuary",
+    "term.citadel": "Citadel",
+    "term.bastion": "Bastion",
+    "term.crown_shard": "Crown Shard",
+    "term.resonance": "Resonance",
+    "term.celestial_beacon": "Celestial Beacon",
+    "menu.campaign": "Campaign",
+    "menu.quick_match": "Quick match vs AI",
+    "menu.multiplayer": "Online multiplayer"
+  }
+}

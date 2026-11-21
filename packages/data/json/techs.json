@@ -1,0 +1,2093 @@
+{
+  "techs": [
+    {
+      "id": "jubon_acolchado",
+      "name": {
+        "es": "Jubón acolchado",
+        "en": "Padded Jerkin"
+      },
+      "age": 1,
+      "building": "ciudadela",
+      "cost": {
+        "aether": 50
+      },
+      "researchTime": 25,
+      "effects": [
+        {
+          "target": "unit:colono",
+          "stat": "hp",
+          "op": "add",
+          "value": 15
+        },
+        {
+          "target": "unit:colono",
+          "stat": "armor_melee",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "unit:colono",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 2
+        }
+      ],
+      "effectText": "Colonos +15 PV, +1/+2 armadura",
+      "category": "economy",
+      "notes": "AMBIGUO: \"+1/+2 armadura\" interpretado como cuerpo a cuerpo +1 / perforante +2 (orden C/P de §6–7)."
+    },
+    {
+      "id": "carretilla",
+      "name": {
+        "es": "Carretilla",
+        "en": "Wheelbarrow"
+      },
+      "age": 2,
+      "building": "ciudadela",
+      "cost": {
+        "food": 175,
+        "wood": 50
+      },
+      "researchTime": 75,
+      "effects": [
+        {
+          "target": "unit:colono",
+          "stat": "speed",
+          "op": "mul_pct",
+          "value": 10
+        },
+        {
+          "target": "unit:colono",
+          "stat": "carry",
+          "op": "mul_pct",
+          "value": 25
+        }
+      ],
+      "effectText": "+10% velocidad, +25% carga",
+      "category": "economy"
+    },
+    {
+      "id": "carro_de_mano",
+      "name": {
+        "es": "Carro de mano",
+        "en": "Hand Cart"
+      },
+      "age": 3,
+      "building": "ciudadela",
+      "cost": {
+        "food": 300,
+        "wood": 200
+      },
+      "researchTime": 55,
+      "effects": [
+        {
+          "target": "unit:colono",
+          "stat": "speed",
+          "op": "mul_pct",
+          "value": 10
+        },
+        {
+          "target": "unit:colono",
+          "stat": "carry",
+          "op": "mul_pct",
+          "value": 50
+        }
+      ],
+      "effectText": "+10% velocidad, +50% carga",
+      "category": "economy",
+      "requires": ["carretilla"],
+      "notes": "AMBIGUO: GDD no dice si acumula con Carretilla; se declara requisito por analogía de la línea (no es número nuevo)."
+    },
+    {
+      "id": "hacha_templada",
+      "name": {
+        "es": "Hacha templada",
+        "en": "Tempered Axe"
+      },
+      "age": 2,
+      "building": "aserradero",
+      "cost": {
+        "food": 100,
+        "wood": 50
+      },
+      "researchTime": 25,
+      "effects": [
+        {
+          "target": "resource:wood",
+          "stat": "gather_rate",
+          "op": "mul_pct",
+          "value": 20,
+          "resource": "wood"
+        }
+      ],
+      "effectText": "Madera +20%",
+      "category": "economy"
+    },
+    {
+      "id": "sierra_de_arco",
+      "name": {
+        "es": "Sierra de arco",
+        "en": "Bow Saw"
+      },
+      "age": 3,
+      "building": "aserradero",
+      "cost": {
+        "food": 150,
+        "wood": 100
+      },
+      "researchTime": 50,
+      "effects": [
+        {
+          "target": "resource:wood",
+          "stat": "gather_rate",
+          "op": "mul_pct",
+          "value": 20,
+          "resource": "wood"
+        }
+      ],
+      "effectText": "Madera +20%",
+      "category": "economy"
+    },
+    {
+      "id": "sierra_doble",
+      "name": {
+        "es": "Sierra doble",
+        "en": "Two-Man Saw"
+      },
+      "age": 4,
+      "building": "aserradero",
+      "cost": {
+        "food": 300,
+        "wood": 200
+      },
+      "researchTime": 100,
+      "effects": [
+        {
+          "target": "resource:wood",
+          "stat": "gather_rate",
+          "op": "mul_pct",
+          "value": 10,
+          "resource": "wood"
+        }
+      ],
+      "effectText": "Madera +10%",
+      "category": "economy"
+    },
+    {
+      "id": "yugo",
+      "name": {
+        "es": "Yugo",
+        "en": "Yoke"
+      },
+      "age": 2,
+      "building": "molino",
+      "cost": {
+        "food": 75,
+        "wood": 75
+      },
+      "researchTime": 20,
+      "effects": [
+        {
+          "target": "building:granja",
+          "stat": "farm_amount",
+          "op": "add",
+          "value": 75
+        }
+      ],
+      "effectText": "Granjas +75",
+      "category": "economy"
+    },
+    {
+      "id": "arado_de_hierro",
+      "name": {
+        "es": "Arado de hierro",
+        "en": "Iron Plow"
+      },
+      "age": 3,
+      "building": "molino",
+      "cost": {
+        "food": 125,
+        "wood": 125
+      },
+      "researchTime": 40,
+      "effects": [
+        {
+          "target": "building:granja",
+          "stat": "farm_amount",
+          "op": "add",
+          "value": 125
+        },
+        {
+          "target": "unit:colono",
+          "stat": "carry",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Granjas +125, +1 carga",
+      "category": "economy",
+      "notes": "AMBIGUO: \"+1 carga\" sin objetivo explícito; se aplica a colonos."
+    },
+    {
+      "id": "rotacion_de_cultivos",
+      "name": {
+        "es": "Rotación de cultivos",
+        "en": "Crop Rotation"
+      },
+      "age": 4,
+      "building": "molino",
+      "cost": {
+        "food": 250,
+        "wood": 250
+      },
+      "researchTime": 70,
+      "effects": [
+        {
+          "target": "building:granja",
+          "stat": "farm_amount",
+          "op": "add",
+          "value": 175
+        }
+      ],
+      "effectText": "Granjas +175",
+      "category": "economy"
+    },
+    {
+      "id": "picos_de_eter",
+      "name": {
+        "es": "Picos de éter",
+        "en": "Aether Picks"
+      },
+      "age": 2,
+      "building": "campamento_minero",
+      "cost": {
+        "food": 100,
+        "wood": 75
+      },
+      "researchTime": 30,
+      "effects": [
+        {
+          "target": "resource:aether",
+          "stat": "gather_rate",
+          "op": "mul_pct",
+          "value": 15,
+          "resource": "aether"
+        }
+      ],
+      "effectText": "+15%",
+      "category": "economy",
+      "notes": "Fila \"Picos de éter / de piedra\" expandida a una entrada por recurso."
+    },
+    {
+      "id": "picos_de_piedra",
+      "name": {
+        "es": "Picos de piedra",
+        "en": "Stone Picks"
+      },
+      "age": 2,
+      "building": "campamento_minero",
+      "cost": {
+        "food": 100,
+        "wood": 75
+      },
+      "researchTime": 30,
+      "effects": [
+        {
+          "target": "resource:stone",
+          "stat": "gather_rate",
+          "op": "mul_pct",
+          "value": 15,
+          "resource": "stone"
+        }
+      ],
+      "effectText": "+15%",
+      "category": "economy",
+      "notes": "Fila \"Picos de éter / de piedra\" expandida a una entrada por recurso."
+    },
+    {
+      "id": "pozos_profundos_eter",
+      "name": {
+        "es": "Pozos profundos (éter)",
+        "en": "Deep Wells (aether)"
+      },
+      "age": 3,
+      "building": "campamento_minero",
+      "cost": {
+        "food": 175,
+        "wood": 75
+      },
+      "researchTime": 75,
+      "effects": [
+        {
+          "target": "resource:aether",
+          "stat": "gather_rate",
+          "op": "mul_pct",
+          "value": 15,
+          "resource": "aether"
+        }
+      ],
+      "effectText": "+15%",
+      "category": "economy",
+      "notes": "Fila \"Pozos profundos (éter / piedra)\" expandida a una entrada por recurso."
+    },
+    {
+      "id": "pozos_profundos_piedra",
+      "name": {
+        "es": "Pozos profundos (piedra)",
+        "en": "Deep Wells (stone)"
+      },
+      "age": 3,
+      "building": "campamento_minero",
+      "cost": {
+        "food": 175,
+        "wood": 75
+      },
+      "researchTime": 75,
+      "effects": [
+        {
+          "target": "resource:stone",
+          "stat": "gather_rate",
+          "op": "mul_pct",
+          "value": 15,
+          "resource": "stone"
+        }
+      ],
+      "effectText": "+15%",
+      "category": "economy",
+      "notes": "Fila \"Pozos profundos (éter / piedra)\" expandida a una entrada por recurso."
+    },
+    {
+      "id": "redes_de_pesca",
+      "name": {
+        "es": "Redes de pesca",
+        "en": "Fishing Nets"
+      },
+      "age": 3,
+      "building": "puerto",
+      "cost": {
+        "food": 150,
+        "wood": 200
+      },
+      "researchTime": 45,
+      "effects": [
+        {
+          "target": "unit:pesquero",
+          "stat": "speed",
+          "op": "mul_pct",
+          "value": 10
+        },
+        {
+          "target": "unit:pesquero",
+          "stat": "carry",
+          "op": "add",
+          "value": 5
+        }
+      ],
+      "effectText": "Pesqueros +10% velocidad, +5 carga",
+      "category": "economy"
+    },
+    {
+      "id": "caravana",
+      "name": {
+        "es": "Caravana",
+        "en": "Caravan"
+      },
+      "age": 3,
+      "building": "mercado",
+      "cost": {
+        "food": 200,
+        "aether": 200
+      },
+      "researchTime": 40,
+      "effects": [
+        {
+          "target": "line:trade",
+          "stat": "trade_speed",
+          "op": "mul_pct",
+          "value": 50
+        }
+      ],
+      "effectText": "Comercio +50% velocidad",
+      "category": "economy"
+    },
+    {
+      "id": "acunacion",
+      "name": {
+        "es": "Acuñación",
+        "en": "Coinage"
+      },
+      "age": 3,
+      "building": "mercado",
+      "cost": {
+        "food": 200,
+        "aether": 100
+      },
+      "researchTime": 70,
+      "effects": [
+        {
+          "target": "global",
+          "stat": "tribute_fee",
+          "op": "set",
+          "value": 20
+        }
+      ],
+      "effectText": "Tributo 20%",
+      "category": "economy"
+    },
+    {
+      "id": "banca",
+      "name": {
+        "es": "Banca",
+        "en": "Banking"
+      },
+      "age": 4,
+      "building": "mercado",
+      "cost": {
+        "food": 300,
+        "aether": 200
+      },
+      "researchTime": 70,
+      "effects": [
+        {
+          "target": "global",
+          "stat": "tribute_fee",
+          "op": "set",
+          "value": 0
+        }
+      ],
+      "effectText": "Tributo 0%",
+      "category": "economy",
+      "requires": ["acunacion"]
+    },
+    {
+      "id": "gremios",
+      "name": {
+        "es": "Gremios",
+        "en": "Guilds"
+      },
+      "age": 4,
+      "building": "mercado",
+      "cost": {
+        "food": 300,
+        "aether": 200
+      },
+      "researchTime": 50,
+      "effects": [
+        {
+          "target": "global",
+          "stat": "market_fee",
+          "op": "set",
+          "value": 15
+        }
+      ],
+      "effectText": "Comisión de mercado 15%",
+      "category": "economy"
+    },
+    {
+      "id": "fragua",
+      "name": {
+        "es": "Fragua",
+        "en": "Forging"
+      },
+      "age": 2,
+      "building": "forja",
+      "cost": {
+        "food": 150
+      },
+      "researchTime": 50,
+      "effects": [
+        {
+          "target": "class:infantry",
+          "stat": "attack",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "class:cavalry",
+          "stat": "attack",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Infantería y caballería +1 ataque",
+      "category": "forge",
+      "notes": "Fila triple \"A / B / C\" (II/III/IV) expandida a tres tecnologías. Requisito de cadena asumido por orden de tiers (no es número nuevo)."
+    },
+    {
+      "id": "hierro_colado",
+      "name": {
+        "es": "Hierro colado",
+        "en": "Iron Casting"
+      },
+      "age": 3,
+      "building": "forja",
+      "cost": {
+        "food": 220,
+        "aether": 120
+      },
+      "researchTime": 75,
+      "effects": [
+        {
+          "target": "class:infantry",
+          "stat": "attack",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "class:cavalry",
+          "stat": "attack",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Infantería y caballería +1 ataque",
+      "category": "forge",
+      "requires": ["fragua"],
+      "notes": "Fila triple \"A / B / C\" (II/III/IV) expandida a tres tecnologías. Requisito de cadena asumido por orden de tiers (no es número nuevo)."
+    },
+    {
+      "id": "alto_horno",
+      "name": {
+        "es": "Alto horno",
+        "en": "Blast Furnace"
+      },
+      "age": 4,
+      "building": "forja",
+      "cost": {
+        "food": 275,
+        "aether": 225
+      },
+      "researchTime": 100,
+      "effects": [
+        {
+          "target": "class:infantry",
+          "stat": "attack",
+          "op": "add",
+          "value": 2
+        },
+        {
+          "target": "class:cavalry",
+          "stat": "attack",
+          "op": "add",
+          "value": 2
+        }
+      ],
+      "effectText": "Infantería y caballería +2 ataque",
+      "category": "forge",
+      "requires": ["hierro_colado"],
+      "notes": "Fila triple \"A / B / C\" (II/III/IV) expandida a tres tecnologías. Requisito de cadena asumido por orden de tiers (no es número nuevo)."
+    },
+    {
+      "id": "escamas",
+      "name": {
+        "es": "Escamas",
+        "en": "Scale Mail"
+      },
+      "age": 2,
+      "building": "forja",
+      "cost": {
+        "food": 100
+      },
+      "researchTime": 40,
+      "effects": [
+        {
+          "target": "class:infantry",
+          "stat": "armor_melee",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "class:infantry",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Infantería +1/+1",
+      "category": "forge",
+      "notes": "Fila triple \"A / B / C\" (II/III/IV) expandida a tres tecnologías. \"+1/+1, +1/+1, +1/+2\" = cuerpo a cuerpo/perforante por tier."
+    },
+    {
+      "id": "malla",
+      "name": {
+        "es": "Malla",
+        "en": "Chain Mail"
+      },
+      "age": 3,
+      "building": "forja",
+      "cost": {
+        "food": 200,
+        "aether": 100
+      },
+      "researchTime": 55,
+      "effects": [
+        {
+          "target": "class:infantry",
+          "stat": "armor_melee",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "class:infantry",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Infantería +1/+1",
+      "category": "forge",
+      "requires": ["escamas"],
+      "notes": "Fila triple \"A / B / C\" (II/III/IV) expandida a tres tecnologías. \"+1/+1, +1/+1, +1/+2\" = cuerpo a cuerpo/perforante por tier."
+    },
+    {
+      "id": "placas",
+      "name": {
+        "es": "Placas",
+        "en": "Plate Mail"
+      },
+      "age": 4,
+      "building": "forja",
+      "cost": {
+        "food": 300,
+        "aether": 150
+      },
+      "researchTime": 70,
+      "effects": [
+        {
+          "target": "class:infantry",
+          "stat": "armor_melee",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "class:infantry",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 2
+        }
+      ],
+      "effectText": "Infantería +1/+2",
+      "category": "forge",
+      "requires": ["malla"],
+      "notes": "Fila triple \"A / B / C\" (II/III/IV) expandida a tres tecnologías. \"+1/+1, +1/+1, +1/+2\" = cuerpo a cuerpo/perforante por tier."
+    },
+    {
+      "id": "bardas_de_escamas",
+      "name": {
+        "es": "Bardas de escamas",
+        "en": "Scale Barding"
+      },
+      "age": 2,
+      "building": "forja",
+      "cost": {
+        "food": 150
+      },
+      "researchTime": 45,
+      "effects": [
+        {
+          "target": "class:cavalry",
+          "stat": "armor_melee",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "class:cavalry",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Caballería +1/+1",
+      "category": "forge",
+      "notes": "Fila triple \"A / B / C\" (II/III/IV) expandida a tres tecnologías. \"+1/+1, +1/+1, +1/+2\" = cuerpo a cuerpo/perforante por tier."
+    },
+    {
+      "id": "bardas_de_malla",
+      "name": {
+        "es": "Bardas de malla",
+        "en": "Chain Barding"
+      },
+      "age": 3,
+      "building": "forja",
+      "cost": {
+        "food": 250,
+        "aether": 150
+      },
+      "researchTime": 60,
+      "effects": [
+        {
+          "target": "class:cavalry",
+          "stat": "armor_melee",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "class:cavalry",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Caballería +1/+1",
+      "category": "forge",
+      "requires": ["bardas_de_escamas"],
+      "notes": "Fila triple \"A / B / C\" (II/III/IV) expandida a tres tecnologías. \"+1/+1, +1/+1, +1/+2\" = cuerpo a cuerpo/perforante por tier."
+    },
+    {
+      "id": "bardas_de_placas",
+      "name": {
+        "es": "Bardas de placas",
+        "en": "Plate Barding"
+      },
+      "age": 4,
+      "building": "forja",
+      "cost": {
+        "food": 350,
+        "aether": 200
+      },
+      "researchTime": 75,
+      "effects": [
+        {
+          "target": "class:cavalry",
+          "stat": "armor_melee",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "class:cavalry",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 2
+        }
+      ],
+      "effectText": "Caballería +1/+2",
+      "category": "forge",
+      "requires": ["bardas_de_malla"],
+      "notes": "Fila triple \"A / B / C\" (II/III/IV) expandida a tres tecnologías. \"+1/+1, +1/+1, +1/+2\" = cuerpo a cuerpo/perforante por tier."
+    },
+    {
+      "id": "emplumado",
+      "name": {
+        "es": "Emplumado",
+        "en": "Fletching"
+      },
+      "age": 2,
+      "building": "forja",
+      "cost": {
+        "food": 100,
+        "aether": 50
+      },
+      "researchTime": 30,
+      "effects": [
+        {
+          "target": "class:archer",
+          "stat": "range",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "class:archer",
+          "stat": "attack",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "building:ciudadela",
+          "stat": "range",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "building:ciudadela",
+          "stat": "attack",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "buildings:towers",
+          "stat": "range",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "buildings:towers",
+          "stat": "attack",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Arqueros, torres y Ciudadela +1 alcance y +1 ataque",
+      "category": "forge",
+      "notes": "Fila triple \"A / B / C\" (II/III/IV) expandida a tres tecnologías. \"cada una\" interpretado como +1 alcance y +1 ataque por tecnología."
+    },
+    {
+      "id": "punta_de_eter",
+      "name": {
+        "es": "Punta de éter",
+        "en": "Aether Tip"
+      },
+      "age": 3,
+      "building": "forja",
+      "cost": {
+        "food": 200,
+        "aether": 100
+      },
+      "researchTime": 35,
+      "effects": [
+        {
+          "target": "class:archer",
+          "stat": "range",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "class:archer",
+          "stat": "attack",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "building:ciudadela",
+          "stat": "range",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "building:ciudadela",
+          "stat": "attack",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "buildings:towers",
+          "stat": "range",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "buildings:towers",
+          "stat": "attack",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Arqueros, torres y Ciudadela +1 alcance y +1 ataque",
+      "category": "forge",
+      "requires": ["emplumado"],
+      "notes": "Fila triple \"A / B / C\" (II/III/IV) expandida a tres tecnologías. \"cada una\" interpretado como +1 alcance y +1 ataque por tecnología."
+    },
+    {
+      "id": "brazal",
+      "name": {
+        "es": "Brazal",
+        "en": "Bracer"
+      },
+      "age": 4,
+      "building": "forja",
+      "cost": {
+        "food": 300,
+        "aether": 200
+      },
+      "researchTime": 40,
+      "effects": [
+        {
+          "target": "class:archer",
+          "stat": "range",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "class:archer",
+          "stat": "attack",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "building:ciudadela",
+          "stat": "range",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "building:ciudadela",
+          "stat": "attack",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "buildings:towers",
+          "stat": "range",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "buildings:towers",
+          "stat": "attack",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Arqueros, torres y Ciudadela +1 alcance y +1 ataque",
+      "category": "forge",
+      "requires": ["punta_de_eter"],
+      "notes": "Fila triple \"A / B / C\" (II/III/IV) expandida a tres tecnologías. \"cada una\" interpretado como +1 alcance y +1 ataque por tecnología."
+    },
+    {
+      "id": "acolchado",
+      "name": {
+        "es": "Acolchado",
+        "en": "Padded Archer Armor"
+      },
+      "age": 2,
+      "building": "forja",
+      "cost": {
+        "food": 100
+      },
+      "researchTime": 40,
+      "effects": [
+        {
+          "target": "class:archer",
+          "stat": "armor_melee",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "class:archer",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Arqueros +1/+1",
+      "category": "forge",
+      "notes": "Fila triple \"A / B / C\" (II/III/IV) expandida a tres tecnologías. \"+1/+1, +1/+1, +1/+2\" = cuerpo a cuerpo/perforante por tier."
+    },
+    {
+      "id": "cuero",
+      "name": {
+        "es": "Cuero",
+        "en": "Leather Archer Armor"
+      },
+      "age": 3,
+      "building": "forja",
+      "cost": {
+        "food": 150,
+        "aether": 150
+      },
+      "researchTime": 55,
+      "effects": [
+        {
+          "target": "class:archer",
+          "stat": "armor_melee",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "class:archer",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Arqueros +1/+1",
+      "category": "forge",
+      "requires": ["acolchado"],
+      "notes": "Fila triple \"A / B / C\" (II/III/IV) expandida a tres tecnologías. \"+1/+1, +1/+1, +1/+2\" = cuerpo a cuerpo/perforante por tier."
+    },
+    {
+      "id": "anillas",
+      "name": {
+        "es": "Anillas",
+        "en": "Ring Archer Armor"
+      },
+      "age": 4,
+      "building": "forja",
+      "cost": {
+        "food": 250,
+        "aether": 250
+      },
+      "researchTime": 70,
+      "effects": [
+        {
+          "target": "class:archer",
+          "stat": "armor_melee",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "class:archer",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 2
+        }
+      ],
+      "effectText": "Arqueros +1/+2",
+      "category": "forge",
+      "requires": ["cuero"],
+      "notes": "Fila triple \"A / B / C\" (II/III/IV) expandida a tres tecnologías. \"+1/+1, +1/+1, +1/+2\" = cuerpo a cuerpo/perforante por tier."
+    },
+    {
+      "id": "suministros",
+      "name": {
+        "es": "Suministros",
+        "en": "Supplies"
+      },
+      "age": 2,
+      "building": "cuartel",
+      "cost": {
+        "food": 75,
+        "aether": 75
+      },
+      "researchTime": 20,
+      "effects": [
+        {
+          "target": "line:swordsman",
+          "stat": "cost",
+          "op": "add",
+          "value": -15,
+          "resource": "food"
+        }
+      ],
+      "effectText": "Línea de espadas −15 víveres",
+      "category": "military"
+    },
+    {
+      "id": "gambesones",
+      "name": {
+        "es": "Gambesones",
+        "en": "Gambesons"
+      },
+      "age": 3,
+      "building": "cuartel",
+      "cost": {
+        "food": 100,
+        "aether": 100
+      },
+      "researchTime": 25,
+      "effects": [
+        {
+          "target": "line:swordsman",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Línea de espadas +1 arm. perforante",
+      "category": "military"
+    },
+    {
+      "id": "escuderos",
+      "name": {
+        "es": "Escuderos",
+        "en": "Squires"
+      },
+      "age": 3,
+      "building": "cuartel",
+      "cost": {
+        "food": 100
+      },
+      "researchTime": 40,
+      "effects": [
+        {
+          "target": "class:infantry",
+          "stat": "speed",
+          "op": "mul_pct",
+          "value": 10
+        }
+      ],
+      "effectText": "Infantería +10% velocidad",
+      "category": "military"
+    },
+    {
+      "id": "incendiarios",
+      "name": {
+        "es": "Incendiarios",
+        "en": "Incendiaries"
+      },
+      "age": 3,
+      "building": "cuartel",
+      "cost": {
+        "food": 150,
+        "aether": 50
+      },
+      "researchTime": 25,
+      "effects": [
+        {
+          "target": "class:infantry",
+          "stat": "attack_building",
+          "op": "add",
+          "value": 2
+        }
+      ],
+      "effectText": "Infantería +2 contra edificios",
+      "category": "military"
+    },
+    {
+      "id": "anillo_de_tension",
+      "name": {
+        "es": "Anillo de tensión",
+        "en": "Tension Ring"
+      },
+      "age": 3,
+      "building": "arqueria",
+      "cost": {
+        "food": 300,
+        "wood": 250
+      },
+      "researchTime": 45,
+      "effects": [
+        {
+          "target": "class:archer",
+          "stat": "accuracy",
+          "op": "set",
+          "value": 100
+        },
+        {
+          "target": "class:archer",
+          "stat": "reload",
+          "op": "mul_pct",
+          "value": -10
+        }
+      ],
+      "effectText": "Precisión 100%, RoF −10%",
+      "category": "military",
+      "notes": "AMBIGUO: \"RoF −10%\" tomado literal como −10% al tiempo de recarga (§8.3 lo describe como RoF −10%)."
+    },
+    {
+      "id": "tactica_de_estepa",
+      "name": {
+        "es": "Táctica de estepa",
+        "en": "Steppe Tactics"
+      },
+      "age": 4,
+      "building": "arqueria",
+      "cost": {
+        "food": 200,
+        "aether": 250
+      },
+      "researchTime": 65,
+      "effects": [
+        {
+          "target": "line:cavalry_archer",
+          "stat": "armor_melee",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "line:cavalry_archer",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 2
+        }
+      ],
+      "effectText": "Jinetes arqueros +1/+2 armadura",
+      "category": "military"
+    },
+    {
+      "id": "linajes",
+      "name": {
+        "es": "Linajes",
+        "en": "Bloodlines"
+      },
+      "age": 2,
+      "building": "establo",
+      "cost": {
+        "food": 150,
+        "aether": 100
+      },
+      "researchTime": 50,
+      "effects": [
+        {
+          "target": "class:cavalry",
+          "stat": "hp",
+          "op": "add",
+          "value": 20
+        }
+      ],
+      "effectText": "Montados +20 PV",
+      "category": "military",
+      "notes": "Montados = clase caballería (incluye jinetes arqueros)."
+    },
+    {
+      "id": "cria_de_caballos",
+      "name": {
+        "es": "Cría de caballos",
+        "en": "Horse Breeding"
+      },
+      "age": 3,
+      "building": "establo",
+      "cost": {
+        "food": 150
+      },
+      "researchTime": 40,
+      "effects": [
+        {
+          "target": "class:cavalry",
+          "stat": "speed",
+          "op": "mul_pct",
+          "value": 10
+        }
+      ],
+      "effectText": "Montados +10% velocidad",
+      "category": "military"
+    },
+    {
+      "id": "carenado",
+      "name": {
+        "es": "Carenado",
+        "en": "Careening"
+      },
+      "age": 3,
+      "building": "puerto",
+      "cost": {
+        "food": 250,
+        "aether": 150
+      },
+      "researchTime": 50,
+      "effects": [
+        {
+          "target": "class:ship",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "+1 arm. perf.",
+      "category": "military",
+      "notes": "Fila \"Carenado / Dique seco / Astillero\" (III/IV/IV) expandida."
+    },
+    {
+      "id": "dique_seco",
+      "name": {
+        "es": "Dique seco",
+        "en": "Dry Dock"
+      },
+      "age": 4,
+      "building": "puerto",
+      "cost": {
+        "food": 600,
+        "aether": 400
+      },
+      "researchTime": 60,
+      "effects": [
+        {
+          "target": "class:ship",
+          "stat": "speed",
+          "op": "mul_pct",
+          "value": 15
+        }
+      ],
+      "effectText": "+15% velocidad",
+      "category": "military"
+    },
+    {
+      "id": "astillero",
+      "name": {
+        "es": "Astillero",
+        "en": "Shipyard"
+      },
+      "age": 4,
+      "building": "puerto",
+      "cost": {
+        "food": 1000,
+        "aether": 300
+      },
+      "researchTime": 60,
+      "effects": [
+        {
+          "target": "class:ship",
+          "stat": "cost_wood",
+          "op": "mul_pct",
+          "value": -20
+        }
+      ],
+      "effectText": "−20% madera",
+      "category": "military"
+    },
+    {
+      "id": "albanileria",
+      "name": {
+        "es": "Albañilería",
+        "en": "Masonry"
+      },
+      "age": 3,
+      "building": "academia",
+      "cost": {
+        "food": 150,
+        "wood": 175
+      },
+      "researchTime": 50,
+      "effects": [
+        {
+          "target": "buildings:all",
+          "stat": "hp",
+          "op": "mul_pct",
+          "value": 10
+        },
+        {
+          "target": "buildings:all",
+          "stat": "armor_melee",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "buildings:all",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Edificios +10% PV, +1/+1",
+      "category": "academy"
+    },
+    {
+      "id": "arquitectura",
+      "name": {
+        "es": "Arquitectura",
+        "en": "Architecture"
+      },
+      "age": 4,
+      "building": "academia",
+      "cost": {
+        "food": 300,
+        "wood": 200
+      },
+      "researchTime": 70,
+      "effects": [
+        {
+          "target": "buildings:all",
+          "stat": "hp",
+          "op": "mul_pct",
+          "value": 10
+        },
+        {
+          "target": "buildings:all",
+          "stat": "armor_melee",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "buildings:all",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Edificios +10% PV, +1/+1",
+      "category": "academy",
+      "requires": ["albanileria"]
+    },
+    {
+      "id": "grua_de_rueda",
+      "name": {
+        "es": "Grúa de rueda",
+        "en": "Treadwheel Crane"
+      },
+      "age": 3,
+      "building": "academia",
+      "cost": {
+        "food": 300,
+        "wood": 200
+      },
+      "researchTime": 50,
+      "effects": [
+        {
+          "target": "global",
+          "stat": "build_speed",
+          "op": "mul_pct",
+          "value": 20
+        }
+      ],
+      "effectText": "Construcción +20%",
+      "category": "academy"
+    },
+    {
+      "id": "balistica",
+      "name": {
+        "es": "Balística",
+        "en": "Ballistics"
+      },
+      "age": 3,
+      "building": "academia",
+      "cost": {
+        "wood": 300,
+        "aether": 175
+      },
+      "researchTime": 60,
+      "effects": [
+        {
+          "target": "global",
+          "stat": "script",
+          "op": "script",
+          "script": "ballistics_lead_targets"
+        }
+      ],
+      "effectText": "Puntería a objetivos en movimiento",
+      "category": "academy",
+      "notes": "Excepción script (§9, §8.3)."
+    },
+    {
+      "id": "aspilleras",
+      "name": {
+        "es": "Aspilleras",
+        "en": "Arrow Slits"
+      },
+      "age": 3,
+      "building": "academia",
+      "cost": {
+        "food": 200,
+        "stone": 100
+      },
+      "researchTime": 35,
+      "effects": [
+        {
+          "target": "buildings:towers",
+          "stat": "min_range",
+          "op": "set",
+          "value": 0
+        }
+      ],
+      "effectText": "Sin rango mínimo en torres",
+      "category": "academy"
+    },
+    {
+      "id": "alquimia_de_eter",
+      "name": {
+        "es": "Alquimia de éter",
+        "en": "Aether Alchemy"
+      },
+      "age": 4,
+      "building": "academia",
+      "cost": {
+        "food": 300,
+        "aether": 200
+      },
+      "researchTime": 100,
+      "effects": [
+        {
+          "target": "global",
+          "stat": "script",
+          "op": "script",
+          "script": "projectile_attack_plus1"
+        },
+        {
+          "target": "global",
+          "stat": "script",
+          "op": "script",
+          "script": "gunpowder_requirement"
+        }
+      ],
+      "effectText": "+1 ataque a proyectiles; requisito de pólvora",
+      "category": "academy",
+      "notes": "AMBIGUO: \"+1 ataque a proyectiles\" sin selector exacto y \"requisito de pólvora\" (gating de pólvora) solo en prosa: se modelan como scripts."
+    },
+    {
+      "id": "ingenieros_de_asedio",
+      "name": {
+        "es": "Ingenieros de asedio",
+        "en": "Siege Engineers"
+      },
+      "age": 4,
+      "building": "academia",
+      "cost": {
+        "food": 500,
+        "wood": 600
+      },
+      "researchTime": 45,
+      "effects": [
+        {
+          "target": "class:siege",
+          "stat": "range",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "class:siege",
+          "stat": "attack_building",
+          "op": "mul_pct",
+          "value": 20
+        }
+      ],
+      "effectText": "Asedio +1 alcance, +20% contra edificios",
+      "category": "academy"
+    },
+    {
+      "id": "torre_de_bombarda",
+      "name": {
+        "es": "Torre de bombarda",
+        "en": "Bombard Tower"
+      },
+      "age": 4,
+      "building": "academia",
+      "cost": {
+        "food": 800,
+        "wood": 400
+      },
+      "researchTime": 60,
+      "effects": [
+        {
+          "target": "building:torre_de_bombarda_de_eter",
+          "stat": "unlock",
+          "op": "script",
+          "script": "unlock_building"
+        }
+      ],
+      "effectText": "Desbloquea la torre",
+      "category": "academy"
+    },
+    {
+      "id": "vigilancia",
+      "name": {
+        "es": "Vigilancia",
+        "en": "Vigilance"
+      },
+      "age": 2,
+      "building": "ciudadela",
+      "cost": {
+        "food": 75
+      },
+      "researchTime": 25,
+      "effects": [
+        {
+          "target": "buildings:all",
+          "stat": "los",
+          "op": "add",
+          "value": 4
+        }
+      ],
+      "effectText": "Edificios +4 visión",
+      "category": "fortification",
+      "notes": "Fila \"Vigilancia / Patrulla urbana\" (II/III) expandida; \"+4 visión cada una\"."
+    },
+    {
+      "id": "patrulla_urbana",
+      "name": {
+        "es": "Patrulla urbana",
+        "en": "City Watch"
+      },
+      "age": 3,
+      "building": "ciudadela",
+      "cost": {
+        "food": 300,
+        "aether": 100
+      },
+      "researchTime": 40,
+      "effects": [
+        {
+          "target": "buildings:all",
+          "stat": "los",
+          "op": "add",
+          "value": 4
+        }
+      ],
+      "effectText": "Edificios +4 visión",
+      "category": "fortification",
+      "requires": ["vigilancia"]
+    },
+    {
+      "id": "matacanes",
+      "name": {
+        "es": "Matacanes",
+        "en": "Machicolations"
+      },
+      "age": 4,
+      "building": "bastion",
+      "cost": {
+        "food": 400,
+        "wood": 400
+      },
+      "researchTime": 75,
+      "effects": [
+        {
+          "target": "building:bastion",
+          "stat": "hp",
+          "op": "mul_pct",
+          "value": 21
+        }
+      ],
+      "effectText": "Bastión +21% PV",
+      "category": "fortification"
+    },
+    {
+      "id": "conscripcion",
+      "name": {
+        "es": "Conscripción",
+        "en": "Conscription"
+      },
+      "age": 4,
+      "building": "bastion",
+      "cost": {
+        "food": 150,
+        "aether": 150
+      },
+      "researchTime": 60,
+      "effects": [
+        {
+          "target": "global",
+          "stat": "production_speed",
+          "op": "mul_pct",
+          "value": 33
+        }
+      ],
+      "effectText": "Producción militar +33%",
+      "category": "fortification",
+      "notes": "AMBIGUO: \"+33% producción\": se interpreta como +33% de velocidad de producción militar."
+    },
+    {
+      "id": "zapadores",
+      "name": {
+        "es": "Zapadores",
+        "en": "Sappers"
+      },
+      "age": 4,
+      "building": "bastion",
+      "cost": {
+        "food": 400,
+        "wood": 200
+      },
+      "researchTime": 10,
+      "effects": [
+        {
+          "target": "unit:colono",
+          "stat": "attack_building",
+          "op": "add",
+          "value": 15
+        }
+      ],
+      "effectText": "Colonos +15 contra edificios",
+      "category": "fortification"
+    },
+    {
+      "id": "redencion",
+      "name": {
+        "es": "Redención",
+        "en": "Redemption"
+      },
+      "age": 3,
+      "building": "santuario",
+      "cost": {
+        "aether": 475
+      },
+      "researchTime": 50,
+      "effects": [
+        {
+          "target": "global",
+          "stat": "script",
+          "op": "script",
+          "script": "convert_buildings_siege"
+        }
+      ],
+      "effectText": "Convertir edificios y asedio",
+      "category": "sanctuary",
+      "notes": "Era asumida III (Santuario); costo en éter explícito."
+    },
+    {
+      "id": "expiacion",
+      "name": {
+        "es": "Expiación",
+        "en": "Atonement"
+      },
+      "age": 3,
+      "building": "santuario",
+      "cost": {
+        "aether": 325
+      },
+      "researchTime": 40,
+      "effects": [
+        {
+          "target": "global",
+          "stat": "script",
+          "op": "script",
+          "script": "convert_custodians"
+        }
+      ],
+      "effectText": "Convertir Custodios",
+      "category": "sanctuary",
+      "notes": "AMBIGUO: §9.4 no indica la era (asumida III por el Santuario) ni el recurso de los costos sin etiqueta (asumido éter, como Redención)."
+    },
+    {
+      "id": "hierbas_sagradas",
+      "name": {
+        "es": "Hierbas sagradas",
+        "en": "Sacred Herbs"
+      },
+      "age": 3,
+      "building": "santuario",
+      "cost": {
+        "aether": 200
+      },
+      "researchTime": 35,
+      "effects": [
+        {
+          "target": "global",
+          "stat": "script",
+          "op": "script",
+          "script": "garrison_heal_x6"
+        }
+      ],
+      "effectText": "Curación en guarnición ×6",
+      "category": "sanctuary",
+      "notes": "AMBIGUO: §9.4 no indica la era (asumida III por el Santuario) ni el recurso de los costos sin etiqueta (asumido éter, como Redención)."
+    },
+    {
+      "id": "heregia",
+      "name": {
+        "es": "Herejía",
+        "en": "Heresy"
+      },
+      "age": 3,
+      "building": "santuario",
+      "cost": {
+        "aether": 1000
+      },
+      "researchTime": 60,
+      "effects": [
+        {
+          "target": "global",
+          "stat": "script",
+          "op": "script",
+          "script": "converted_units_die"
+        }
+      ],
+      "effectText": "Unidades convertidas mueren",
+      "category": "sanctuary",
+      "notes": "AMBIGUO: §9.4 no indica la era (asumida III por el Santuario) ni el recurso de los costos sin etiqueta (asumido éter, como Redención)."
+    },
+    {
+      "id": "santidad",
+      "name": {
+        "es": "Santidad",
+        "en": "Sanctity"
+      },
+      "age": 3,
+      "building": "santuario",
+      "cost": {
+        "aether": 175
+      },
+      "researchTime": 60,
+      "effects": [
+        {
+          "target": "unit:custodio",
+          "stat": "hp",
+          "op": "add",
+          "value": 15
+        }
+      ],
+      "effectText": "+15 PV",
+      "category": "sanctuary",
+      "notes": "AMBIGUO: §9.4 no indica la era (asumida III por el Santuario) ni el recurso de los costos sin etiqueta (asumido éter, como Redención). Objetivo asumido: Custodios."
+    },
+    {
+      "id": "fervor",
+      "name": {
+        "es": "Fervor",
+        "en": "Fervor"
+      },
+      "age": 3,
+      "building": "santuario",
+      "cost": {
+        "aether": 140
+      },
+      "researchTime": 50,
+      "effects": [
+        {
+          "target": "unit:custodio",
+          "stat": "speed",
+          "op": "mul_pct",
+          "value": 15
+        }
+      ],
+      "effectText": "+15% velocidad",
+      "category": "sanctuary",
+      "notes": "AMBIGUO: §9.4 no indica la era (asumida III por el Santuario) ni el recurso de los costos sin etiqueta (asumido éter, como Redención). Objetivo asumido: Custodios."
+    },
+    {
+      "id": "devocion",
+      "name": {
+        "es": "Devoción",
+        "en": "Devotion"
+      },
+      "age": 3,
+      "building": "santuario",
+      "cost": {
+        "food": 100,
+        "aether": 200
+      },
+      "researchTime": 40,
+      "effects": [],
+      "effectText": "Efecto no especificado en el GDD",
+      "category": "sanctuary",
+      "notes": "AMBIGUO: sin efecto en §9.4; era asumida III."
+    },
+    {
+      "id": "fe",
+      "name": {
+        "es": "Fe",
+        "en": "Faith"
+      },
+      "age": 3,
+      "building": "santuario",
+      "cost": {
+        "food": 550,
+        "aether": 750
+      },
+      "researchTime": 60,
+      "effects": [
+        {
+          "target": "global",
+          "stat": "script",
+          "op": "script",
+          "script": "resonance_resistance"
+        }
+      ],
+      "effectText": "Resistencia a Resonancia",
+      "category": "sanctuary",
+      "notes": "Era asumida III (Santuario)."
+    },
+    {
+      "id": "iluminacion",
+      "name": {
+        "es": "Iluminación",
+        "en": "Illumination"
+      },
+      "age": 3,
+      "building": "santuario",
+      "cost": {
+        "aether": 120
+      },
+      "researchTime": 65,
+      "effects": [
+        {
+          "target": "global",
+          "stat": "script",
+          "op": "script",
+          "script": "faith_recharge_plus_87_5pct"
+        }
+      ],
+      "effectText": "Recarga de fe +87,5% (§8.6)",
+      "category": "sanctuary",
+      "notes": "AMBIGUO: §9.4 no indica la era (asumida III por el Santuario) ni el recurso de los costos sin etiqueta (asumido éter, como Redención). Efecto tomado de §8.6."
+    },
+    {
+      "id": "imprenta",
+      "name": {
+        "es": "Imprenta",
+        "en": "Printing"
+      },
+      "age": 3,
+      "building": "santuario",
+      "cost": {
+        "aether": 200
+      },
+      "researchTime": 55,
+      "effects": [
+        {
+          "target": "unit:custodio",
+          "stat": "range",
+          "op": "add",
+          "value": 3
+        }
+      ],
+      "effectText": "+3 alcance",
+      "category": "sanctuary",
+      "notes": "AMBIGUO: §9.4 no indica la era (asumida III por el Santuario) ni el recurso de los costos sin etiqueta (asumido éter, como Redención). Objetivo asumido: Custodios."
+    },
+    {
+      "id": "teocracia",
+      "name": {
+        "es": "Teocracia",
+        "en": "Theocracy"
+      },
+      "age": 3,
+      "building": "santuario",
+      "cost": {
+        "aether": 200
+      },
+      "researchTime": 75,
+      "effects": [],
+      "effectText": "Efecto no especificado en el GDD",
+      "category": "sanctuary",
+      "notes": "AMBIGUO: §9.4 no indica la era (asumida III por el Santuario) ni el recurso de los costos sin etiqueta (asumido éter, como Redención)."
+    },
+    {
+      "id": "juramento",
+      "name": {
+        "es": "Juramento",
+        "en": "Oath"
+      },
+      "age": 3,
+      "building": "bastion",
+      "effects": [
+        {
+          "target": "class:unique",
+          "stat": "speed",
+          "op": "mul_pct",
+          "value": 15
+        }
+      ],
+      "effectText": "Unidades únicas +15% velocidad",
+      "faction": "casa_valdren",
+      "category": "unique",
+      "notes": "AMBIGUO: costo y tiempo \"Varía\" en §9.3: no especificados."
+    },
+    {
+      "id": "cruzada_de_ceniza",
+      "name": {
+        "es": "Cruzada de Ceniza",
+        "en": "Ashen Crusade"
+      },
+      "age": 4,
+      "building": "bastion",
+      "effects": [
+        {
+          "target": "class:cavalry",
+          "stat": "attack",
+          "op": "add",
+          "value": 2
+        }
+      ],
+      "effectText": "Caballería +2 ataque",
+      "faction": "casa_valdren",
+      "category": "unique",
+      "notes": "AMBIGUO: costo y tiempo \"Varía\" en §9.3: no especificados."
+    },
+    {
+      "id": "runas_de_guerra",
+      "name": {
+        "es": "Runas de guerra",
+        "en": "War Runes"
+      },
+      "age": 3,
+      "building": "bastion",
+      "effects": [
+        {
+          "target": "class:infantry",
+          "stat": "armor_melee",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "class:infantry",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Infantería +1/+1 armadura",
+      "faction": "clanes_skjald",
+      "category": "unique",
+      "notes": "AMBIGUO: costo y tiempo \"Varía\" en §9.3: no especificados."
+    },
+    {
+      "id": "valhalla",
+      "name": {
+        "es": "Valhalla",
+        "en": "Valhalla"
+      },
+      "age": 4,
+      "building": "bastion",
+      "effects": [
+        {
+          "target": "global",
+          "stat": "script",
+          "op": "script",
+          "script": "infantry_death_heals_allies_10"
+        }
+      ],
+      "effectText": "Infantería que muere cura 10 PV a aliados cercanos",
+      "faction": "clanes_skjald",
+      "category": "unique",
+      "notes": "AMBIGUO: costo y tiempo \"Varía\" en §9.3: no especificados. Radio de \"cercanos\" no especificado."
+    },
+    {
+      "id": "caravanserai",
+      "name": {
+        "es": "Caravanserai",
+        "en": "Caravanserai"
+      },
+      "age": 3,
+      "building": "bastion",
+      "effects": [
+        {
+          "target": "unit:carreta_de_comercio",
+          "stat": "speed",
+          "op": "mul_pct",
+          "value": 30
+        }
+      ],
+      "effectText": "Carretas +30% velocidad",
+      "faction": "sultanato_de_azhar",
+      "category": "unique",
+      "notes": "AMBIGUO: costo y tiempo \"Varía\" en §9.3: no especificados."
+    },
+    {
+      "id": "zoco_imperial",
+      "name": {
+        "es": "Zoco Imperial",
+        "en": "Imperial Souk"
+      },
+      "age": 4,
+      "building": "bastion",
+      "effects": [
+        {
+          "target": "building:mercado",
+          "stat": "aether_income",
+          "op": "add",
+          "value": 0.5
+        }
+      ],
+      "effectText": "El mercado genera 0,5 éter/s",
+      "faction": "sultanato_de_azhar",
+      "category": "unique",
+      "notes": "AMBIGUO: costo y tiempo \"Varía\" en §9.3: no especificados."
+    },
+    {
+      "id": "fuego_griego_de_eter",
+      "name": {
+        "es": "Fuego griego de éter",
+        "en": "Aether Greek Fire"
+      },
+      "age": 3,
+      "building": "bastion",
+      "effects": [
+        {
+          "target": "class:ship",
+          "stat": "range",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "target": "buildings:towers",
+          "stat": "range",
+          "op": "add",
+          "value": 1
+        }
+      ],
+      "effectText": "Barcos y torres +1 alcance",
+      "faction": "concordia_tessaline",
+      "category": "unique",
+      "notes": "AMBIGUO: costo y tiempo \"Varía\" en §9.3: no especificados."
+    },
+    {
+      "id": "ingenio_de_la_concordia",
+      "name": {
+        "es": "Ingenio de la Concordia",
+        "en": "Concordia Ingenuity"
+      },
+      "age": 4,
+      "building": "bastion",
+      "effects": [
+        {
+          "target": "class:siege",
+          "stat": "fire_rate",
+          "op": "mul_pct",
+          "value": 20
+        }
+      ],
+      "effectText": "Asedio dispara 20% más rápido",
+      "faction": "concordia_tessaline",
+      "category": "unique",
+      "notes": "AMBIGUO: costo y tiempo \"Varía\" en §9.3: no especificados. \"20% más rápido\" tomado literal como +20% a la cadencia."
+    }
+  ]
+}

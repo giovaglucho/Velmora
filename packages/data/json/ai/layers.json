@@ -1,0 +1,50 @@
+{
+  "layers": [
+    {
+      "id": "strategic",
+      "name": {
+        "es": "Estratégica",
+        "en": "Strategic"
+      },
+      "intervalSeconds": 2,
+      "responsibility": "Elegir plan (scouts, arqueros, fast castle, boom, torre), decidir subir de era, atacar o defender"
+    },
+    {
+      "id": "economic",
+      "name": {
+        "es": "Económica",
+        "en": "Economic"
+      },
+      "intervalSeconds": 1,
+      "responsibility": "Repartir colonos por porcentajes (strategic numbers), construir casas antes del tope, depósitos cerca de recursos, granjas"
+    },
+    {
+      "id": "production",
+      "name": {
+        "es": "Producción",
+        "en": "Production"
+      },
+      "intervalSeconds": 0.5,
+      "responsibility": "Colas de entrenamiento e investigación según el plan y el counter detectado"
+    },
+    {
+      "id": "tactical",
+      "name": {
+        "es": "Táctica",
+        "en": "Tactical"
+      },
+      "intervalSeconds": 0.25,
+      "responsibility": "Grupos de ataque, objetivos, retirada al bajar del 30% de PV del grupo, focus de arqueros, enfoque de Lanzapiedras"
+    },
+    {
+      "id": "micro",
+      "name": {
+        "es": "Micro",
+        "en": "Micro"
+      },
+      "everyTick": true,
+      "minDifficulty": "dificil",
+      "responsibility": "Esquivar proyectiles de Lanzapiedras, separar unidades, robar ovejas, atraer jabalí"
+    }
+  ]
+}

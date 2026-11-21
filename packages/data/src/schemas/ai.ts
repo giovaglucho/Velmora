@@ -2,7 +2,14 @@ import { z } from 'zod';
 import { Id, LocalizedName, Notes } from './common.js';
 
 /** GDD §12.2 rule: conditions -> actions (strings of the AI DSL). */
-export const AiRule = z.object({ id: Id.optional(), when: z.array(z.string()).min(1), do: z.array(z.string()).min(1), notes: Notes }).strict();
+export const AiRule = z
+  .object({
+    id: Id.optional(),
+    when: z.array(z.string()).min(1),
+    do: z.array(z.string()).min(1),
+    notes: Notes,
+  })
+  .strict();
 export const AiRulesFile = z.object({ rules: z.array(AiRule) });
 
 export const Difficulty = z
@@ -25,12 +32,24 @@ export const Difficulty = z
 export const DifficultiesFile = z.object({
   difficulties: z.array(Difficulty).length(6),
   calibration: z.array(
-    z.object({ difficulty: Id, plan: Id, reachAge: z.number().int().min(2).max(4), beforeSeconds: z.number().int() }),
+    z.object({
+      difficulty: Id,
+      plan: Id,
+      reachAge: z.number().int().min(2).max(4),
+      beforeSeconds: z.number().int(),
+    }),
   ),
 });
 
 export const AiLayersFile = z.object({
   layers: z.array(
-    z.object({ id: Id, name: LocalizedName, intervalSeconds: z.number().positive(), minDifficulty: Id.optional(), responsibility: z.string() }),
+    z.object({
+      id: Id,
+      name: LocalizedName,
+      intervalSeconds: z.number().positive().optional(),
+      everyTick: z.boolean().optional(),
+      minDifficulty: Id.optional(),
+      responsibility: z.string(),
+    }),
   ),
 });

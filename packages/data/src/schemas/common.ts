@@ -20,12 +20,27 @@ export type Cost = z.infer<typeof Cost>;
 
 /** GDD §8.2 armor/attack classes. `civil` is a unit class only (no armor). */
 export const ArmorClass = z.enum([
-  'melee', 'pierce', 'infantry', 'archer', 'cavalry', 'cavalry_archer', 'spear', 'siege',
-  'building', 'stone_defense', 'wall', 'ship', 'custodian', 'gunpowder', 'unique', 'camel_like', 'hero',
+  'melee',
+  'pierce',
+  'infantry',
+  'archer',
+  'cavalry',
+  'cavalry_archer',
+  'spear',
+  'siege',
+  'building',
+  'stone_defense',
+  'wall',
+  'ship',
+  'custodian',
+  'gunpowder',
+  'unique',
+  'camel_like',
+  'hero',
 ]);
 export type ArmorClass = z.infer<typeof ArmorClass>;
 export const UnitClass = z.enum([...ArmorClass.options, 'civil']);
 export type UnitClass = z.infer<typeof UnitClass>;
 
 export const Notes = z.string().optional();
-export const DamageMap = z.record(ArmorClass, z.number().nonnegative());
+export const DamageMap = z.partialRecord(ArmorClass, z.number().nonnegative());

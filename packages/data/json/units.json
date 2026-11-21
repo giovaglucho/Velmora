@@ -24,9 +24,7 @@
         "melee": 0,
         "pierce": 0
       },
-      "classes": [
-        "civil"
-      ],
+      "classes": ["civil"],
       "sprite": "units/colono",
       "voice": "civil",
       "notes": "§4.2/§7.1. Carga: ver economy.json."
@@ -56,9 +54,7 @@
         "melee": 0,
         "pierce": 1
       },
-      "classes": [
-        "infantry"
-      ],
+      "classes": ["infantry"],
       "upgradesTo": "guerrero",
       "sprite": "units/recluta",
       "voice": "infantry"
@@ -88,9 +84,7 @@
         "melee": 0,
         "pierce": 1
       },
-      "classes": [
-        "infantry"
-      ],
+      "classes": ["infantry"],
       "upgradesTo": "espada_larga",
       "sprite": "units/guerrero",
       "voice": "infantry"
@@ -120,9 +114,7 @@
         "melee": 0,
         "pierce": 1
       },
-      "classes": [
-        "infantry"
-      ],
+      "classes": ["infantry"],
       "upgradesTo": "gran_espada",
       "sprite": "units/espada_larga",
       "voice": "infantry"
@@ -152,9 +144,7 @@
         "melee": 0,
         "pierce": 1
       },
-      "classes": [
-        "infantry"
-      ],
+      "classes": ["infantry"],
       "upgradesTo": "campeon_ceniciento",
       "sprite": "units/gran_espada",
       "voice": "infantry"
@@ -184,9 +174,7 @@
         "melee": 1,
         "pierce": 1
       },
-      "classes": [
-        "infantry"
-      ],
+      "classes": ["infantry"],
       "sprite": "units/campeon_ceniciento",
       "voice": "infantry"
     },
@@ -215,10 +203,7 @@
         "melee": 0,
         "pierce": 0
       },
-      "classes": [
-        "infantry",
-        "spear"
-      ],
+      "classes": ["infantry", "spear"],
       "upgradesTo": "piquero",
       "sprite": "units/lancero",
       "voice": "infantry",
@@ -249,14 +234,11 @@
         "melee": 0,
         "pierce": 0
       },
-      "classes": [
-        "infantry",
-        "spear"
-      ],
+      "classes": ["infantry", "spear"],
       "upgradesTo": "alabardero",
       "sprite": "units/piquero",
       "voice": "infantry",
-      "notes": "Bonus de ataque vs caballería no tabulado en §7.1 (el ejemplo de §8.1 usa Alabardero mejorado: 10 atq, +32 vs caballería); ver COVERAGE.md."
+      "notes": "AMBIGUO: variante de la fila \"Lancero / Piquero / Alabardero\". Bonus de ataque vs caballería no tabulado en §7.1 (el ejemplo de §8.1 usa Alabardero mejorado: 10 atq, +32 vs caballería); ver COVERAGE.md."
     },
     {
       "id": "alabardero",
@@ -283,13 +265,10 @@
         "melee": 0,
         "pierce": 0
       },
-      "classes": [
-        "infantry",
-        "spear"
-      ],
+      "classes": ["infantry", "spear"],
       "sprite": "units/alabardero",
       "voice": "infantry",
-      "notes": "Bonus de ataque vs caballería no tabulado en §7.1 (el ejemplo de §8.1 usa Alabardero mejorado: 10 atq, +32 vs caballería); ver COVERAGE.md."
+      "notes": "AMBIGUO: variante de la fila \"Lancero / Piquero / Alabardero\". Bonus de ataque vs caballería no tabulado en §7.1 (el ejemplo de §8.1 usa Alabardero mejorado: 10 atq, +32 vs caballería); ver COVERAGE.md."
     },
     {
       "id": "arquero",
@@ -318,9 +297,7 @@
         "melee": 0,
         "pierce": 0
       },
-      "classes": [
-        "archer"
-      ],
+      "classes": ["archer"],
       "upgradesTo": "ballestero",
       "sprite": "units/arquero",
       "voice": "archer"
@@ -352,9 +329,7 @@
         "melee": 0,
         "pierce": 0
       },
-      "classes": [
-        "archer"
-      ],
+      "classes": ["archer"],
       "upgradesTo": "arbalestero",
       "sprite": "units/ballestero",
       "voice": "archer"
@@ -386,9 +361,7 @@
         "melee": 0,
         "pierce": 0
       },
-      "classes": [
-        "archer"
-      ],
+      "classes": ["archer"],
       "sprite": "units/arbalestero",
       "voice": "archer"
     },
@@ -419,9 +392,7 @@
         "melee": 0,
         "pierce": 3
       },
-      "classes": [
-        "archer"
-      ],
+      "classes": ["archer"],
       "upgradesTo": "escaramuzador_veterano",
       "sprite": "units/escaramuzador",
       "voice": "archer",
@@ -454,9 +425,7 @@
         "melee": 0,
         "pierce": 4
       },
-      "classes": [
-        "archer"
-      ],
+      "classes": ["archer"],
       "sprite": "units/escaramuzador_veterano",
       "voice": "archer",
       "notes": "AMBIGUO: ver Escaramuzador."
@@ -467,7 +436,7 @@
         "es": "Jinete arquero",
         "en": "Horse Archer"
       },
-      "building": "establo",
+      "building": "arqueria",
       "age": 3,
       "line": "cavalry_archer",
       "cost": {
@@ -488,14 +457,11 @@
         "melee": 0,
         "pierce": 0
       },
-      "classes": [
-        "archer",
-        "cavalry"
-      ],
+      "classes": ["archer", "cavalry"],
       "upgradesTo": "jinete_arquero_pesado",
       "sprite": "units/jinete_arquero",
       "voice": "archer",
-      "notes": "AMBIGUO: edificio no indicado en §7.1 (asumido Establo por ser caballería); tiempo \"34/27\" mapeado a 34 (base) y 27 (pesado); visión \"5–6\" a 5/6. §8.2 define clase cavalry_archer pero la tabla dice \"arquero, caballería\": se respeta la tabla."
+      "notes": "AMBIGUO: edificio no indicado en §7.1 (hereda Arquería de la fila anterior de la tabla); tiempo \"34/27\" mapeado a 34 (base) y 27 (pesado); visión \"5–6\" a 5/6. §8.2 define clase cavalry_archer pero la tabla dice \"arquero, caballería\": se respeta la tabla."
     },
     {
       "id": "jinete_arquero_pesado",
@@ -503,7 +469,7 @@
         "es": "Jinete arquero pesado",
         "en": "Heavy Horse Archer"
       },
-      "building": "establo",
+      "building": "arqueria",
       "age": 4,
       "line": "cavalry_archer",
       "cost": {
@@ -524,10 +490,7 @@
         "melee": 1,
         "pierce": 0
       },
-      "classes": [
-        "archer",
-        "cavalry"
-      ],
+      "classes": ["archer", "cavalry"],
       "sprite": "units/jinete_arquero_pesado",
       "voice": "archer",
       "notes": "AMBIGUO: ver Jinete arquero."
@@ -559,9 +522,7 @@
         "melee": 1,
         "pierce": 0
       },
-      "classes": [
-        "gunpowder"
-      ],
+      "classes": ["gunpowder"],
       "sprite": "units/arcabucero_de_eter",
       "voice": "gunpowder"
     },
@@ -589,9 +550,7 @@
         "melee": 0,
         "pierce": 2
       },
-      "classes": [
-        "cavalry"
-      ],
+      "classes": ["cavalry"],
       "upgradesTo": "jinete_ligero",
       "sprite": "units/batidor",
       "voice": "cavalry",
@@ -621,9 +580,7 @@
         "melee": 0,
         "pierce": 2
       },
-      "classes": [
-        "cavalry"
-      ],
+      "classes": ["cavalry"],
       "upgradesTo": "husar",
       "sprite": "units/jinete_ligero",
       "voice": "cavalry"
@@ -652,9 +609,7 @@
         "melee": 0,
         "pierce": 2
       },
-      "classes": [
-        "cavalry"
-      ],
+      "classes": ["cavalry"],
       "sprite": "units/husar",
       "voice": "cavalry"
     },
@@ -683,9 +638,7 @@
         "melee": 2,
         "pierce": 2
       },
-      "classes": [
-        "cavalry"
-      ],
+      "classes": ["cavalry"],
       "upgradesTo": "caballero_real",
       "sprite": "units/caballero",
       "voice": "cavalry"
@@ -715,9 +668,7 @@
         "melee": 2,
         "pierce": 2
       },
-      "classes": [
-        "cavalry"
-      ],
+      "classes": ["cavalry"],
       "upgradesTo": "paladin",
       "sprite": "units/caballero_real",
       "voice": "cavalry"
@@ -747,9 +698,7 @@
         "melee": 2,
         "pierce": 3
       },
-      "classes": [
-        "cavalry"
-      ],
+      "classes": ["cavalry"],
       "sprite": "units/paladin",
       "voice": "cavalry"
     },
@@ -775,9 +724,7 @@
         "melee": 0,
         "pierce": 0
       },
-      "classes": [
-        "custodian"
-      ],
+      "classes": ["custodian"],
       "sprite": "units/custodio",
       "voice": "custodian",
       "notes": "Sin ataque (sanación/Resonancia, §8.6)."
@@ -807,9 +754,7 @@
         "melee": 0,
         "pierce": 180
       },
-      "classes": [
-        "siege"
-      ],
+      "classes": ["siege"],
       "upgradesTo": "ariete_blindado",
       "sprite": "units/ariete",
       "voice": "siege",
@@ -840,9 +785,7 @@
         "melee": 0,
         "pierce": 195
       },
-      "classes": [
-        "siege"
-      ],
+      "classes": ["siege"],
       "upgradesTo": "ariete_de_asedio",
       "sprite": "units/ariete_blindado",
       "voice": "siege",
@@ -873,9 +816,7 @@
         "melee": 0,
         "pierce": 195
       },
-      "classes": [
-        "siege"
-      ],
+      "classes": ["siege"],
       "sprite": "units/ariete_de_asedio",
       "voice": "siege",
       "notes": "AMBIGUO: el GDD da un rango (\"X–Y\") para varias variantes; regla aplicada: la primera variante toma el mínimo y las siguientes el máximo. Edad \"III–IV\" idem (primera III, resto IV)."
@@ -906,9 +847,7 @@
         "melee": 0,
         "pierce": 6
       },
-      "classes": [
-        "siege"
-      ],
+      "classes": ["siege"],
       "upgradesTo": "onagro",
       "sprite": "units/lanzapiedras",
       "voice": "siege",
@@ -940,9 +879,7 @@
         "melee": 0,
         "pierce": 8
       },
-      "classes": [
-        "siege"
-      ],
+      "classes": ["siege"],
       "upgradesTo": "onagro_de_asedio",
       "sprite": "units/onagro",
       "voice": "siege",
@@ -974,9 +911,7 @@
         "melee": 0,
         "pierce": 8
       },
-      "classes": [
-        "siege"
-      ],
+      "classes": ["siege"],
       "sprite": "units/onagro_de_asedio",
       "voice": "siege",
       "notes": "AMBIGUO: el GDD da un rango (\"X–Y\") para varias variantes; regla aplicada: la primera variante toma el mínimo y las siguientes el máximo. Edad \"III–IV\" idem (primera III, resto IV)."
@@ -1007,9 +942,7 @@
         "melee": 0,
         "pierce": 7
       },
-      "classes": [
-        "siege"
-      ],
+      "classes": ["siege"],
       "upgradesTo": "escorpion_pesado",
       "sprite": "units/escorpion",
       "voice": "siege",
@@ -1041,9 +974,7 @@
         "melee": 0,
         "pierce": 7
       },
-      "classes": [
-        "siege"
-      ],
+      "classes": ["siege"],
       "sprite": "units/escorpion_pesado",
       "voice": "siege",
       "notes": "AMBIGUO: ver Escorpión."
@@ -1075,10 +1006,7 @@
         "melee": 2,
         "pierce": 5
       },
-      "classes": [
-        "siege",
-        "gunpowder"
-      ],
+      "classes": ["siege", "gunpowder"],
       "sprite": "units/bombarda_de_eter",
       "voice": "siege"
     },
@@ -1109,9 +1037,7 @@
         "melee": 1,
         "pierce": 150
       },
-      "classes": [
-        "siege"
-      ],
+      "classes": ["siege"],
       "sprite": "units/fundibulo",
       "voice": "siege",
       "notes": "Se despliega y repliega en 10 s (§7.2)."
@@ -1140,9 +1066,7 @@
         "melee": 0,
         "pierce": 2
       },
-      "classes": [
-        "infantry"
-      ],
+      "classes": ["infantry"],
       "sprite": "units/zapador",
       "voice": "infantry"
     },
@@ -1168,9 +1092,7 @@
         "melee": 0,
         "pierce": 0
       },
-      "classes": [
-        "civil"
-      ],
+      "classes": ["civil"],
       "sprite": "units/carreta_de_comercio",
       "voice": "civil"
     },
@@ -1195,9 +1117,7 @@
         "melee": 1,
         "pierce": 1
       },
-      "classes": [
-        "ship"
-      ],
+      "classes": ["ship"],
       "sprite": "units/pesquero",
       "voice": "ship"
     },
@@ -1227,9 +1147,7 @@
         "melee": 0,
         "pierce": 6
       },
-      "classes": [
-        "ship"
-      ],
+      "classes": ["ship"],
       "upgradesTo": "galera_de_guerra",
       "sprite": "units/galera",
       "voice": "ship",
@@ -1261,9 +1179,7 @@
         "melee": 0,
         "pierce": 8
       },
-      "classes": [
-        "ship"
-      ],
+      "classes": ["ship"],
       "upgradesTo": "galeon",
       "sprite": "units/galera_de_guerra",
       "voice": "ship",
@@ -1295,9 +1211,7 @@
         "melee": 0,
         "pierce": 8
       },
-      "classes": [
-        "ship"
-      ],
+      "classes": ["ship"],
       "sprite": "units/galeon",
       "voice": "ship",
       "notes": "AMBIGUO: el GDD da un rango (\"X–Y\") para varias variantes; regla aplicada: la primera variante toma el mínimo y las siguientes el máximo. Edad \"III–IV\" idem (primera III, resto IV). Tiempo \"60/36\" mapeado a 60 (Galera) y 36 (resto); rango \"5–7\", armadura \"6–8\", visión \"7–9\"."
@@ -1328,9 +1242,7 @@
         "melee": 0,
         "pierce": 6
       },
-      "classes": [
-        "ship"
-      ],
+      "classes": ["ship"],
       "sprite": "units/brulote",
       "voice": "ship",
       "notes": "Atq \"2 cont.\" (continuo): se guarda 2 con RoF 0,25 s; la mejora \"Brulote rápido\" (§7.2) no tiene fila en §7.1."
@@ -1359,9 +1271,7 @@
         "melee": 0,
         "pierce": 3
       },
-      "classes": [
-        "ship"
-      ],
+      "classes": ["ship"],
       "sprite": "units/barco_de_demolicion",
       "voice": "ship",
       "notes": "Daño de área radio 2,5 (pesado 3,5, sin fila en §7.1). Se destruye al atacar (§8.4)."
@@ -1393,10 +1303,7 @@
         "melee": 0,
         "pierce": 6
       },
-      "classes": [
-        "ship",
-        "gunpowder"
-      ],
+      "classes": ["ship", "gunpowder"],
       "sprite": "units/galeon_de_eter",
       "voice": "ship",
       "notes": "La mejora \"de élite\" (§7.2) no tiene fila en §7.1."

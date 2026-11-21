@@ -1,24 +1,35 @@
-import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
-import { DevlogSchema, HITOS, type Devlog } from "./schema.js";
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { DevlogSchema, HITOS, type Devlog } from './schema.js';
 
-export const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
+export const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 
 const esc = (s: string) =>
-  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-const pad = (n: number) => String(n).padStart(2, "0");
-const num = (n: number) => new Intl.NumberFormat("es-AR", { maximumFractionDigits: 2 }).format(n);
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const pad = (n: number) => String(n).padStart(2, '0');
+const num = (n: number) => new Intl.NumberFormat('es-AR', { maximumFractionDigits: 2 }).format(n);
 
 export function loadEntries(root: string): Devlog[] {
-  const dir = join(root, "docs/progress");
+  const dir = join(root, 'docs/progress');
   const out: Devlog[] = [];
-  for (const d of readdirSync(dir).filter((x) => /^fase-\d\d$/.test(x)).sort()) {
-    const f = join(dir, d, "devlog.json");
+  for (const d of readdirSync(dir)
+    .filter((x) => /^fase-\d\d$/.test(x))
+    .sort()) {
+    const f = join(dir, d, 'devlog.json');
     if (!existsSync(f)) continue;
-    const r = DevlogSchema.safeParse(JSON.parse(readFileSync(f, "utf8")));
+    const r = DevlogSchema.safeParse(JSON.parse(readFileSync(f, 'utf8')));
     if (!r.success) throw new Error(`devlog.json inválido en ${d}: ${r.error.message}`);
-    if (`fase-${pad(r.data.fase)}` !== d) throw new Error(`${d}: el campo fase (${r.data.fase}) no coincide con la carpeta`);
+    if (`fase-${pad(r.data.fase)}` !== d)
+      throw new Error(`${d}: el campo fase (${r.data.fase}) no coincide con la carpeta`);
     out.push(r.data);
   }
   return out.sort((a, b) => b.fase - a.fase);
@@ -27,23 +38,23 @@ export function loadEntries(root: string): Devlog[] {
 function metricsText(e: Devlog): string {
   const m = e.metricas;
   const parts = [
-    m.fps === null ? "fps: pendiente" : `${num(m.fps)} fps`,
-    m.tick === null ? "tick: pendiente" : `tick ${num(m.tick)} ms`,
-    m.tests === null ? "tests: pendiente" : `${num(m.tests)} tests verdes`,
+    m.fps === null ? 'fps: pendiente' : `${num(m.fps)} fps`,
+    m.tick === null ? 'tick: pendiente' : `tick ${num(m.tick)} ms`,
+    m.tests === null ? 'tests: pendiente' : `${num(m.tests)} tests verdes`,
   ];
-  return parts.join(" · ");
+  return parts.join(' · ');
 }
 
 export function readmeFor(e: Devlog): string {
-  const imgs = e.imagenes.map((i) => `![${i.alt}](media/${i.archivo})`).join(" ");
-  const vid = e.video ? ` [video](media/${e.video})` : "";
+  const imgs = e.imagenes.map((i) => `![${i.alt}](media/${i.archivo})`).join(' ');
+  const vid = e.video ? ` [video](media/${e.video})` : '';
   return `# Fase ${pad(e.fase)} — ${e.titulo} (${Math.round(e.porcentaje)}% del plan)
 
 ${imgs}${vid}
 
 **Ahora se puede:** ${e.ahoraSePuede}
 
-**Métricas:** ${metricsText(e)}${e.metricas.nota ? ` (${e.metricas.nota})` : ""}.
+**Métricas:** ${metricsText(e)}${e.metricas.nota ? ` (${e.metricas.nota})` : ''}.
 
 **Siguiente:** ${e.siguiente}
 `;
@@ -53,32 +64,35 @@ export function hitosBar(actual: number): string {
   const items = HITOS.map((h) => {
     const cur = actual >= h.desde && actual <= h.hasta;
     const done = actual > h.hasta;
-    const cls = cur ? "hito actual" : done ? "hito hecho" : "hito";
+    const cls = cur ? 'hito actual' : done ? 'hito hecho' : 'hito';
     const rango = h.desde === h.hasta ? `F${h.desde}` : `F${h.desde}–${h.hasta}`;
-    return `<li class="${cls}"${cur ? ' aria-current="step"' : ""}><span class="dot"></span><b>Hito ${h.n}</b><span>${esc(h.nombre)}</span><small>${rango}${cur ? ` · estamos en F${actual}` : ""}</small></li>`;
+    return `<li class="${cls}"${cur ? ' aria-current="step"' : ''}><span class="dot"></span><b>Hito ${h.n}</b><span>${esc(h.nombre)}</span><small>${rango}${cur ? ` · estamos en F${actual}` : ''}</small></li>`;
   });
-  return `<ol class="hitos" aria-label="Hitos del plan">${items.join("")}</ol>`;
+  return `<ol class="hitos" aria-label="Hitos del plan">${items.join('')}</ol>`;
 }
 
 function card(e: Devlog, mediaBase: string): string {
   const m = e.metricas;
   const stat = (label: string, v: number | null, unit: string) =>
-    `<div class="stat${v === null ? " pend" : ""}"><span class="v">${v === null ? "—" : num(v)}</span><span class="u">${v === null ? "pendiente" : unit}</span><span class="l">${label}</span></div>`;
+    `<div class="stat${v === null ? ' pend' : ''}"><span class="v">${v === null ? '—' : num(v)}</span><span class="u">${v === null ? 'pendiente' : unit}</span><span class="l">${label}</span></div>`;
   const gal = e.imagenes
-    .map((i) => `<a href="${mediaBase}/${encodeURI(i.archivo)}"><img loading="lazy" src="${mediaBase}/${encodeURI(i.archivo)}" alt="${esc(i.alt)}"></a>`)
-    .join("");
+    .map(
+      (i) =>
+        `<a href="${mediaBase}/${encodeURI(i.archivo)}"><img loading="lazy" src="${mediaBase}/${encodeURI(i.archivo)}" alt="${esc(i.alt)}"></a>`,
+    )
+    .join('');
   const vid = e.video
     ? `<video controls muted loop preload="metadata" src="${mediaBase}/${encodeURI(e.video)}"></video>`
-    : "";
+    : '';
   return `<article class="card" id="fase-${pad(e.fase)}">
 <header><h2><span class="n">Fase ${pad(e.fase)}</span> ${esc(e.titulo)}</h2><span class="pct">${Math.round(e.porcentaje)}% del plan</span></header>
 <div class="bar" role="progressbar" aria-valuenow="${Math.round(e.porcentaje)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.round(e.porcentaje)}%"></i></div>
-${gal ? `<div class="gallery">${gal}</div>` : ""}${vid}
+${gal ? `<div class="gallery">${gal}</div>` : ''}${vid}
 <p><strong>Ahora se puede:</strong> ${esc(e.ahoraSePuede)}</p>
-<div class="stats">${stat("FPS", m.fps, "fps")}${stat("Tick", m.tick, "ms")}${stat("Tests", m.tests, "verdes")}</div>
-${m.nota ? `<p class="nota">${esc(m.nota)}</p>` : ""}
+<div class="stats">${stat('FPS', m.fps, 'fps')}${stat('Tick', m.tick, 'ms')}${stat('Tests', m.tests, 'verdes')}</div>
+${m.nota ? `<p class="nota">${esc(m.nota)}</p>` : ''}
 <p><strong>Siguiente:</strong> ${esc(e.siguiente)}</p>
-${e.fecha ? `<footer>${esc(e.fecha)}</footer>` : ""}
+${e.fecha ? `<footer>${esc(e.fecha)}</footer>` : ''}
 </article>`;
 }
 
@@ -114,9 +128,9 @@ footer{color:var(--mute);font-size:13px}
 
 export function buildDevlog(opts: { root?: string; outDir?: string } = {}) {
   const root = opts.root ?? REPO_ROOT;
-  const outDir = opts.outDir ?? join(root, "packages/client/public/devlog");
+  const outDir = opts.outDir ?? join(root, 'packages/client/public/devlog');
   const entries = loadEntries(root);
-  if (entries.length === 0) throw new Error("No hay ningún docs/progress/fase-XX/devlog.json");
+  if (entries.length === 0) throw new Error('No hay ningún docs/progress/fase-XX/devlog.json');
   rmSync(outDir, { recursive: true, force: true });
   mkdirSync(outDir, { recursive: true });
   const missing: string[] = [];
@@ -125,22 +139,28 @@ export function buildDevlog(opts: { root?: string; outDir?: string } = {}) {
     const files = [...e.imagenes.map((i) => i.archivo), ...(e.video ? [e.video] : [])];
     const present = new Set<string>();
     for (const f of files) {
-      const src = join(root, "docs/progress", tag, "media", f);
+      const src = join(root, 'docs/progress', tag, 'media', f);
       if (!existsSync(src)) {
         missing.push(`${tag}/media/${f}`);
         continue;
       }
-      mkdirSync(dirname(join(outDir, "media", tag, f)), { recursive: true });
-      cpSync(src, join(outDir, "media", tag, f));
+      mkdirSync(dirname(join(outDir, 'media', tag, f)), { recursive: true });
+      cpSync(src, join(outDir, 'media', tag, f));
       present.add(f);
     }
     // Sólo se muestran los medios que existen; el README se genera siempre desde el JSON.
-    const shown: Devlog = { ...e, imagenes: e.imagenes.filter((i) => present.has(i.archivo)), video: e.video && present.has(e.video) ? e.video : undefined };
+    const shown: Devlog = {
+      ...e,
+      imagenes: e.imagenes.filter((i) => present.has(i.archivo)),
+      video: e.video && present.has(e.video) ? e.video : undefined,
+    };
     (e as Devlog & { _shown?: Devlog })._shown = shown;
-    writeFileSync(join(root, "docs/progress", tag, "README.md"), readmeFor(e));
+    writeFileSync(join(root, 'docs/progress', tag, 'README.md'), readmeFor(e));
   }
   const actual = entries[0]!.fase;
-  const cards = entries.map((e) => card((e as Devlog & { _shown: Devlog })._shown, `media/fase-${pad(e.fase)}`)).join("\n");
+  const cards = entries
+    .map((e) => card((e as Devlog & { _shown: Devlog })._shown, `media/fase-${pad(e.fase)}`))
+    .join('\n');
   const html = `<!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Devlog — Reinos de Ceniza</title><link rel="stylesheet" href="devlog.css"></head>
@@ -151,13 +171,13 @@ ${hitosBar(actual)}
 ${cards}
 </main></body></html>
 `;
-  writeFileSync(join(outDir, "index.html"), html);
-  writeFileSync(join(outDir, "devlog.css"), CSS);
+  writeFileSync(join(outDir, 'index.html'), html);
+  writeFileSync(join(outDir, 'devlog.css'), CSS);
   return { outDir, fases: entries.map((e) => e.fase), missing };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const r = buildDevlog();
-  console.log(`devlog: fases ${r.fases.join(", ")} -> ${r.outDir}`);
+  console.log(`devlog: fases ${r.fases.join(', ')} -> ${r.outDir}`);
   for (const m of r.missing) console.warn(`aviso: falta media ${m}`);
 }

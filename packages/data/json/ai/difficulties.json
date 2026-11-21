@@ -1,0 +1,96 @@
+{
+  "difficulties": [
+    {
+      "id": "aprendiz",
+      "name": {
+        "es": "Aprendiz",
+        "en": "Apprentice"
+      },
+      "reactionDelay": 4,
+      "micro": "none",
+      "economyBonusPct": -50,
+      "visionCheats": false,
+      "goal": "Nunca ataca antes del min 25",
+      "noAttackBeforeSeconds": 1500,
+      "notes": "AMBIGUO: \"min 25\" asumido minutos de juego (1500 s)."
+    },
+    {
+      "id": "facil",
+      "name": {
+        "es": "Fácil",
+        "en": "Easy"
+      },
+      "reactionDelay": 2.5,
+      "micro": "none",
+      "economyBonusPct": -25,
+      "visionCheats": false,
+      "goal": "Un ataque por era",
+      "maxAttacksPerAge": 1
+    },
+    {
+      "id": "normal",
+      "name": {
+        "es": "Normal",
+        "en": "Normal"
+      },
+      "reactionDelay": 1.5,
+      "micro": "basic",
+      "economyBonusPct": 0,
+      "visionCheats": false,
+      "goal": "Jugador casual"
+    },
+    {
+      "id": "dificil",
+      "name": {
+        "es": "Difícil",
+        "en": "Hard"
+      },
+      "reactionDelay": 0.8,
+      "micro": "yes",
+      "economyBonusPct": 0,
+      "visionCheats": false,
+      "goal": "Jugador medio (~1000 de rating)",
+      "approxRating": 1000
+    },
+    {
+      "id": "muy_dificil",
+      "name": {
+        "es": "Muy difícil",
+        "en": "Very Hard"
+      },
+      "reactionDelay": 0.4,
+      "micro": "yes",
+      "economyBonusPct": 0,
+      "visionCheats": false,
+      "goal": "Jugador bueno (~1300)",
+      "approxRating": 1300
+    },
+    {
+      "id": "despiadada",
+      "name": {
+        "es": "Despiadada",
+        "en": "Ruthless"
+      },
+      "reactionDelay": 0.2,
+      "micro": "full",
+      "economyBonusPct": 20,
+      "visionCheats": false,
+      "goal": "Desafío para expertos",
+      "notes": "Bonus +20% \"sin trampas de visión\" (§12.3)."
+    }
+  ],
+  "calibration": [
+    {
+      "difficulty": "muy_dificil",
+      "plan": "scouts",
+      "reachAge": 2,
+      "beforeSeconds": 570
+    },
+    {
+      "difficulty": "muy_dificil",
+      "plan": "fast_castle",
+      "reachAge": 3,
+      "beforeSeconds": 1020
+    }
+  ]
+}

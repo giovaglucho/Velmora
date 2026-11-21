@@ -1,2 +1,2 @@
-export * from "./prng";
-export * from "./hash";
+export * from './prng';
+export * from './hash';

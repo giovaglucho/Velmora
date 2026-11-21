@@ -1,0 +1,230 @@
+{
+  "mapSizes": [
+    {
+      "id": "diminuto",
+      "name": {
+        "es": "Diminuto",
+        "en": "Tiny"
+      },
+      "side": 120,
+      "players": 2,
+      "launch": true
+    },
+    {
+      "id": "pequeno",
+      "name": {
+        "es": "Pequeño",
+        "en": "Small"
+      },
+      "side": 144,
+      "players": 3,
+      "launch": true
+    },
+    {
+      "id": "mediano",
+      "name": {
+        "es": "Mediano",
+        "en": "Medium"
+      },
+      "side": 168,
+      "players": 4,
+      "launch": true
+    },
+    {
+      "id": "normal",
+      "name": {
+        "es": "Normal",
+        "en": "Normal"
+      },
+      "side": 200,
+      "players": 6,
+      "launch": true
+    },
+    {
+      "id": "grande",
+      "name": {
+        "es": "Grande",
+        "en": "Large"
+      },
+      "side": 220,
+      "players": 8,
+      "launch": true
+    }
+  ],
+  "population": {
+    "default": 200,
+    "max": 300,
+    "futureMax": 500
+  },
+  "gameSpeeds": [1, 1.5, 1.7, 2],
+  "standardGameSpeed": 1.7,
+  "terrain": [
+    {
+      "id": "grass",
+      "name": {
+        "es": "Pasto",
+        "en": "Grass"
+      },
+      "passable": "walkable"
+    },
+    {
+      "id": "dirt",
+      "name": {
+        "es": "Tierra",
+        "en": "Dirt"
+      },
+      "passable": "walkable"
+    },
+    {
+      "id": "sand",
+      "name": {
+        "es": "Arena",
+        "en": "Sand"
+      },
+      "passable": "walkable"
+    },
+    {
+      "id": "snow",
+      "name": {
+        "es": "Nieve",
+        "en": "Snow"
+      },
+      "passable": "walkable"
+    },
+    {
+      "id": "ash",
+      "name": {
+        "es": "Ceniza",
+        "en": "Ash"
+      },
+      "passable": "walkable"
+    },
+    {
+      "id": "road",
+      "name": {
+        "es": "Camino",
+        "en": "Road"
+      },
+      "speedPct": 10,
+      "passable": "walkable"
+    },
+    {
+      "id": "shallow_water",
+      "name": {
+        "es": "Aguas poco profundas",
+        "en": "Shallow Water"
+      },
+      "speedPct": -20,
+      "passable": "wadeable"
+    },
+    {
+      "id": "deep_water",
+      "name": {
+        "es": "Agua profunda",
+        "en": "Deep Water"
+      },
+      "passable": "ships_only"
+    },
+    {
+      "id": "forest",
+      "name": {
+        "es": "Bosque",
+        "en": "Forest"
+      },
+      "passable": "impassable_choppable"
+    },
+    {
+      "id": "cliff",
+      "name": {
+        "es": "Acantilado",
+        "en": "Cliff"
+      },
+      "passable": "impassable"
+    }
+  ],
+  "elevation": {
+    "maxLevel": 7,
+    "attackerHigherMul": 1.25,
+    "attackerLowerMul": 0.75,
+    "climbSlowPct": 10
+  },
+  "mapPool": [
+    {
+      "id": "llanuras_de_ceniza",
+      "name": {
+        "es": "Llanuras de Ceniza",
+        "en": "Ashen Plains"
+      },
+      "inspiration": "Arabia",
+      "trait": "Abierto, colinas, bosques dispersos: el mapa competitivo de referencia",
+      "release": "1.0",
+      "scriptAvailable": true
+    },
+    {
+      "id": "ciudad_amurallada",
+      "name": {
+        "es": "Ciudad Amurallada",
+        "en": "Walled City"
+      },
+      "inspiration": "Arena",
+      "trait": "Bases rodeadas de muralla, centro abierto",
+      "release": "1.0",
+      "scriptAvailable": false
+    },
+    {
+      "id": "bosque_negro",
+      "name": {
+        "es": "Bosque Negro",
+        "en": "Black Forest"
+      },
+      "inspiration": "Black Forest",
+      "trait": "Bosque denso con claros; partidas largas",
+      "release": "1.0",
+      "scriptAvailable": false
+    },
+    {
+      "id": "archipielago_roto",
+      "name": {
+        "es": "Archipiélago Roto",
+        "en": "Shattered Archipelago"
+      },
+      "inspiration": "Islands",
+      "trait": "Islas por jugador, juego naval (1.1 cuando el naval esté completo)",
+      "release": "1.1",
+      "scriptAvailable": false
+    },
+    {
+      "id": "paso_de_la_corona",
+      "name": {
+        "es": "Paso de la Corona",
+        "en": "Crown Pass"
+      },
+      "inspiration": "Mapa híbrido",
+      "trait": "Dos mesetas unidas por pasos estrechos y un lago central",
+      "release": "1.0",
+      "scriptAvailable": false
+    },
+    {
+      "id": "estepa_gris",
+      "name": {
+        "es": "Estepa Gris",
+        "en": "Grey Steppe"
+      },
+      "inspiration": "Nomad (sin Ciudadela inicial)",
+      "trait": "1.1",
+      "release": "1.1",
+      "scriptAvailable": false
+    },
+    {
+      "id": "rios_de_eter",
+      "name": {
+        "es": "Ríos de Éter",
+        "en": "Aether Rivers"
+      },
+      "inspiration": "Mapa original",
+      "trait": "Ríos vadeables que brillan, éter extra en las orillas",
+      "release": "1.0",
+      "scriptAvailable": false
+    }
+  ]
+}

@@ -15,7 +15,7 @@ export const BuildingDef = z
     armor: z.object({ melee: z.number().int(), pierce: z.number().int() }).optional(),
     /** Extra melee/pierce armor per age reached (GDD §5 "+1 por era"). 0 where the table shows no (+1). */
     armorPerAge: z.number().int().nonnegative(),
-    size: z.object({ w: z.number().int().positive(), h: z.number().int().positive() }),
+    size: z.object({ w: z.number().int().positive(), h: z.number().int().positive() }).optional(),
     /** Vision by age (key = age) where the GDD gives it (Atalaya). */
     los: AgeMap.optional(),
     popProvided: z.number().int().optional(),

@@ -7,7 +7,9 @@ export function a(): number {
   const arr2 = Array.from(m.values()).sort((x, y) => x - y);
   const plain = [3, 1, 2];
   for (const p of plain) t += p;
-  plain.forEach((p) => { t += p; });
+  plain.forEach((p) => {
+    t += p;
+  });
   t += m.size + s.size + (m.get(1) ?? 0) + (s.has(1) ? 1 : 0);
   return t + arr2.length;
 }

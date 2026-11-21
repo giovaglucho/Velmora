@@ -1,0 +1,96 @@
+{
+  "id": "casa_valdren",
+  "name": {
+    "es": "Casa Valdren",
+    "en": "House Valdren"
+  },
+  "launch": true,
+  "inspiration": "Reinos francos y castellanos",
+  "gameplayIdea": "Caballería pesada y castillos baratos",
+  "aoe2Role": "Francos / Teutones",
+  "architecture": "Piedra clara, techos de pizarra azul (set: Europa occidental)",
+  "voiceLanguage": "Idioma inventado de raíz latina",
+  "bonuses": [
+    {
+      "id": "bastiones_baratos",
+      "text": "Bastiones −25% piedra",
+      "modifiers": [
+        {
+          "target": "building:bastion",
+          "stat": "cost_stone",
+          "op": "mul_pct",
+          "value": -25,
+          "resource": "stone"
+        }
+      ]
+    },
+    {
+      "id": "caballeria_robusta",
+      "text": "Caballería +20% PV desde Era III",
+      "modifiers": [
+        {
+          "target": "class:cavalry",
+          "stat": "hp",
+          "op": "mul_pct",
+          "value": 20,
+          "fromAge": 3
+        }
+      ]
+    },
+    {
+      "id": "yugo_gratis",
+      "text": "Molinos y granjas: mejoras gratis de Yugo",
+      "modifiers": [],
+      "grantsTech": ["yugo"],
+      "notes": "AMBIGUO: \"mejoras gratis de Yugo\": se interpreta como Yugo gratis; no se aclara si incluye Arado de hierro / Rotación."
+    },
+    {
+      "id": "batidores_atentos",
+      "text": "Batidores ven +2",
+      "modifiers": [
+        {
+          "target": "line:scout",
+          "stat": "los",
+          "op": "add",
+          "value": 2
+        }
+      ],
+      "notes": "AMBIGUO: \"Batidores\": se aplica a la línea Batidor/Jinete ligero/Húsar."
+    }
+  ],
+  "teamBonus": {
+    "id": "caballeria_aliada",
+    "text": "Caballería aliada +2 visión",
+    "modifiers": [
+      {
+        "target": "class:cavalry",
+        "stat": "los",
+        "op": "add",
+        "value": 2,
+        "scope": "allies"
+      }
+    ]
+  },
+  "uniqueUnit": {
+    "id": "lancero_del_alba",
+    "name": {
+      "es": "Lancero del Alba",
+      "en": "Dawn Lancer"
+    },
+    "building": "bastion",
+    "description": "Caballería de choque con carga inicial (+15 de daño en el primer golpe, recarga 20 s)",
+    "mechanics": {
+      "firstHitBonusDamage": 15,
+      "chargeCooldownSeconds": 20
+    },
+    "statsPending": true,
+    "eliteVersion": true
+  },
+  "uniqueTechs": {
+    "castle": "juramento",
+    "aether": "cruzada_de_ceniza"
+  },
+  "disabledUnits": ["arcabucero_de_eter", "galeon_de_eter"],
+  "disabledTechs": ["anillo_de_tension"],
+  "notes": "Les falta (§10): Arcabucero, Galeón de éter, Anillo de tensión."
+}

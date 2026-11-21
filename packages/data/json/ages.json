@@ -1,0 +1,131 @@
+{
+  "ages": [
+    {
+      "id": "era_de_ceniza",
+      "age": 1,
+      "name": {
+        "es": "Era de Ceniza",
+        "en": "Age of Ash"
+      },
+      "equivalent": "Edad Oscura",
+      "narrative": "Aldeas que sobreviven entre ruinas y ceniza",
+      "cost": {},
+      "researchTime": 0,
+      "requirements": [],
+      "excludedBuildings": [],
+      "notes": "Era inicial: sin costo ni requisito."
+    },
+    {
+      "id": "era_del_hierro",
+      "age": 2,
+      "name": {
+        "es": "Era del Hierro",
+        "en": "Iron Age"
+      },
+      "equivalent": "Feudal",
+      "narrative": "Se forjan las primeras armas y se recupera el comercio",
+      "cost": {
+        "food": 500
+      },
+      "researchTime": 130,
+      "requirements": [
+        {
+          "count": 2,
+          "buildings": ["cuartel", "molino", "aserradero", "campamento_minero", "puerto"]
+        }
+      ],
+      "excludedBuildings": [
+        "casa",
+        "granja",
+        "empalizada",
+        "puerta_de_empalizada",
+        "muralla_de_piedra",
+        "porton",
+        "atalaya"
+      ],
+      "notes": "No cuentan casas, granjas, murallas ni atalayas (§5)."
+    },
+    {
+      "id": "era_de_los_bastiones",
+      "age": 3,
+      "name": {
+        "es": "Era de los Bastiones",
+        "en": "Age of Bastions"
+      },
+      "equivalent": "Castillos",
+      "narrative": "Fortalezas, Custodios y fragmentos de la Corona",
+      "cost": {
+        "food": 800,
+        "aether": 200
+      },
+      "researchTime": 160,
+      "requirements": [
+        {
+          "count": 2,
+          "buildings": ["arqueria", "establo", "forja", "mercado"]
+        }
+      ],
+      "excludedBuildings": []
+    },
+    {
+      "id": "era_del_eter",
+      "age": 4,
+      "name": {
+        "es": "Era del Éter",
+        "en": "Age of Aether"
+      },
+      "equivalent": "Imperial",
+      "narrative": "El éter refinado alimenta pólvora, asedio y maravillas",
+      "cost": {
+        "food": 1000,
+        "aether": 800
+      },
+      "researchTime": 190,
+      "requirements": [
+        {
+          "count": 2,
+          "buildings": ["santuario", "academia", "taller_de_asedio", "bastion"]
+        },
+        {
+          "count": 1,
+          "buildings": ["bastion"]
+        }
+      ],
+      "excludedBuildings": [],
+      "notes": "Requisito \"2 edificios de Era III o 1 Bastión\": la lista de Era III se deriva de los edificios de era 3 en buildings.json."
+    }
+  ],
+  "implicit": {
+    "buildingArmorPerAge": 1,
+    "armorExemptBuildings": [
+      "atalaya",
+      "torre_de_vigia",
+      "bastion",
+      "empalizada",
+      "puerta_de_empalizada",
+      "muralla_de_piedra",
+      "porton",
+      "torre_de_bombarda_de_eter"
+    ],
+    "buildingHpByAge": {
+      "cuartel": [1200, 1500, 1800, 2100],
+      "arqueria": [1200, 1500, 1800, 2100],
+      "establo": [1200, 1500, 1800, 2100],
+      "casa": [550, 750, 900, 900]
+    },
+    "scoutLosPerAge": 2,
+    "scoutUnitLine": "scout",
+    "hiddenUnitUpgrades": [
+      {
+        "unit": "recluta",
+        "stats": {}
+      },
+      {
+        "unit": "batidor",
+        "stats": {}
+      }
+    ],
+    "ciudadelaBlocksSettlersWhileResearching": true,
+    "notes": "AMBIGUO: §5 dice que Recluta y Batidor reciben \"mejoras ocultas de estadísticas de AoE2 (definidas en ages.json)\" sin dar números: stats vacío, pendiente (COVERAGE.md). Exentos de armadura por era: atalayas, torres, Bastiones y murallas (§5); empalizada/puertas incluidas como \"murallas\"."
+  }
+}

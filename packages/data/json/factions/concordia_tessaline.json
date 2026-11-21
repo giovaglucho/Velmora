@@ -1,0 +1,121 @@
+{
+  "id": "concordia_tessaline",
+  "name": {
+    "es": "Concordia Tessaline",
+    "en": "Tessaline Concord"
+  },
+  "launch": true,
+  "inspiration": "Venecia, Bizancio y las ciudades-estado",
+  "gameplayIdea": "Asedio, pólvora de éter, defensa",
+  "aoe2Role": "Italianos / Bizantinos",
+  "architecture": "Mármol blanco, arcadas, cobre (set: Mediterráneo)",
+  "voiceLanguage": "Idioma inventado de raíz griega/italiana",
+  "bonuses": [
+    {
+      "id": "asedio_robusto",
+      "text": "Asedio +15% PV",
+      "modifiers": [
+        {
+          "target": "class:siege",
+          "stat": "hp",
+          "op": "mul_pct",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "id": "eras_baratas",
+      "text": "Subir de era −15% costo",
+      "modifiers": [
+        {
+          "target": "global",
+          "stat": "age_cost",
+          "op": "mul_pct",
+          "value": -15
+        }
+      ]
+    },
+    {
+      "id": "defensas_por_era",
+      "text": "Torres y murallas +1 de armadura por era",
+      "modifiers": [
+        {
+          "target": "buildings:towers",
+          "stat": "armor_melee",
+          "op": "add",
+          "value": 1,
+          "script": "per_age"
+        },
+        {
+          "target": "buildings:towers",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 1,
+          "script": "per_age"
+        },
+        {
+          "target": "buildings:walls",
+          "stat": "armor_melee",
+          "op": "add",
+          "value": 1,
+          "script": "per_age"
+        },
+        {
+          "target": "buildings:walls",
+          "stat": "armor_pierce",
+          "op": "add",
+          "value": 1,
+          "script": "per_age"
+        }
+      ],
+      "notes": "AMBIGUO: \"+1 de armadura por era\" asumido +1/+1 (melee/pierce) como §5; el campo script \"per_age\" marca que se aplica una vez por era alcanzada."
+    },
+    {
+      "id": "polvora_precisa",
+      "text": "Pólvora +25% precisión",
+      "modifiers": [
+        {
+          "target": "class:gunpowder",
+          "stat": "accuracy",
+          "op": "mul_pct",
+          "value": 25
+        }
+      ],
+      "notes": "AMBIGUO: \"+25% precisión\" puede ser relativo (×1,25) o puntos porcentuales; tope 100%."
+    }
+  ],
+  "teamBonus": {
+    "id": "academias_aliadas",
+    "text": "Academias aliadas investigan +40% más rápido",
+    "modifiers": [
+      {
+        "target": "building:academia",
+        "stat": "research_speed",
+        "op": "mul_pct",
+        "value": 40,
+        "scope": "allies"
+      }
+    ]
+  },
+  "uniqueUnit": {
+    "id": "ballesta_de_cobre",
+    "name": {
+      "es": "Ballesta de Cobre",
+      "en": "Copper Ballista"
+    },
+    "building": "bastion",
+    "description": "Asedio ligero antipersonal que dispara 3 virotes perforantes",
+    "mechanics": {
+      "bolts": 3
+    },
+    "statsPending": true,
+    "eliteVersion": true
+  },
+  "uniqueTechs": {
+    "castle": "fuego_griego_de_eter",
+    "aether": "ingenio_de_la_concordia"
+  },
+  "disabledUnits": ["husar", "paladin", "jinete_arquero_pesado"],
+  "disabledTechs": [],
+  "notes": "Les falta (§10): Húsar, Paladín, Jinete arquero pesado."
+}

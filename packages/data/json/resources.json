@@ -1,0 +1,41 @@
+{
+  "resources": [
+    {
+      "id": "food",
+      "name": {
+        "es": "Víveres",
+        "en": "Food"
+      },
+      "role": "Colonos, infantería, eras, tecnologías",
+      "sources": ["Ovejas", "ciervos", "jabalíes", "bayas", "granjas", "pesca", "trampas de peces"]
+    },
+    {
+      "id": "wood",
+      "name": {
+        "es": "Madera",
+        "en": "Wood"
+      },
+      "role": "Edificios, arqueros, asedio, barcos",
+      "sources": ["Árboles", "bosques"]
+    },
+    {
+      "id": "aether",
+      "name": {
+        "es": "Éter",
+        "en": "Aether"
+      },
+      "role": "Recurso premium: unidades de élite, eras III–IV, Custodios",
+      "sources": ["Vetas de éter", "Fragmentos Coronales", "comercio"]
+    },
+    {
+      "id": "stone",
+      "name": {
+        "es": "Piedra",
+        "en": "Stone"
+      },
+      "role": "Ciudadelas, torres, murallas, Bastiones",
+      "sources": ["Canteras"],
+      "notes": "El rol \"Ciudadelas\" de §4.1 coincide con el costo de piedra de la Ciudadela en §6 (100 pie.)."
+    }
+  ]
+}

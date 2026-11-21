@@ -1,0 +1,96 @@
+{
+  "id": "sultanato_de_azhar",
+  "name": {
+    "es": "Sultanato de Azhar",
+    "en": "Sultanate of Azhar"
+  },
+  "launch": true,
+  "inspiration": "Persia y el Magreb",
+  "gameplayIdea": "Arqueros a caballo, comercio y mercado",
+  "aoe2Role": "Sarracenos / Mongoles",
+  "architecture": "Arenisca, cúpulas, azulejos (set: Desierto)",
+  "voiceLanguage": "Idioma inventado de raíz persa/árabe",
+  "bonuses": [
+    {
+      "id": "comision_baja",
+      "text": "Mercado: comisión 5%",
+      "modifiers": [
+        {
+          "target": "global",
+          "stat": "market_fee",
+          "op": "set",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "id": "arqueros_asaltantes",
+      "text": "Jinetes arqueros +1 ataque contra edificios",
+      "modifiers": [
+        {
+          "target": "line:cavalry_archer",
+          "stat": "attack_building",
+          "op": "add",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "carretas_robustas",
+      "text": "Carretas +25% PV",
+      "modifiers": [
+        {
+          "target": "unit:carreta_de_comercio",
+          "stat": "hp",
+          "op": "mul_pct",
+          "value": 25
+        }
+      ]
+    },
+    {
+      "id": "mineros_de_eter",
+      "text": "Colonos minan éter +15%",
+      "modifiers": [
+        {
+          "target": "unit:colono",
+          "stat": "gather_rate",
+          "op": "mul_pct",
+          "value": 15,
+          "resource": "aether"
+        }
+      ]
+    }
+  ],
+  "teamBonus": {
+    "id": "comercio_aliado",
+    "text": "Comercio aliado +20%",
+    "modifiers": [
+      {
+        "target": "line:trade",
+        "stat": "trade_income",
+        "op": "mul_pct",
+        "value": 20,
+        "scope": "allies"
+      }
+    ]
+  },
+  "uniqueUnit": {
+    "id": "arquero_de_dunas",
+    "name": {
+      "es": "Arquero de Dunas",
+      "en": "Dune Archer"
+    },
+    "building": "bastion",
+    "description": "Jinete arquero que dispara en movimiento sin penalización",
+    "mechanics": {},
+    "statsPending": true,
+    "eliteVersion": true
+  },
+  "uniqueTechs": {
+    "castle": "caravanserai",
+    "aether": "zoco_imperial"
+  },
+  "disabledUnits": ["paladin", "campeon_ceniciento", "onagro_de_asedio"],
+  "disabledTechs": [],
+  "notes": "Les falta (§10): Paladín, Campeón, Onagro de asedio."
+}

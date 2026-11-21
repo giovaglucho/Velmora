@@ -14,7 +14,15 @@ export const TechDef = z
     /** Effect described in GDD prose only; see notes. */
     effectText: z.string().optional(),
     faction: Id.optional(),
-    category: z.enum(['economy', 'forge', 'military', 'academy', 'fortification', 'sanctuary', 'unique']),
+    category: z.enum([
+      'economy',
+      'forge',
+      'military',
+      'academy',
+      'fortification',
+      'sanctuary',
+      'unique',
+    ]),
     requires: z.array(Id).optional(),
     notes: Notes,
   })
