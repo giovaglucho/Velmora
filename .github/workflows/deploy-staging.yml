@@ -1,10 +1,14 @@
 name: Deploy staging
+# Solo despliega cuando el workflow CI termino con exito en main.
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
 
 jobs:
   deploy:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
     runs-on: ubuntu-latest
     env:
       HOOK_API: ${{ secrets.RENDER_DEPLOY_HOOK_API }}

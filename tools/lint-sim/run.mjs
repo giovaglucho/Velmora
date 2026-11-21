@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /* global process, console */
-// Uso: node tools/lint-sim/run.mjs [archivos o carpetas...]   (sin args: packages/sim/src y shared/src/{fixed,prng,hash}*)
+// Uso: node tools/lint-sim/run.mjs [archivos o carpetas...]   (sin args: packages/sim/src y packages/shared/src)
 import path from 'node:path';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { lintFiles, defaultTargets } from './lint.mjs';
+import { lintFiles, defaultTargets, isSourceFile } from './lint.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const args = process.argv.slice(2);
@@ -15,7 +15,7 @@ else {
   const collect = (p) => {
     if (fs.statSync(p).isDirectory())
       for (const e of fs.readdirSync(p).sort()) collect(path.join(p, e));
-    else if (p.endsWith('.ts') && !p.endsWith('.d.ts')) files.push(p);
+    else if (isSourceFile(path.basename(p)) || /\.(ts|tsx|mts)$/.test(p)) files.push(p);
   };
   for (const a of args) collect(path.resolve(a));
 }

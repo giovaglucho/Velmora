@@ -140,6 +140,33 @@ describe('broken data fails', () => {
     u.mystery = 1;
     expect(UnitDef.safeParse(u).success).toBe(false);
   });
+  it('economy schema is strict and validates ranges', () => {
+    const raw: RawGameData = clone(bundledRaw);
+    const eco = (r: RawGameData) => r.economy as Record<string, unknown>;
+    // unknown field at top level and in a nested object
+    const a = clone(raw);
+    eco(a).mystery = 1;
+    expect(() => parseSchemas(a)).toThrow();
+    const b = clone(raw);
+    (eco(b).market as Record<string, unknown>).mystery = 1;
+    expect(() => parseSchemas(b)).toThrow();
+    // Range with min > max
+    const c = clone(raw);
+    const src = (eco(c).sources as { dist?: [number, number] }[]).find((s) => s.dist)!;
+    src.dist = [src.dist![1] + 1, src.dist![1]];
+    expect(() => parseSchemas(c)).toThrow(/min must be <= max/);
+    expect(() => parseSchemas(raw)).not.toThrow();
+  });
+  it('ages.implicit.buildingHpByAge vs buildings.json hp divergence is an error', () => {
+    const raw: RawGameData = clone(bundledRaw);
+    expect(crossCheck(parseSchemas(raw)).errors).toEqual([]);
+    (
+      raw.ages as { implicit: { buildingHpByAge: Record<string, number[]> } }
+    ).implicit.buildingHpByAge['casa']![1] = 999;
+    expect(crossCheck(parseSchemas(raw)).errors.join('\n')).toMatch(
+      /building casa: hp age 2 is 750 .* 999/,
+    );
+  });
   it('dangling upgradesTo is a cross-reference error', () => {
     const raw: RawGameData = clone(bundledRaw);
     (raw.units as { units: { id: string; upgradesTo?: string }[] }).units.find(

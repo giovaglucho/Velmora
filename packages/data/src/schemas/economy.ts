@@ -1,9 +1,12 @@
 import { z } from 'zod';
 import { Id, LocalizedName, ResourceId, Notes, Cost } from './common.js';
 
-const Range = z.tuple([z.number(), z.number()]);
+/** [min, max] with min <= max. */
+export const Range = z
+  .tuple([z.number(), z.number()])
+  .refine(([min, max]) => min <= max, { message: 'range min must be <= max' });
 
-export const GatherRate = z.object({
+export const GatherRate = z.strictObject({
   id: Id,
   resource: ResourceId,
   perSecond: z.number().positive(),
@@ -11,7 +14,7 @@ export const GatherRate = z.object({
   notes: Notes,
 });
 
-export const ResourceSource = z.object({
+export const ResourceSource = z.strictObject({
   id: Id,
   name: LocalizedName,
   resource: ResourceId.optional(),
@@ -23,7 +26,9 @@ export const ResourceSource = z.object({
   /** Distance to the Ciudadela in tiles. */
   dist: Range.optional(),
   placements: z
-    .array(z.object({ count: z.number().int(), tiles: z.number().int().optional(), dist: Range }))
+    .array(
+      z.strictObject({ count: z.number().int(), tiles: z.number().int().optional(), dist: Range }),
+    )
     .optional(),
   rotPerSecond: z.number().optional(),
   cost: Cost.optional(),
@@ -33,25 +38,25 @@ export const ResourceSource = z.object({
   notes: Notes,
 });
 
-export const EconomyFile = z.object({
+export const EconomyFile = z.strictObject({
   /** Convention: values in this file/units.json are in GDD units; sim converts with round(x * fixedScale). */
   fixedScale: z.literal(1000),
-  settler: z.object({
+  settler: z.strictObject({
     unit: Id,
     startUnits: z.record(Id, z.number().int()),
-    carry: z.object({ default: z.number().int(), hunt: z.number().int() }),
+    carry: z.strictObject({ default: z.number().int(), hunt: z.number().int() }),
     notes: Notes,
   }),
   gatherRates: z.array(GatherRate),
   rateModel: z.string(),
-  farm: z.object({
+  farm: z.strictObject({
     bufferMax: z.number(),
     bufferRatePerSecond: z.number(),
     takePerHitFraction: z.number(),
     notes: Notes,
   }),
   sources: z.array(ResourceSource),
-  market: z.object({
+  market: z.strictObject({
     basePrice: z.number().int(),
     stonePrice: z.number().int(),
     commissionPct: z.number(),
@@ -64,9 +69,9 @@ export const EconomyFile = z.object({
     sharedPrices: z.boolean(),
     notes: Notes,
   }),
-  tradeCart: z.object({
+  tradeCart: z.strictObject({
     unit: Id,
-    formula: z.object({
+    formula: z.strictObject({
       coefficient: z.number(),
       offset: z.number(),
       minDistTiles: z.number().int(),
@@ -74,8 +79,8 @@ export const EconomyFile = z.object({
     cogPenaltyPct: z.number(),
     notes: Notes,
   }),
-  tribute: z.object({ baseFeePct: z.number(), notes: Notes }),
-  crownShards: z.object({
+  tribute: z.strictObject({ baseFeePct: z.number(), notes: Notes }),
+  crownShards: z.strictObject({
     perStandardMap: z.number().int(),
     aetherPerSecondEach: z.number(),
     carrier: z.string(),

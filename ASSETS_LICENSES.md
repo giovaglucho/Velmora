@@ -20,8 +20,8 @@ Todo asset (imagen, modelo, sonido, musica, fuente, shader de terceros) debe fig
 
 Verificado con grep: el devlog (`tools/devlog`) usa `Georgia`/`system-ui` del sistema y no carga ninguna fuente externa.
 
-| Fuente | Uso previsto | Licencia | Estado |
-| ------ | ------------ | -------- | ------ |
+| Fuente | Uso previsto          | Licencia    | Estado                 |
+| ------ | --------------------- | ----------- | ---------------------- |
 | Cinzel | Titulos / UI tematica | SIL OFL 1.1 | Prevista, no integrada |
 | Inter  | Texto de UI           | SIL OFL 1.1 | Prevista, no integrada |
 

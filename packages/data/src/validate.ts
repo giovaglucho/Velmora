@@ -196,6 +196,19 @@ export function crossCheck(d: GameData): { errors: string[]; warnings: string[] 
     if (!buildingIds.has(b)) err(`ages.implicit: unknown exempt building "${b}"`);
   for (const b of Object.keys(d.ages.implicit.buildingHpByAge))
     if (!buildingIds.has(b)) err(`ages.implicit: unknown building "${b}"`);
+  // ages.implicit.buildingHpByAge ([age I..IV]) must agree with buildings.json hp (key = age) wherever both give a value.
+  const bById = new Map(d.buildings.map((b) => [b.id, b]));
+  for (const [id, hps] of Object.entries(d.ages.implicit.buildingHpByAge)) {
+    const b = bById.get(id);
+    if (!b) continue; // unknown id already reported above
+    hps.forEach((hp, i) => {
+      const other = b.hp[String(i + 1)];
+      if (other !== undefined && other !== hp)
+        err(
+          `building ${id}: hp age ${i + 1} is ${other} in buildings.json but ${hp} in ages.implicit.buildingHpByAge`,
+        );
+    });
+  }
   if (!lines.has(d.ages.implicit.scoutUnitLine)) err(`ages.implicit: unknown scoutUnitLine`);
   for (const h of d.ages.implicit.hiddenUnitUpgrades)
     if (!unitIds.has(h.unit)) err(`ages.implicit: unknown unit "${h.unit}"`);

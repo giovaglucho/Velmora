@@ -2,6 +2,9 @@
 import ts from 'typescript';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
 export const ALLOWED_MATH = new Set(['min', 'max', 'abs', 'trunc', 'imul', 'clz32', 'sign']);
 const DOM_MODULES = /^(react-dom|react|pixi(\.js)?|@pixi\/.*|jsdom|happy-dom|dom)(\/.*)?$/;
@@ -26,9 +29,24 @@ const TIMER_FNS = new Set([
 const MAPSET = new Set(['Map', 'Set', 'ReadonlyMap', 'ReadonlySet', 'WeakMap', 'WeakSet']);
 const ITER_METHODS = new Set(['keys', 'values', 'entries', 'forEach']);
 const FLOAT_STR_METHODS = new Set(['toFixed', 'toPrecision', 'toExponential']);
+const FLOAT_ARRAYS = new Set(['Float16Array', 'Float32Array', 'Float64Array']);
+const FLOAT_VIEW_METHODS = new Set(['getFloat32', 'getFloat64', 'setFloat32', 'setFloat64']);
+const OBJECT_ITER_FNS = new Set(['fromEntries', 'entries', 'keys', 'values']);
+const RANDOM_MODULES = /^(node:)?crypto$/;
+const SRC_EXT = /\.(ts|tsx|mts)$/;
 
-/** Archivos que pueden usar `/` libremente: son los helpers de punto fijo. */
-const DIV_HELPER_FILE = /(^|[\\/])fixed[^\\/]*\.ts$/;
+/** Unico archivo que puede usar `/` libremente: el helper de punto fijo (ruta exacta). */
+export const DEFAULT_DIV_HELPERS = [path.join(ROOT, 'packages/shared/src/fixed.ts')];
+
+/** Letras minimas del motivo de `lint-sim-allow`. */
+const MIN_REASON_LETTERS = 5;
+const ALLOW_RE = /\/\/\s*lint-sim-allow:(.*)$/;
+function hasAllowWithReason(line) {
+  const m = ALLOW_RE.exec(line);
+  if (!m) return false;
+  const reason = m[1].split('//')[0]; // un `// expect-violation` posterior no cuenta como motivo
+  return (reason.match(/\p{L}/gu) ?? []).length >= MIN_REASON_LETTERS;
+}
 
 function stripParens(n) {
   let cur = n;
@@ -94,6 +112,40 @@ function typeIsMapSet(checker, expr) {
   });
 }
 
+/** Expresion que enumera un Map/Set: el propio valor o `.keys()/.values()/.entries()` de uno. */
+function isMapSetSource(checker, expr) {
+  if (typeIsMapSet(checker, expr)) return true;
+  return (
+    ts.isCallExpression(expr) &&
+    ts.isPropertyAccessExpression(expr.expression) &&
+    ITER_METHODS.has(expr.expression.name.text) &&
+    typeIsMapSet(checker, expr.expression.expression)
+  );
+}
+
+/** Tipo string (o any/unknown, por donde entran los strings sin tipar). */
+function typeIsStringish(checker, expr) {
+  const t = checker.getTypeAtLocation(expr);
+  const types = t.isUnion() ? t.types : [t];
+  return types.some(
+    (x) =>
+      x.flags &
+      (ts.TypeFlags.StringLike |
+        ts.TypeFlags.Any |
+        ts.TypeFlags.Unknown |
+        ts.TypeFlags.TemplateLiteral),
+  );
+}
+
+function isObjectOperand(node) {
+  const p = node.parent;
+  return (
+    !!p &&
+    (ts.isPropertyAccessExpression(p) || ts.isElementAccessExpression(p)) &&
+    p.expression === node
+  );
+}
+
 function isDeclarationName(n) {
   const p = n.parent;
   if (!p) return false;
@@ -116,13 +168,13 @@ function isDeclarationName(n) {
   return false;
 }
 
-function lintSourceFile(sf, checker, fileName) {
+function lintSourceFile(sf, checker, fileName, divHelpers) {
   const out = [];
   const add = (node, rule, message) => {
     const { line } = sf.getLineAndCharacterOfPosition(node.getStart(sf));
     out.push({ file: fileName, line: line + 1, rule, message });
   };
-  const isDivHelper = DIV_HELPER_FILE.test(fileName);
+  const isDivHelper = divHelpers.includes(path.resolve(fileName));
 
   const visit = (node) => {
     // --- float literals
@@ -150,17 +202,35 @@ function lintSourceFile(sf, checker, fileName) {
       )
         add(node, 'no-exponent', "operador '**' prohibido");
     }
-    // --- identifiers
-    if (ts.isIdentifier(node) && !isDeclarationName(node)) {
-      const n = node.text;
+    // --- globals (identificador suelto o `globalThis.X`)
+    const globalUse = (n, isCallee) => {
       if (n === 'parseFloat') add(node, 'no-parsefloat', 'parseFloat prohibido');
       if (DOM_GLOBALS.has(n)) add(node, 'no-dom', `acceso a global de DOM '${n}'`);
-      if (TIMER_FNS.has(n) && ts.isCallExpression(node.parent) && node.parent.expression === node)
-        add(node, 'no-timers', `${n} prohibido (usar ticks)`);
+      if (TIMER_FNS.has(n) && isCallee) add(node, 'no-timers', `${n} prohibido (usar ticks)`);
+      if (n === 'crypto') add(node, 'no-crypto', 'crypto.* prohibido (usar PRNG de la partida)');
+      if (FLOAT_ARRAYS.has(n)) add(node, 'no-float-array', `${n} prohibido (usar Int32Array)`);
+      if (n === 'Math' && !isObjectOperand(node))
+        add(
+          node,
+          'no-math',
+          'alias/desestructuracion de Math prohibido (usar Math.min(...) directo)',
+        );
+    };
+    const isCallee = (n) => ts.isCallExpression(n.parent) && n.parent.expression === n;
+    if (ts.isIdentifier(node) && !isDeclarationName(node)) {
+      if (node.text === 'globalThis' && !isObjectOperand(node))
+        add(node, 'no-global-alias', 'alias de globalThis prohibido');
+      globalUse(node.text, isCallee(node));
     }
+    if (
+      ts.isPropertyAccessExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      node.expression.text === 'globalThis'
+    )
+      globalUse(node.name.text, isCallee(node));
     // --- property access
     if (ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node)) {
-      const objText = node.expression.getText(sf);
+      const objText = node.expression.getText(sf).replace(/^globalThis\./, '');
       const name = ts.isPropertyAccessExpression(node)
         ? node.name.text
         : ts.isStringLiteralLike(node.argumentExpression)
@@ -180,6 +250,23 @@ function lintSourceFile(sf, checker, fileName) {
         if (objText === 'Number' && name === 'parseFloat')
           add(node, 'no-parsefloat', 'Number.parseFloat prohibido');
         if (FLOAT_STR_METHODS.has(name)) add(node, 'no-tofixed', `.${name} prohibido`);
+        if (FLOAT_VIEW_METHODS.has(name)) add(node, 'no-float-array', `.${name} prohibido`);
+        if (objText === 'JSON' && name === 'parse')
+          add(
+            node,
+            'no-json-parse',
+            'JSON.parse prohibido (puede introducir floats; usar @reinos/data)',
+          );
+        if (
+          objText === 'Object' &&
+          OBJECT_ITER_FNS.has(name) &&
+          ts.isCallExpression(node.parent) &&
+          node.parent.expression === node &&
+          node.parent.arguments[0] &&
+          isMapSetSource(checker, node.parent.arguments[0]) &&
+          !isSortedContext(node.parent)
+        )
+          add(node, 'no-unordered-iteration', `Object.${name}(Map/Set) sin ordenar`);
         if (
           ts.isPropertyAccessExpression(node) &&
           ITER_METHODS.has(name) &&
@@ -200,11 +287,7 @@ function lintSourceFile(sf, checker, fileName) {
             ts.isCallExpression(call) &&
             call.expression === node &&
             call.arguments[0] &&
-            (typeIsMapSet(checker, call.arguments[0]) ||
-              (/\.(keys|values|entries)\(\)$/.test(call.arguments[0].getText(sf)) &&
-                ts.isCallExpression(call.arguments[0]) &&
-                ts.isPropertyAccessExpression(call.arguments[0].expression) &&
-                typeIsMapSet(checker, call.arguments[0].expression.expression))) &&
+            isMapSetSource(checker, call.arguments[0]) &&
             !isSortedContext(call)
           ) {
             add(node, 'no-unordered-iteration', 'Array.from(Map/Set) sin ordenar');
@@ -212,11 +295,25 @@ function lintSourceFile(sf, checker, fileName) {
         }
       }
     }
+    // --- Number(str) / +str
+    if (
+      ts.isCallExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      node.expression.text === 'Number' &&
+      node.arguments[0] &&
+      typeIsStringish(checker, node.arguments[0])
+    )
+      add(node, 'no-string-to-number', 'Number(string) prohibido (puede producir floats)');
+    if (
+      ts.isPrefixUnaryExpression(node) &&
+      node.operator === ts.SyntaxKind.PlusToken &&
+      typeIsStringish(checker, node.operand)
+    )
+      add(node, 'no-string-to-number', '+string prohibido (puede producir floats)');
     // --- new Date / new Date()
     if (
       ts.isNewExpression(node) &&
-      ts.isIdentifier(node.expression) &&
-      node.expression.text === 'Date'
+      node.expression.getText(sf).replace(/^globalThis\./, '') === 'Date'
     )
       add(node, 'no-time', 'new Date prohibido');
     // --- for..of / spread over Map/Set
@@ -250,6 +347,13 @@ function lintSourceFile(sf, checker, fileName) {
       add(node, 'no-dom', `import de DOM/render '${node.moduleSpecifier.text}' prohibido en sim`);
     }
     if (
+      (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) &&
+      node.moduleSpecifier &&
+      ts.isStringLiteral(node.moduleSpecifier) &&
+      RANDOM_MODULES.test(node.moduleSpecifier.text)
+    )
+      add(node, 'no-crypto', `import de '${node.moduleSpecifier.text}' prohibido en sim`);
+    if (
       ts.isCallExpression(node) &&
       ts.isIdentifier(node.expression) &&
       node.expression.text === 'require' &&
@@ -265,22 +369,25 @@ function lintSourceFile(sf, checker, fileName) {
   if (/\/\/\/\s*<reference\s+lib=["']dom/.test(sf.text))
     out.push({ file: fileName, line: 1, rule: 'no-dom', message: 'reference lib dom prohibido' });
 
-  // escape por linea
+  // escape por linea (motivo con >= MIN_REASON_LETTERS letras)
   const lines = sf.text.split(/\r?\n/);
-  const allowRe = /\/\/\s*lint-sim-allow:\s*\S/;
   const seen = new Set();
   return out.filter((v) => {
     const key = `${v.line}:${v.rule}`;
     if (seen.has(key)) return false;
     seen.add(key);
-    if (allowRe.test(lines[v.line - 1] ?? '')) return false;
+    if (hasAllowWithReason(lines[v.line - 1] ?? '')) return false;
     const prev = lines[v.line - 2] ?? '';
-    return !(/^\s*\/\//.test(prev) && allowRe.test(prev));
+    return !(/^\s*\/\//.test(prev) && hasAllowWithReason(prev));
   });
 }
 
-/** Lintea una lista de archivos .ts. Devuelve violaciones [{file,line,rule,message}] ordenadas. */
-export function lintFiles(files) {
+/**
+ * Lintea una lista de archivos .ts/.tsx/.mts. Devuelve violaciones [{file,line,rule,message}] ordenadas.
+ * `opts.divisionHelpers`: rutas exactas con `/` libre (por defecto solo packages/shared/src/fixed.ts).
+ */
+export function lintFiles(files, opts = {}) {
+  const divHelpers = (opts.divisionHelpers ?? DEFAULT_DIV_HELPERS).map((f) => path.resolve(f));
   const abs = files.map((f) => path.resolve(f));
   const program = ts.createProgram(abs, {
     target: ts.ScriptTarget.ES2022,
@@ -289,6 +396,7 @@ export function lintFiles(files) {
     noEmit: true,
     skipLibCheck: true,
     allowJs: false,
+    jsx: ts.JsxEmit.Preserve,
   });
   const checker = program.getTypeChecker();
   const out = [];
@@ -298,9 +406,15 @@ export function lintFiles(files) {
       out.push({ file: f, line: 1, rule: 'io', message: 'no se pudo leer el archivo' });
       continue;
     }
-    out.push(...lintSourceFile(sf, checker, f));
+    out.push(...lintSourceFile(sf, checker, f, divHelpers));
   }
   return out.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line);
+}
+
+export function isSourceFile(name) {
+  return (
+    SRC_EXT.test(name) && !/\.d\.(ts|mts)$/.test(name) && !/\.(test|spec)\.(ts|tsx|mts)$/.test(name)
+  );
 }
 
 function walk(dir, acc) {
@@ -310,20 +424,15 @@ function walk(dir, acc) {
     .sort((a, b) => a.name.localeCompare(b.name))) {
     const p = path.join(dir, e.name);
     if (e.isDirectory()) walk(p, acc);
-    else if (/\.ts$/.test(e.name) && !/\.d\.ts$/.test(e.name) && !/\.(test|spec)\.ts$/.test(e.name))
-      acc.push(p);
+    else if (isSourceFile(e.name)) acc.push(p);
   }
   return acc;
 }
 
 /** Archivos que lintea `pnpm lint:sim` por defecto, relativos a la raiz del repo. */
 export function defaultTargets(root) {
-  const files = walk(path.join(root, 'packages/sim/src'), []);
-  const shared = path.join(root, 'packages/shared/src');
-  if (fs.existsSync(shared)) {
-    for (const e of fs.readdirSync(shared))
-      if (/^(fixed|prng|hash)[^/]*\.ts$/.test(e) && !/\.test\.ts$/.test(e))
-        files.push(path.join(shared, e));
-  }
-  return files;
+  return [
+    ...walk(path.join(root, 'packages/sim/src'), []),
+    ...walk(path.join(root, 'packages/shared/src'), []),
+  ];
 }

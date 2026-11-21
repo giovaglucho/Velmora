@@ -9,6 +9,7 @@ export default tseslint.config(
       '**/.turbo/**',
       'docs/**',
       'tools/devlog/site/**',
+      'tools/lint-sim/test/fixtures/**',
     ],
   },
   js.configs.recommended,
