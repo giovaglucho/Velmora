@@ -1,0 +1,7 @@
+node_modules
+dist
+.turbo
+pnpm-lock.yaml
+docs/GDD.md
+docs/PLAN.md
+docs/progress/**/media

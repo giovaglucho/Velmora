@@ -1,0 +1,32 @@
+{
+  "name": "reinos-de-ceniza",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.28.0",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "test:det": "turbo run test:det",
+    "typecheck": "turbo run typecheck",
+    "lint": "eslint . && pnpm lint:sim",
+    "lint:sim": "node tools/lint-sim/run.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "data:check": "pnpm --filter @reinos/data run check",
+    "devlog": "pnpm --filter @reinos/devlog run build",
+    "e2e": "playwright test --trace off"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^22.10.0",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.2",
+    "vitest": "^2.1.8"
+  }
+}
