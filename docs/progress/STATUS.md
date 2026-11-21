@@ -49,7 +49,7 @@ Desviación del PLAN: sprites/terreno provisionales **procedurales propios** (`t
 - [x] Medición de FPS del dueño en su navegador: 60 FPS (ver tabla de Fase 2). Cierra K1 de F2 con la salvedad de una sola lectura.
 - [x] Render desplegado con Blueprint (plan free, autoDeploy desde `main`). URLs: web `https://reinos-web-4bcg.onrender.com/`, API `https://reinos-api.onrender.com/health` (OK), relay `https://reinos-relay.onrender.com/health` (OK). `reinos-kv` es privado (sin URL). Los deploy hooks de GitHub ya no hacen falta.
 - [ ] Verificar `/devlog/` en la URL de `reinos-web` (el rewrite de devlog se quitó: revisar que cargue).
-- [ ] Aprobar `.claude/settings.json` (propuesta en `docs/settings.proposed.json`).
+- [x] `.claude/settings.json` aprobado por el dueño y activo (permisos pnpm/playwright/blender, bloqueo de push forzado, hooks de lint:sim y recordatorio de STATUS).
 - [x] Clúster MongoDB Atlas `Cluster0` (M0, AWS Frankfurt), usuario de base de datos y acceso `0.0.0.0/0` creados. `MONGODB_URI` todavía NO está cargado en Render: se carga por formulario seguro cuando arranque la Fase 8.
 - [ ] Packs de arte/audio y herramientas de IA para assets (puerta de Fase 6; conviene empezar ya).
 - [ ] Decidir si "Valhalla" y "Caravanserai" (GDD §10) se mantienen; revisar interpretaciones AMBIGUO de `packages/data/COVERAGE.md`.
