@@ -438,14 +438,14 @@ Comportamiento exigido (los coeficientes viven en `SimData.movement`):
 
 - A y B/C pueden trabajar en paralelo contra tipos y stubs de T0; las únicas dependencias de código son `fixed.ts` (constantes y funciones de §2) y `MovementSystem`/`MovementFactory` (§8).
 - Bump de `DATA_VERSION` a `0.2.0`; regenerar `packages/data` tests y `COVERAGE.md` si lista el bloque.
-- Un cambio en cualquier tabla trigonométrica, en `HASHED_COLUMNS`, en el orden de sistemas, en el algoritmo de desempate de A\* o en la semántica de comandos rompe repeticiones: exige subir `REPLAY_FORMAT_VERSION` y re-pinear los hashes dorados (`tools/headless/golden/hashes.json`).
+- Un cambio en cualquier tabla trigonométrica, en `HASHED_COLUMNS`, en el orden de sistemas, en el algoritmo de desempate de A\* o en la semántica de comandos rompe repeticiones: exige subir `REPLAY_FORMAT_VERSION` y re-pinear los hashes dorados (`tools/headless/golden.json`).
 - Límites duros que hay que vigilar: `maxEntities ≤ 65535`, `|operando| ≤ 2^20` en `fxMul/fxDiv`, coordenadas no negativas; 64 waypoints por unidad (2 MiB de columnas a 4096 unidades).
 - Los flow fields por sector, formaciones, cola con Shift, `payload` tipado y objetivo `entity` quedan para fases posteriores; añadirlos exige enmendar §5 y §10.
 - El hash por turno cubre las columnas de §4; un desync en datos no hasheados (waypoints) solo se detecta con `hashFull()` o cuando diverge una columna hasheada: la repetición de F1 usa `hashFull()` al final.
 
 ## Estado
 
-Propuesto (pendiente de aceptación por `architect` tras revisión de B1/B2 y T0; ver `docs/progress/fase-01/plan.md`).
+**Aceptado** (2026-11-21). Revisado por `architect` contra el contrato y GDD §15.2 sin bloqueantes de diseño; ver `docs/progress/fase-01/review-r1.md`. Los requisitos diferidos (topes de comandos y de turnos de repetición para el relay, hash de contenido de `SimData`) quedan como obligaciones de F2/F9, no como cambios de este contrato.
 
 ## Enmiendas (ola 1: T0, A, B)
 

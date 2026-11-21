@@ -1,6 +1,8 @@
 # Fase 1 — Plan de tareas: núcleo de simulación determinista
 
-Fuente: `docs/PLAN.md` Fase 1, GDD §15.2 y §7/§8, ADR-003, **ADR-005** (contrato exacto entre A, B y C), `docs/contracts.md`. Autor: `architect`. Estado: propuesto.
+Fuente: `docs/PLAN.md` Fase 1, GDD §15.2 y §7/§8, ADR-003, **ADR-005** (contrato exacto entre A, B y C), `docs/contracts.md`. Autor: `architect`. Estado: en ejecución (R1 completada: ver `review-r1.md`).
+
+> Nombres reales de archivos (difieren del texto original de algunas tareas): dorado = `tools/headless/golden.json`; informe de determinismo = `docs/progress/fase-01/determinismo.md`; benchmark = `docs/progress/fase-01/media/bench.md` (lo escribe `pnpm --filter @reinos/headless run bench`; `debug-visual` solo lo regenera).
 
 **Objetivo:** la simulación corre headless, reproducible bit a bit, con unidades que se mueven por un mapa con obstáculos.
 
@@ -8,8 +10,8 @@ Fuente: `docs/PLAN.md` Fase 1, GDD §15.2 y §7/§8, ADR-003, **ADR-005** (contr
 
 | #   | Criterio                                                                               | Verificación (comando / evidencia)                                                                                                                                     | Tareas        |
 | --- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| K1  | 1000 unidades × 10 000 ticks producen el mismo `finalHash` en los entornos disponibles | `pnpm test:det` (Node) + `pnpm test:det:browsers` (Chromium local; Firefox y WebKit en CI). Evidencia: `docs/progress/fase-01/determinism.md` con tabla entorno → hash | D2, D4, E1–E3 |
-| K2  | Tick ≤ 3 ms con 400 unidades                                                           | `pnpm --filter @reinos/headless bench` → `docs/progress/fase-01/bench.md` (p95 por tick ≤ 3 ms, 400 unidades en movimiento, Node 22)                                   | D3            |
+| K1  | 1000 unidades × 10 000 ticks producen el mismo `finalHash` en los entornos disponibles | `pnpm test:det` (Node) + `pnpm test:det:browsers` (Chromium local; Firefox y WebKit en CI). Evidencia: `docs/progress/fase-01/determinismo.md` con tabla entorno → hash | D2, D4, E1–E3 |
+| K2  | Tick ≤ 3 ms con 400 unidades                                                           | `pnpm --filter @reinos/headless run bench` → `docs/progress/fase-01/media/bench.md` (p95 por tick ≤ 3 ms, 400 unidades en movimiento, Node 22)                                   | D3            |
 | K3  | 0 violaciones de `lint:sim`                                                            | `pnpm lint:sim` sale 0 con `fixed.ts`, `sim/src/**` completos; además `pnpm lint`, `pnpm typecheck`                                                                    | todas         |
 
 **Entornos (honestidad de evidencia).** Aquí solo hay Node 22.23 y Chromium (`/opt/pw-browsers/chromium`, y `/usr/bin/google-chrome`); **no** hay Firefox ni WebKit y `playwright install` no se ejecuta en este entorno (ver `e2e/README.md`). Por tanto:
@@ -76,6 +78,7 @@ Dueños: `architect`, `sim-engineer` (carril A y B), `sim-engineer (2º)` (carri
 #### R1 — Revisión del diseño del ECS y del formato de comandos (0,25 d)
 
 - **Dueño:** `architect`. **Depende de:** B2 (y T0). **Es puerta de merge** para B3 (PLAN: "revisión del diseño del ECS y del formato de comandos antes del merge").
+- **Resultado (2026-11-21):** `docs/progress/fase-01/review-r1.md`, aprobado sin bloqueantes de diseño; ADR-005 pasa a Aceptado.
 - **Criterio:** nota en `docs/progress/fase-01/review-r1.md` con veredicto (aprobado / cambios) contra ADR-005; si se pide un cambio de contrato, enmienda del ADR **antes** de tocar código; ADR-005 pasa a "Aceptado".
 
 #### B3 — Loop y hash por turno (0,75 d)
@@ -139,13 +142,13 @@ Dueños: `architect`, `sim-engineer` (carril A y B), `sim-engineer (2º)` (carri
 #### D3 — Bench (0,75 d)
 
 - **Dueño:** `qa-engineer`. **Depende de:** D1, C5.
-- **Hace:** `tools/headless/src/bench.ts`: `headless bench [--units 100,400,1000,1200] [--turns 500]`; calentamiento 200 ticks descartados; mide con `performance.now()` (permitido: está fuera de `packages/sim`) el tiempo de cada turno (incluye comandos y hash) y reporta por tick = turno / 4: media, p50, p95, p99, máx; registra versión de Node, CPU (`os.cpus()[0].model`), nº de núcleos; salida JSON + tabla Markdown (`docs/progress/fase-01/bench.md`).
+- **Hace:** `tools/headless/src/bench.ts`: `headless bench [--units 100,400,1000,1200] [--turns 500]`; calentamiento 200 ticks descartados; mide con `performance.now()` (permitido: está fuera de `packages/sim`) el tiempo de cada turno (incluye comandos y hash) y reporta por tick = turno / 4: media, p50, p95, p99, máx; registra versión de Node, CPU (`os.cpus()[0].model`), nº de núcleos; salida JSON + tabla Markdown (`docs/progress/fase-01/media/bench.md`).
 - **Criterio (K2):** con 400 unidades, todas con orden de movimiento activa durante la medición, **p95 ≤ 3 ms por tick** y media ≤ 3 ms; objetivo de referencia GDD (informativo, no criterio de F1): 1200 unidades ≤ 8 ms. El archivo `bench.md` incluye el comando exacto y la máquina; si no se cumple, no se cierra la fase y se abre tarea de optimización (perfilado con `--cpu-prof`), **no** se relaja el criterio sin ADR.
 
 #### D4 — Hashes dorados y `test:det` (0,5 d)
 
 - **Dueño:** `qa-engineer`. **Depende de:** D2.
-- **Hace:** `tools/headless/golden/hashes.json` (`{escenario: {seed, finalHash, checkpoints}}`) y `packages/sim/test/determinism.test.ts` que carga el escenario `thousand` (generado por `tools/headless` o fixture mínima comprimida si se evita dependencia circular: el test importa el generador desde `tools/headless` por ruta relativa solo en tests) y compara con el dorado; `pnpm test:det` ejecuta además el escenario completo de 10 000 ticks en Node.
+- **Hace:** `tools/headless/golden.json` (nombre real; contiene escenario, seed, `dataVersion`, `finalHash` y checkpoints; se regenera con `golden:update`) y `packages/sim/test/determinism.test.ts` que carga el escenario `thousand` (generado por `tools/headless` o fixture mínima comprimida si se evita dependencia circular: el test importa el generador desde `tools/headless` por ruta relativa solo en tests) y compara con el dorado; `pnpm test:det` ejecuta además el escenario completo de 10 000 ticks en Node.
 - **Criterio:** `pnpm test:det` verde en Node con el hash dorado (K1, entorno Node); cambiar un solo bit de un comando o de una tabla de `trig-tables.ts` hace fallar el test (mutación manual documentada en el PR); el dorado fue calculado y verificado **dos veces** en procesos distintos (`node` normal y `node --jitless`) con el mismo resultado.
 
 ### Carril E — Determinismo multi-entorno
@@ -154,7 +157,7 @@ Dueños: `architect`, `sim-engineer` (carril A y B), `sim-engineer (2º)` (carri
 
 - **Dueño:** `qa-engineer`. **Depende de:** D2.
 - **Hace:** `tools/headless/browser/entry.ts` empaquetado con esbuild (IIFE, expone `window.ReinosSim.run(replay, simData)` y `runInWorker`); `e2e/determinism.spec.ts` (Playwright): Node genera la repetición `thousand` y el `SimData` (JSON plano), la página (`page.setContent` + `addScriptTag`) ejecuta `runReplay` y devuelve `{finalHash, checkpoints}`; segundo caso en un Web Worker (Blob); la spec compara con el dorado y con Node; script `pnpm test:det:browsers`.
-- **Criterio:** en este entorno (Chromium preinstalado vía `CHROMIUM_PATH` / `/opt/pw-browsers/chromium`, `--no-sandbox`) `pnpm test:det:browsers` verde: `finalHash` y todos los checkpoints idénticos a Node en hilo principal y en Worker; caso extra con `--js-flags=--jitless`; tiempo total ≤ 5 min. Evidencia en `docs/progress/fase-01/determinism.md`.
+- **Criterio:** en este entorno (Chromium preinstalado vía `CHROMIUM_PATH` / `/opt/pw-browsers/chromium`, `--no-sandbox`) `pnpm test:det:browsers` verde: `finalHash` y todos los checkpoints idénticos a Node en hilo principal y en Worker; caso extra con `--js-flags=--jitless`; tiempo total ≤ 5 min. Evidencia en `docs/progress/fase-01/determinismo.md`.
 
 #### E2 — Firefox y WebKit en CI (0,5 d)
 
@@ -165,7 +168,7 @@ Dueños: `architect`, `sim-engineer` (carril A y B), `sim-engineer (2º)` (carri
 #### E3 — Informe de determinismo (0,25 d)
 
 - **Dueño:** `qa-engineer`. **Depende de:** E1, E2.
-- **Criterio:** `docs/progress/fase-01/determinism.md` con tabla (entorno, versión, resultado `finalHash`, ¿ejecutado aquí o en CI?), comando exacto para reproducir y estado honesto de K1 (Node, Chromium, Chromium-Worker, jitless: verificados; Firefox, WebKit: pendientes de CI).
+- **Criterio:** `docs/progress/fase-01/determinismo.md` con tabla (entorno, versión, resultado `finalHash`, ¿ejecutado aquí o en CI?), comando exacto para reproducir y estado honesto de K1 (Node, Chromium, Chromium-Worker, jitless: verificados; Firefox, WebKit: pendientes de CI).
 
 ### Carril F — Visualización y devlog
 
@@ -178,7 +181,7 @@ Dueños: `architect`, `sim-engineer` (carril A y B), `sim-engineer (2º)` (carri
 #### F2 — Tabla de benchmark y entrada de devlog (0,5 d)
 
 - **Dueño:** `devlog-reporter`. **Depende de:** D3, F1.
-- **Hace:** `docs/progress/fase-01/devlog.json` (formato de `fase-00/devlog.json`) con entrada F1: GIF de F1, tabla de benchmark (100/400/1000/1200 unidades: media/p95/máx por tick), hash final de los entornos verificados, enlaces a `determinism.md`; `pnpm devlog` lo compila.
+- **Hace:** `docs/progress/fase-01/devlog.json` (formato de `fase-00/devlog.json`) con entrada F1: GIF de F1, tabla de benchmark (100/400/1000/1200 unidades: media/p95/máx por tick), hash final de los entornos verificados, enlaces a `determinismo.md`; `pnpm devlog` lo compila.
 - **Criterio:** `pnpm devlog` termina con exit 0 y la entrada F1 muestra el GIF y la tabla; los números de la tabla coinciden con `bench.md` (verificación manual citada); entorno y fecha de la medición visibles en la entrada.
 
 ### R2 y Z — Cierre
@@ -217,7 +220,7 @@ Dueños: `architect`, `sim-engineer` (carril A y B), `sim-engineer (2º)` (carri
 | D4    | qa-engineer           | 0,5  | D2         | `pnpm test:det` con hash dorado (K1-Node)                         |
 | E1    | qa-engineer           | 1    | D2         | Node = Chromium (hilo y Worker)                                   |
 | E2    | qa-engineer           | 0,5  | E1         | Firefox/WebKit en CI (no ejecutables aquí)                        |
-| E3    | qa-engineer           | 0,25 | E1, E2     | `determinism.md` honesto                                          |
+| E3    | qa-engineer           | 0,25 | E1, E2     | `determinismo.md` honesto                                          |
 | F1    | devlog-reporter       | 1    | D3, C5     | GIF de debug ≥ 60 fotogramas                                      |
 | F2    | devlog-reporter       | 0,5  | D3, F1     | `pnpm devlog` con GIF + tabla                                     |
 | R2    | reviewer              | 0,5  | D4, E3, F2 | informe sin bloqueantes abiertos                                  |

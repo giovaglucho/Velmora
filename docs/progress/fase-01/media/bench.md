@@ -1,6 +1,6 @@
 # Benchmark de tick (Fase 1)
 
-Comando: `pnpm --filter @reinos/headless run debug-visual`
+Comando: `pnpm --filter @reinos/headless run bench` (`pnpm --filter @reinos/headless run debug-visual` solo regenera este archivo)
 
 - Máquina: Intel(R) Xeon(R) Processor @ 2.10GHz (4 núcleos, linux x64)
 - Node: v22.23.5

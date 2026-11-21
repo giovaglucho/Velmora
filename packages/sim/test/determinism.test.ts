@@ -32,6 +32,7 @@ import {
   type SpawnSpec,
 } from '@reinos/shared';
 import { createSim, createStubMovement, type MovementFactory } from '../src/index';
+import type { SimData } from '@reinos/shared';
 import { TEST_DATA, moveCmd, rleFromBlocked, stopCmd } from './helpers/fixtures';
 
 const SCENARIO_UNITS = 200;
@@ -106,9 +107,10 @@ function runScenario(
   scenarioSeed: number,
   simSeed: number,
   movement?: MovementFactory,
+  data: SimData = TEST_DATA,
 ): { finalHash: number; digest: number } {
   const { config, cmds } = scenario(scenarioSeed);
-  const sim = createSim(simSeed, 'test-1', config, TEST_DATA, movement ? { movement } : undefined);
+  const sim = createSim(simSeed, 'test-1', config, data, movement ? { movement } : undefined);
   const perTurn: number[] = [];
   for (let t = 0; t < SCENARIO_TURNS; t++) perTurn.push(sim.step(cmds.get(t) ?? []).hash);
   expect(sim.tick).toBe(SCENARIO_TICKS);
@@ -128,6 +130,19 @@ describe('determinismo Fase 1: 200 unidades x 1000 ticks', () => {
     const a = runScenario(0xa11ce, 42, createStubMovement);
     expect(a.finalHash).toBe(STUB_FINAL_HASH);
     expect(a.digest).toBe(STUB_TURN_DIGEST);
+  });
+  it('minProgressPermille (stuck threshold, game.json) changes the hash', () => {
+    const base = runScenario(0xa11ce, 42);
+    const strict: SimData = {
+      ...TEST_DATA,
+      movement: { ...TEST_DATA.movement, minProgressPermille: 1000 },
+    };
+    const lax: SimData = {
+      ...TEST_DATA,
+      movement: { ...TEST_DATA.movement, minProgressPermille: 1 },
+    };
+    expect(runScenario(0xa11ce, 42, undefined, strict).finalHash).not.toBe(base.finalHash);
+    expect(runScenario(0xa11ce, 42, undefined, lax).finalHash).not.toBe(base.finalHash);
   });
   it('es sensible a la semilla de la partida y a la del escenario', () => {
     const base = runScenario(0xa11ce, 42);

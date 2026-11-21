@@ -16,7 +16,9 @@ Escenario: `thousand` (1000 unidades x 10 000 ticks = 2500 turnos, mapa 200x200 
 
 Firefox y WebKit no existen en este sandbox y no se instalan aquí. El proyecto de Playwright solo los activa con `PW_ALL_BROWSERS=1`; el job `test-det-browsers` de `.github/workflows/ci.yml` hace `playwright install --with-deps chromium firefox webkit` y los ejecuta. K1 queda **cerrado para Node y Chromium** y **abierto para Firefox/WebKit** hasta la primera corrida verde en GitHub (TODO-HUMANO: push/merge para que el job corra).
 
-El hash numérico concreto no se pinea todavía (el movimiento está cambiando): `tools/headless/golden.json` está sin fijar (`finalHash: null`). El test `pnpm test:det` comprueba entonces solo reproducibilidad (la corrida generadora y una repetición independiente coinciden) y **falla en CI** hasta que alguien ejecute `golden:update` con el movimiento definitivo. Los hashes de la tabla anterior son relativos (Node = navegador); el valor se anota aquí al pinear.
+El golden **ya está pineado**: `tools/headless/golden.json` (escenario `thousand`, semilla 1, `dataVersion` 0.2.0, `replayFormatVersion` 1) con `finalHash` = 2674808742 = `0x9f6e57a6` y los 25 checkpoints. `pnpm test:det` lo compara con la corrida de Node y falla si el hash cambia o si el golden queda `stale` (cambió `REPLAY_FORMAT_VERSION` o `DATA_VERSION`). Los navegadores se comparan contra Node en la misma corrida.
+
+**Estado honesto de K1:** verificados aquí: Node, Node `--jitless`, Chromium en hilo principal y Chromium en Web Worker (más Chromium `--jitless`, solo hilo principal). **Pendientes de CI: Firefox y WebKit** (el job `test-det-browsers` aún no corrió en GitHub). K1 sigue **abierto** hasta esa primera corrida verde (TODO-HUMANO: push/merge para que el job corra).
 
 Control negativo: la spec incluye un caso que muta un comando en el navegador y exige que el hash cambie (descarta que la comparación sea vacua).
 
@@ -42,4 +44,4 @@ Tiempos medidos aquí: con el movimiento stub, Node ~2 s, Chromium ~2 s por caso
 
 1. `pnpm test:det:browsers` (Node vs navegadores) debe seguir verde sin tocar nada.
 2. `pnpm --filter @reinos/headless run golden:update` y commitear `golden.json` (si cambia `REPLAY_FORMAT_VERSION` o `DATA_VERSION`, el test lo marca como `stale`).
-3. Actualizar el hash en esta página y volver a ejecutar `PW_ALL_BROWSERS=1` en CI.
+3. Actualizar el hash (hoy `0x9f6e57a6`) en esta página y volver a ejecutar `PW_ALL_BROWSERS=1` en CI.
