@@ -18,6 +18,8 @@ export interface TurnInfo {
   turn: number;
   hash: number;
   rejected: number;
+  /** Unit entries skipped inside accepted commands (diagnostics; not hashed). */
+  skippedUnits: number;
 }
 
 export interface SimClient {
@@ -28,6 +30,8 @@ export interface SimClient {
     mode?: SnapshotMode;
     /** Start paused (tests drive the sim with control('step')). */
     paused?: boolean;
+    /** simDataHash the client expects; the worker refuses to start on mismatch (H3). */
+    simDataHash?: number;
   }): Promise<ReadyInfo>;
   /** Latest snapshot; null if none. The view is valid only until the next call to latest(). */
   latest(): SnapshotView | null;
@@ -112,7 +116,8 @@ export function createSimClient(opts: SimClientOptions = {}): SimClient {
         transfer?.push(m.buffer);
         return;
       case 'turn':
-        for (const cb of [...turnCbs]) cb({ turn: m.turn, hash: m.hash, rejected: m.rejected });
+        for (const cb of [...turnCbs])
+          cb({ turn: m.turn, hash: m.hash, rejected: m.rejected, skippedUnits: m.skippedUnits });
         return;
       case 'perf': {
         perf = {
@@ -163,6 +168,7 @@ export function createSimClient(opts: SimClientOptions = {}): SimClient {
           speed: init.speed ?? 1,
           mode,
           dataVersion: DATA_VERSION,
+          ...(init.simDataHash !== undefined ? { simDataHash: init.simDataHash } : {}),
           paused: init.paused === true,
           ...(sab !== undefined ? { sab } : {}),
         };

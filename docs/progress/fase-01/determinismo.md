@@ -45,3 +45,9 @@ Tiempos medidos aquí: con el movimiento stub, Node ~2 s, Chromium ~2 s por caso
 1. `pnpm test:det:browsers` (Node vs navegadores) debe seguir verde sin tocar nada.
 2. `pnpm --filter @reinos/headless run golden:update` y commitear `golden.json` (si cambia `REPLAY_FORMAT_VERSION` o `DATA_VERSION`, el test lo marca como `stale`).
 3. Actualizar el hash (hoy `0x9f6e57a6`) en esta página y volver a ejecutar `PW_ALL_BROWSERS=1` en CI.
+
+## Adenda (F2/S2): `buildSimData` y empates .5
+
+`buildSimData` corre en cada cliente (fuera de `lint:sim`). `e2e/determinismo/determinism.spec.ts` (caso "buildSimData: simDataHash ...") empaqueta `@reinos/data` con esbuild (`tools/headless/browser/data-entry.ts`), construye `SimData` en la página y compara `simDataHash` y la columna `speedFxPerTick` contra Node para: (a) los datos incluidos y (b) 8 tablas sintéticas (`tools/headless/src/tie-table.ts`) con velocidades `(2k+1)/100` y vecinos a 1 ulp, que producen empates `x.5` exactos de `speed * fixedScale / TICKS_PER_SECOND`.
+
+El redondeo pasó de `Math.round` a `roundHalfUp` explícito (`floor(x)` más 1 si `x - floor(x) >= 0.5`, resta exacta en IEEE-754); es idéntico a `Math.round` para no negativos (test de equivalencia), por lo que **ningún valor existente cambia**: `simDataHash` de los datos incluidos = 2130807079 y el golden (`0x9f6e57a6`) no varía. Chromium verificado; Firefox y WebKit pendientes de CI (`PW_ALL_BROWSERS=1`, TODO-HUMANO).

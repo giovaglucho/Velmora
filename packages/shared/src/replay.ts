@@ -2,7 +2,7 @@
 import { commandShapeError, type Command } from './commands';
 import { validateSimConfig, type SimConfig } from './simconfig';
 
-export const REPLAY_FORMAT_VERSION = 1;
+export const REPLAY_FORMAT_VERSION = 2;
 export const MAX_REPLAY_TURNS = 0x7fffffff;
 
 export interface ReplayTurn {
@@ -16,6 +16,8 @@ export interface Replay {
   /** uint32 */
   seed: number;
   dataVersion: string;
+  /** uint32 simDataHash(SimData) the replay was recorded with (H3); runReplay refuses other data. */
+  simDataHash: number;
   config: SimConfig;
   /** Turns to simulate; turns without commands are omitted from `turns`. */
   totalTurns: number;
@@ -39,7 +41,16 @@ function int(v: unknown, lo: number, hi: number, path: string): number {
   return v;
 }
 
-const TOP_KEYS = ['version', 'seed', 'dataVersion', 'config', 'totalTurns', 'turns', 'finalHash'];
+const TOP_KEYS = [
+  'version',
+  'seed',
+  'dataVersion',
+  'simDataHash',
+  'config',
+  'totalTurns',
+  'turns',
+  'finalHash',
+];
 
 /** Validates an untrusted value as a Replay and returns a canonical copy. Throws Error naming the invalid field. */
 export function validateReplay(x: unknown): Replay {
@@ -57,6 +68,7 @@ export function validateReplay(x: unknown): Replay {
   const seed = int(x.seed, 0, 0xffffffff, 'replay.seed');
   if (typeof x.dataVersion !== 'string' || x.dataVersion.length === 0)
     fail('replay.dataVersion', 'must be a non-empty string');
+  const simDataHash = int(x.simDataHash, 0, 0xffffffff, 'replay.simDataHash');
   const config = validateSimConfig(x.config, 'replay.config');
   const totalTurns = int(x.totalTurns, 0, MAX_REPLAY_TURNS, 'replay.totalTurns');
   if (!Array.isArray(x.turns)) return fail('replay.turns', 'must be an array');
@@ -96,6 +108,7 @@ export function validateReplay(x: unknown): Replay {
     version: REPLAY_FORMAT_VERSION,
     seed,
     dataVersion: x.dataVersion,
+    simDataHash,
     config,
     totalTurns,
     turns,
@@ -126,6 +139,7 @@ export function serializeReplay(r: Replay): string {
     version: v.version,
     seed: v.seed,
     dataVersion: v.dataVersion,
+    simDataHash: v.simDataHash,
     config: {
       maxPlayers: v.config.maxPlayers,
       maxEntities: v.config.maxEntities,
@@ -135,6 +149,7 @@ export function serializeReplay(r: Replay): string {
         blockedRle: v.config.map.blockedRle,
       },
       spawns: v.config.spawns.map((s) => ({ unit: s.unit, owner: s.owner, x: s.x, y: s.y })),
+      ...(v.config.simDataHash === undefined ? {} : { simDataHash: v.config.simDataHash }),
     },
     totalTurns: v.totalTurns,
     turns: v.turns.map((t) => ({

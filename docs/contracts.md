@@ -32,11 +32,13 @@ Nota: hoy `packages/sim/package.json` solo declara `@reinos/shared`; agregar `@r
 - Esquemas zod y tipos (`schemas/*`): common, modifiers, resources, economy, ages, units, buildings, techs, upgrades, factions, maps, ai, i18n, game.
 - `parseSchemas`, `crossCheck`, tipos `GameData`, `RawGameData` (validacion).
 - `loadGameData`, `bundledRaw`, `toFixed`, `DATA_VERSION`.
+- `buildSimData` redondea con `roundHalfUp` explicito (empates .5 hacia arriba, identico a `Math.round` en no negativos); el test de navegador compara su `simDataHash` contra Node.
 - Contrato: datos puros y validados; `toFixed` convierte a punto fijo (escala `economy.fixedScale`) al cargar. No contiene logica de juego.
 
 ### `@reinos/shared` (`packages/shared/src/index.ts`)
 
 - `prng`: `Prng`, `createPrng`, `createPrngFromState` (xoshiro128**).
+- `simdata`: `SimData`, `MovementTuning`, `simDataHash(SimData): number` (FNV-1a uint32 del contenido completo, orden fijo; R1/F1 H3). `SimConfig.simDataHash?` opcional; `Replay.simDataHash` obligatorio desde `REPLAY_FORMAT_VERSION` 2.
 - `hash`: `FNV_OFFSET_BASIS`, `FNV_PRIME`, `fnv1aByte`, `fnv1aInt32`, `hashInts`, `hashBytes`.
 - Previsto: helpers de punto fijo (`fixed*.ts`), tablas trigonometricas enteras, tipos de comandos y protocolo de red (ADR-002).
 - Contrato: solo codigo determinista, sin DOM, Node ni tiempo; sujeto a `lint:sim` en `fixed|prng|hash`.
@@ -44,6 +46,7 @@ Nota: hoy `packages/sim/package.json` solo declara `@reinos/shared`; agregar `@r
 ### `@reinos/sim` (`packages/sim/src/index.ts`)
 
 - Hoy: `export {}` (esqueleto).
+- `createSim` rechaza `config.simDataHash` distinto del hash local; `runReplay` rechaza `replay.simDataHash` distinto. `TurnResult.skippedUnits` y `Sim.lastRejected/lastSkippedUnits` (diagnostico, fuera del hash). El worker del cliente informa `simDataHash` en `ready` y `skippedUnits` en `turn`.
 - Previsto: crear/avanzar simulacion por tick, aplicar comandos por turno, `stateHash`, snapshots, ECS SoA, pathfinding.
 - Contrato: entrada unica = comandos + semilla + datos; salida = estado/eventos. Sujeto a `lint:sim` completo (ADR-003). No importa de `client` ni `server`.
 

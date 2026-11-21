@@ -3,6 +3,7 @@
 // obstacles + a sealed pocket (unreachable goals), two armies, and move/stop commands.
 import {
   REPLAY_FORMAT_VERSION,
+  simDataHash,
   createPrng,
   fxToTile,
   type Command,
@@ -344,6 +345,7 @@ export function generateScenario(
     version: REPLAY_FORMAT_VERSION,
     seed: o.seed,
     dataVersion,
+    simDataHash: simDataHash(data),
     config,
     totalTurns: o.turns,
     turns,

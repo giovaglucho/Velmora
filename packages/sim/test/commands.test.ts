@@ -74,8 +74,24 @@ describe('per-unit filtering', () => {
     // E2 belongs to player 1; 0x5ffff is dead; eid with wrong generation is stale
     const r = sim.step([moveCmd(0, 0, [E2, E1, 0x5ffff, eidOf(0, 2), E0], 4500, 4500)]);
     expect(r.rejected).toBe(0);
+    expect(r.skippedUnits).toBe(3); // E2 foreign, 0x5ffff dead, wrong generation stale
     expect(rec.calls).toEqual([E0, E1]);
     expect(sim.world.orderKind[2]).toBe(ORDER_NONE);
+  });
+  it('counts duplicates and resets the counters every turn (not hashed)', () => {
+    const sim = mk();
+    const r = sim.step([moveCmd(0, 0, [E0, E0, E1], 4500, 4500)]);
+    expect(r.skippedUnits).toBe(1);
+    expect(r.rejected).toBe(0);
+    const r2 = sim.step([]);
+    expect(r2.skippedUnits).toBe(0);
+    expect(sim.lastSkippedUnits).toBe(0);
+    // same commands, same hash regardless of how often the counters were read
+    const a = mk();
+    const b = mk();
+    a.step([moveCmd(0, 0, [E0, E0, E2], 4500, 4500)]);
+    b.step([moveCmd(0, 0, [E0], 4500, 4500)]);
+    expect(a.hashFull()).toBe(b.hashFull());
   });
   it('a stale eid after slot reuse does not command the new tenant', () => {
     const sim = mk();

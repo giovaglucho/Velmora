@@ -13,6 +13,9 @@ import type { UnitAtlas } from './atlas';
 
 const NEUTRAL_TINT = 0x9ca3af;
 
+/** Per-slot visibility predicate (fog of war): false hides the slot's sprites this frame. */
+export type SlotVisible = (view: SnapshotView, slot: number) => boolean;
+
 export class UnitLayer {
   private bodies: Array<Sprite | undefined> = [];
   private teams: Array<Sprite | undefined> = [];
@@ -69,7 +72,13 @@ export class UnitLayer {
    * Updates sprites from `view` for this frame. `alpha` = interpolation factor (ADR-006 §3.7);
    * positions go straight to world px (the parent container carries camera pan/zoom).
    */
-  update(view: SnapshotView | null, alpha: number, cam: Camera, vp: Viewport): void {
+  update(
+    view: SnapshotView | null,
+    alpha: number,
+    cam: Camera,
+    vp: Viewport,
+    slotVisible?: SlotVisible,
+  ): void {
     let visible = 0;
     if (!view) {
       this.hideAll(0);
@@ -87,6 +96,11 @@ export class UnitLayer {
       const flags = view.flags[slot] ?? 0;
       if ((flags & FLAG_ALIVE) === 0) {
         this.wasAlive[slot] = 0;
+        this.hide(slot);
+        continue;
+      }
+      // fog of war (ADR-006 §7.3): enemy/neutral units on tiles that are not visible are not drawn
+      if (slotVisible !== undefined && !slotVisible(view, slot)) {
         this.hide(slot);
         continue;
       }

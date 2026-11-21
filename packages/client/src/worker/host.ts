@@ -5,6 +5,7 @@ import {
   TICK_MS,
   TURN_TICKS,
   commandShapeError,
+  simDataHash,
   type Command,
   type SimConfig,
   type SimData,
@@ -133,7 +134,13 @@ export function createSimHost(deps: SimHostDeps): SimHost {
     sampleHead = (sampleHead + 1) % PERF_SAMPLES;
     if (nSamples < PERF_SAMPLES) nSamples++;
     if (r.sim.tick % TURN_TICKS === 0) {
-      post({ t: 'turn', turn: r.sim.turn - 1, hash: r.sim.hash(), rejected });
+      post({
+        t: 'turn',
+        turn: r.sim.turn - 1,
+        hash: r.sim.hash(),
+        rejected,
+        skippedUnits: r.sim.lastSkippedUnits,
+      });
       rejected = 0;
     }
   };
@@ -179,6 +186,11 @@ export function createSimHost(deps: SimHostDeps): SimHost {
             data.dataVersion +
             '"',
         );
+      const dataHash = simDataHash(data);
+      if (msg.simDataHash !== undefined && msg.simDataHash !== dataHash)
+        throw new Error(
+          'simDataHash mismatch: client ' + msg.simDataHash + ' vs worker ' + dataHash,
+        );
       if (!Number.isFinite(msg.speed) || msg.speed < MIN_SPEED || msg.speed > MAX_SPEED)
         throw new RangeError('speed out of range');
       const sim = createSim(msg.seed, data.dataVersion, msg.config, data);
@@ -200,7 +212,7 @@ export function createSimHost(deps: SimHostDeps): SimHost {
         t: 'ready',
         capacity,
         dataVersion: data.dataVersion,
-        simDataHash: null,
+        simDataHash: dataHash,
         mode: publisher.mode,
       });
       last = now();

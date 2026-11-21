@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { TURN_TICKS, type Command } from '@reinos/shared';
+import { TURN_TICKS, simDataHash, type Command } from '@reinos/shared';
 import { ORDER_MOVE, ORDER_NONE, createSim, createStubMovement } from '../src/index';
 import { TEST_DATA, eidOf, makeConfig, moveCmd, spawnAt, stopCmd } from './helpers/fixtures';
 
@@ -23,6 +23,16 @@ const script = (turn: number): Command[] =>
 describe('createSim validation', () => {
   it('rejects a different dataVersion', () => {
     expect(() => createSim(1, '0.0.0', cfg(), TEST_DATA)).toThrow(/dataVersion/);
+  });
+  it('accepts a matching simDataHash and rejects any edited SimData content', () => {
+    const withHash = { ...cfg(), simDataHash: simDataHash(TEST_DATA) };
+    expect(() => createSim(1, 'test-1', withHash, TEST_DATA)).not.toThrow();
+    // Same dataVersion string, one movement value edited: only the hash can tell.
+    const edited = { ...TEST_DATA, movement: { ...TEST_DATA.movement, stuckTicks: 21 } };
+    expect(simDataHash(edited)).not.toBe(simDataHash(TEST_DATA));
+    expect(() => createSim(1, 'test-1', withHash, edited)).toThrow(/simDataHash mismatch/);
+    const editedSpeed = { ...TEST_DATA, speedFxPerTick: [40, 45, 71] };
+    expect(() => createSim(1, 'test-1', withHash, editedSpeed)).toThrow(/simDataHash mismatch/);
   });
   it('rejects non-uint32 seeds', () => {
     for (const s of [-1, 1.5, 2 ** 32, NaN])

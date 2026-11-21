@@ -6,7 +6,9 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
+    "predev": "pnpm --filter @reinos/asset-pipeline run gen",
     "dev": "vite",
+    "prebuild": "pnpm --filter @reinos/asset-pipeline run gen",
     "build": "pnpm --filter @reinos/devlog run build && vite build",
     "preview": "vite preview --port 4173",
     "typecheck": "tsc -p tsconfig.json --noEmit",

@@ -1,5 +1,5 @@
 // Replay execution (ADR-005 §9). Used by Node and by the browsers.
-import type { Command, Replay, SimData } from '@reinos/shared';
+import { simDataHash, type Command, type Replay, type SimData } from '@reinos/shared';
 import { createSim, type SimOptions } from './sim';
 
 export interface ReplayRunOptions extends SimOptions {
@@ -24,6 +24,9 @@ export interface ReplayRunResult {
 const NO_COMMANDS: readonly Command[] = [];
 
 export function runReplay(replay: Replay, data: SimData, opts?: ReplayRunOptions): ReplayRunResult {
+  const localHash = simDataHash(data);
+  if (replay.simDataHash !== localHash)
+    throw new Error('simDataHash mismatch: replay ' + replay.simDataHash + ' vs data ' + localHash);
   const sim = createSim(replay.seed, replay.dataVersion, replay.config, data, opts);
   const wanted = replay.checkpoints;
   const every = opts?.checkpointEvery ?? 0;

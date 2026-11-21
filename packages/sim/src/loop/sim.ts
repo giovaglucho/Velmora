@@ -4,6 +4,7 @@ import {
   TURN_TICKS,
   createPrng,
   fxToTile,
+  simDataHash,
   validateSimConfig,
   type Command,
   type SimConfig,
@@ -24,6 +25,11 @@ export interface TurnResult {
   hash: number;
   /** Commands of the turn that were rejected whole. */
   rejected: number;
+  /**
+   * Unit entries skipped inside accepted commands this turn (foreign, dead, duplicate, no free
+   * goal tile). Diagnostics only: not part of any hash.
+   */
+  skippedUnits: number;
 }
 
 export interface Sim {
@@ -33,6 +39,10 @@ export interface Sim {
   readonly tick: number;
   /** trunc(tick / TURN_TICKS): the turn that will execute next. */
   readonly turn: number;
+  /** Commands rejected whole by the most recent command application (0 if none). Not hashed. */
+  readonly lastRejected: number;
+  /** Unit entries skipped by the most recent command application (0 if none). Not hashed. */
+  readonly lastSkippedUnits: number;
   /** Advances EXACTLY one turn (TURN_TICKS ticks). Requires tick % TURN_TICKS === 0. */
   step(commands: readonly Command[]): TurnResult;
   /** Advances one tick; commands are only allowed on a turn boundary. */
@@ -64,6 +74,13 @@ export function createSim(
   if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff)
     throw new RangeError('seed must be a uint32');
   const cfg = validateSimConfig(config);
+  if (cfg.simDataHash !== undefined) {
+    const local = simDataHash(data);
+    if (cfg.simDataHash !== local)
+      throw new Error(
+        'simDataHash mismatch: match expects ' + cfg.simDataHash + ' vs data ' + local,
+      );
+  }
 
   const grid = (opts?.grid ?? createGridFromMap)(cfg.map);
   const world = createWorld(cfg.maxEntities);
@@ -89,19 +106,26 @@ export function createSim(
 
   let tick = 0;
   let lastRejected = 0;
+  let lastSkipped = 0;
   const maxPlayers = cfg.maxPlayers;
 
   const tickOnce = (commands: readonly Command[] | undefined): void => {
-    lastRejected = 0;
-    if (tick % TURN_TICKS === 0 && commands !== undefined && commands.length > 0)
-      lastRejected = applyCommands(
-        world,
-        grid,
-        movement,
-        commands,
-        Math.trunc(tick / TURN_TICKS),
-        maxPlayers,
-      );
+    if (tick % TURN_TICKS === 0) {
+      lastRejected = 0;
+      lastSkipped = 0;
+      if (commands !== undefined && commands.length > 0) {
+        const st = applyCommands(
+          world,
+          grid,
+          movement,
+          commands,
+          Math.trunc(tick / TURN_TICKS),
+          maxPlayers,
+        );
+        lastRejected = st.rejected;
+        lastSkipped = st.skippedUnits;
+      }
+    }
     for (let i = 0; i < world.highWater; i++) {
       if (world.alive[i] === 0) continue;
       world.prevX[i] = world.posX[i] as number;
@@ -121,13 +145,18 @@ export function createSim(
     get turn() {
       return Math.trunc(tick / TURN_TICKS);
     },
+    get lastRejected() {
+      return lastRejected;
+    },
+    get lastSkippedUnits() {
+      return lastSkipped;
+    },
     step(commands) {
       if (tick % TURN_TICKS !== 0) throw new RangeError('step requires a turn boundary');
       const turn = Math.trunc(tick / TURN_TICKS);
       tickOnce(commands);
-      const rejected = lastRejected;
       for (let k = 1; k < TURN_TICKS; k++) tickOnce(undefined);
-      return { tick, turn, hash: sim.hash(), rejected };
+      return { tick, turn, hash: sim.hash(), rejected: lastRejected, skippedUnits: lastSkipped };
     },
     stepTick(commands) {
       if (commands !== undefined && commands.length > 0 && tick % TURN_TICKS !== 0)

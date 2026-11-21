@@ -296,7 +296,7 @@ export function createSim(seed: number, dataVersion: string, config: SimConfig, 
 ### 9. Formato de repetición (`packages/shared/src/replay.ts`)
 
 ```ts
-export const REPLAY_FORMAT_VERSION = 1;
+export const REPLAY_FORMAT_VERSION = 2; // v2 (F2/S1): añade simDataHash
 export interface ReplayTurn {
   n: number;
   cmds: Command[];
@@ -305,7 +305,8 @@ export interface Replay {
   version: typeof REPLAY_FORMAT_VERSION;
   seed: number; // uint32
   dataVersion: string;
-  config: SimConfig;
+  simDataHash: number; // uint32, simDataHash(SimData) con el que se grabó (R1/F1 H3)
+  config: SimConfig; // puede llevar `simDataHash?` opcional (partidas en vivo); createSim lo compara si existe
   totalTurns: number; // turnos a simular; los turnos sin comandos se omiten de `turns`
   turns: ReplayTurn[]; // n estrictamente ascendente, cmds no vacío, cada cmd.turn === n, n < totalTurns
   finalHash: number; // sim.hashFull() tras totalTurns turnos
@@ -319,6 +320,7 @@ export function serializeReplay(r: Replay): string; // JSON canónico: claves en
 - `finalHash` usa `hashFull()`; los `checkpoints` usan `hash()` por ser baratos.
 - Una repetición se considera la misma partida si `version`, `seed`, `dataVersion`, `config` y `turns` coinciden. El grabador debe ordenar los comandos de un turno como los entregó al `step` (el resultado no depende de ello, ver §5.1).
 - Ejecución: `runReplay(replay: Replay, data: SimData): { finalHash: number; checkpoints: [number, number][]; ok: boolean }` en `packages/sim/src/loop/replay-run.ts` (crea la sim, alimenta `step` turno a turno, compara con `finalHash` y checkpoints). Es lo que ejecutan Node y navegadores.
+- `simDataHash(data: SimData): number` (`shared/src/simdata.ts`): FNV-1a de 32 bits sobre `dataVersion`, `unitIds`, `speedFxPerTick`, `radiusFx`, `hpFx` y los campos de `movement` en orden fijo (enteros de 53 bits como dos palabras; lanza `RangeError` ante no enteros). `runReplay` lanza si `replay.simDataHash` difiere del hash local; `createSim` lanza si `config.simDataHash` está presente y difiere. Cambiar el contenido de `SimData` ya no puede pasar inadvertido aunque `dataVersion` no cambie.
 - Compatibilidad: subir `REPLAY_FORMAT_VERSION` ante cualquier cambio de tablas, de `HASHED_COLUMNS`, del orden de sistemas o de la semántica de comandos. No se mantienen repeticiones antiguas en F1.
 
 ### 10. Rejilla, pathfinding y steering

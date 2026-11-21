@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { serializeReplay, validateReplay } from '@reinos/shared';
+import { REPLAY_FORMAT_VERSION, serializeReplay, validateReplay } from '@reinos/shared';
 import { createSim, createStubMovement, runReplay } from '@reinos/sim';
 import {
   SCENARIOS,
@@ -68,7 +68,7 @@ describe('golden comparison', () => {
     scenario: 'thousand',
     seed: 1,
     generatorVersion: 1,
-    replayFormatVersion: 1,
+    replayFormatVersion: REPLAY_FORMAT_VERSION,
     dataVersion: replay.dataVersion,
     finalHash: res.finalHash,
     checkpoints: res.checkpoints,
@@ -85,6 +85,9 @@ describe('golden comparison', () => {
     const v = compareGolden(golden({ checkpoints: bad }), replay, res);
     expect(v.kind).toBe('mismatch');
     expect(compareGolden(golden({ dataVersion: 'other' }), replay, res).kind).toBe('stale');
+    expect(
+      compareGolden(golden({ replayFormatVersion: REPLAY_FORMAT_VERSION - 1 }), replay, res).kind,
+    ).toBe('stale');
   });
 });
 

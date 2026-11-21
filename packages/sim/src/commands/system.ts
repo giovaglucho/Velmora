@@ -8,8 +8,16 @@ import { isExecutable } from './validate';
 const byPlayer = (a: Command, b: Command): number => a.playerId - b.playerId;
 const ascending = (a: number, b: number): number => a - b;
 
+/** Outcome counters of one command application (diagnostics only; never hashed). */
+export interface ApplyStats {
+  /** Commands rejected whole (malformed, wrong turn, bad player...). */
+  rejected: number;
+  /** Individual unit entries skipped inside accepted commands (foreign, dead, duplicate, no free goal). */
+  skippedUnits: number;
+}
+
 /**
- * Applies the commands of `turn`; returns how many were rejected. Valid commands are applied in
+ * Applies the commands of `turn`; returns how many were rejected and how many unit entries were skipped. Valid commands are applied in
  * stable playerId order; each command's unit ids are deduplicated and processed ascending.
  * The caller's arrays are never mutated.
  */
@@ -20,8 +28,9 @@ export function applyCommands(
   commands: readonly unknown[],
   turn: number,
   maxPlayers: number,
-): number {
+): ApplyStats {
   let rejected = 0;
+  let skippedUnits = 0;
   const valid: Command[] = [];
   for (let k = 0; k < commands.length; k++) {
     const c = commands[k];
@@ -52,12 +61,24 @@ export function applyCommands(
     }
     for (let j = 0; j < ids.length; j++) {
       const eid = ids[j] as number;
-      if (j > 0 && eid === ids[j - 1]) continue; // duplicate
-      if (!isAlive(w, eid)) continue;
+      if (j > 0 && eid === ids[j - 1]) {
+        skippedUnits++; // duplicate
+        continue;
+      }
+      if (!isAlive(w, eid)) {
+        skippedUnits++;
+        continue;
+      }
       const i = eid & 0xffff;
-      if (w.owner[i] !== cmd.playerId) continue;
+      if (w.owner[i] !== cmd.playerId) {
+        skippedUnits++;
+        continue;
+      }
       if (cmd.type === 'move') {
-        if (!goalOk) continue; // no free tile anywhere: nothing to move to
+        if (!goalOk) {
+          skippedUnits++; // no free tile anywhere: nothing to move to
+          continue;
+        }
         w.orderKind[i] = ORDER_MOVE;
         w.goalX[i] = goalX;
         w.goalY[i] = goalY;
@@ -79,5 +100,5 @@ export function applyCommands(
       }
     }
   }
-  return rejected;
+  return { rejected, skippedUnits };
 }

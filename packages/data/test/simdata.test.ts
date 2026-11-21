@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import {
   FX_SCALE,
+  simDataHash,
   TICKS_PER_SECOND,
   type SimData,
   type MovementTuning,
 } from '../../shared/src/index';
+import { roundHalfUp } from '../src/simdata';
 import { DATA_VERSION, bundledRaw, buildSimData, loadGameData, parseSchemas } from '../src/index';
 
 // Cross-package check (test only): data cannot import shared in src (contracts.md), but the
@@ -13,12 +15,41 @@ const data = loadGameData();
 const sim: SimData = buildSimData(data); // compile-time assignability to the shared type
 const tuning: MovementTuning = sim.movement;
 
+describe('roundHalfUp (explicit tie rule, H4)', () => {
+  it('resolves exact .5 ties upward', () => {
+    for (const [x, want] of [
+      [0.5, 1],
+      [1.5, 2],
+      [2.5, 3],
+      [40.5, 41],
+      [0, 0],
+      [0.49999999999999994, 0],
+      [4503599627370495.5, 4503599627370496],
+    ] as const)
+      expect(roundHalfUp(x), String(x)).toBe(want);
+  });
+  it('equals Math.round on non-negative doubles (so no bundled value changes)', () => {
+    for (let k = 0; k < 4000; k++) {
+      const x = (k * 37) / 200 + (k % 7) * 0.5; // plenty of exact ties and near-ties
+      expect(roundHalfUp(x), String(x)).toBe(Math.round(x));
+      expect(roundHalfUp(x + Number.EPSILON * x)).toBe(Math.round(x + Number.EPSILON * x));
+    }
+  });
+  it('rejects negative and non-finite inputs', () => {
+    for (const x of [-0.5, NaN, Infinity]) expect(() => roundHalfUp(x)).toThrow(RangeError);
+  });
+});
+
 describe('buildSimData', () => {
   it('is versioned 0.2.0 and consistent with shared constants', () => {
     expect(DATA_VERSION).toBe('0.2.1');
     expect(sim.dataVersion).toBe(DATA_VERSION);
     expect(data.economy.fixedScale).toBe(FX_SCALE);
     expect(TICKS_PER_SECOND).toBe(20);
+  });
+  it('simDataHash of the bundled data is pinned (a balance change must bump DATA_VERSION)', () => {
+    // Changing balance changes this value: update it together with DATA_VERSION and the golden.
+    expect(simDataHash(sim)).toBe(2130807079);
   });
   it('has one entry per unit, in units.json order, all integers', () => {
     const n = data.units.length;

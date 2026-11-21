@@ -3,7 +3,7 @@
   "scenario": "thousand",
   "seed": 1,
   "generatorVersion": 1,
-  "replayFormatVersion": 1,
+  "replayFormatVersion": 2,
   "dataVersion": "0.2.1",
   "finalHash": 2674808742,
   "checkpoints": [

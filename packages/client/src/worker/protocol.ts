@@ -15,6 +15,8 @@ export type ToWorker =
       sab?: SharedArrayBuffer;
       /** The client's own DATA_VERSION; the host refuses to start on mismatch (§3.1 rule 1). */
       dataVersion?: string;
+      /** The client's simDataHash(SimData); the host refuses to start on mismatch (H3). */
+      simDataHash?: number;
       /** Start paused (deterministic tests drive the sim with `ctl step`). Default false. */
       paused?: boolean;
     }
@@ -27,6 +29,7 @@ export type ToWorker =
 export interface ReadyInfo {
   capacity: number;
   dataVersion: string;
+  /** simDataHash of the SimData the worker built (always set by the host since S1). */
   simDataHash: number | null;
   mode: SnapshotMode;
 }
@@ -45,7 +48,7 @@ export type FromWorker =
   | ({ t: 'ready' } & ReadyInfo)
   | { t: 'snap'; tick: number; buffer: ArrayBuffer }
   | { t: 'snapSab' }
-  | { t: 'turn'; turn: number; hash: number; rejected: number }
+  | { t: 'turn'; turn: number; hash: number; rejected: number; skippedUnits: number }
   | ({ t: 'perf' } & PerfInfo)
   | { t: 'probe'; id: number; hashFull: number }
   | { t: 'error'; message: string };

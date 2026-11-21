@@ -12,6 +12,9 @@ import {
   type Replay,
   type SimData,
 } from '../../tools/headless/src/index';
+import { buildSimData, bundledRaw, loadGameData } from '../../packages/data/src/index';
+import { simDataHash } from '../../packages/shared/src/index';
+import { withTieSpeeds } from '../../tools/headless/src/tie-table';
 import { buildBrowserBundle } from '../../tools/headless/browser/build';
 
 interface BrowserRun {
@@ -148,4 +151,60 @@ test('negative control: a mutated command changes the browser hash', async ({ pa
   expect(got.ok).toBe(false);
   expect(got.finalHash).not.toBe(b.finalHash);
   info.annotations.push({ type: 'control', description: 'mutated hash ' + hex32(got.finalHash) });
+});
+
+// ---- R1/F1 H4: buildSimData (runs on every client) must give the same SimData in every engine ----
+
+interface DataDigest {
+  hash: number;
+  speeds: number[];
+}
+const TIE_ROUNDS = 8;
+
+async function digestsInBrowser(
+  page: import('@playwright/test').Page,
+): Promise<{ bundled: DataDigest; ties: DataDigest[] }> {
+  const bundle = await buildBrowserBundle(
+    path.resolve(__dirname, '../../tools/headless/browser/data-entry.ts'),
+  );
+  await page.setContent('<!doctype html><html><body></body></html>');
+  await page.addScriptTag({ content: bundle });
+  return page.evaluate((rounds) => {
+    const d = (
+      globalThis as unknown as {
+        ReinosData: { bundled(): DataDigest; tie(r: number): DataDigest };
+      }
+    ).ReinosData;
+    const ties: DataDigest[] = [];
+    for (let r = 0; r < rounds; r++) ties.push(d.tie(r));
+    return { bundled: d.bundled(), ties };
+  }, TIE_ROUNDS);
+}
+
+test('buildSimData: simDataHash of the bundled data and of x.5-tie tables equals Node', async ({
+  page,
+  browserName,
+}, info) => {
+  const nodeBundled = simDataHash(buildSimData(loadGameData()));
+  const got = await digestsInBrowser(page);
+  expect(got.bundled.hash, browserName + ': bundled data hash').toBe(nodeBundled);
+  let exactTies = 0;
+  for (let r = 0; r < TIE_ROUNDS; r++) {
+    const raw = withTieSpeeds(bundledRaw, r);
+    const sim = buildSimData(loadGameData(raw));
+    const units = (raw.units as { units: { speed: number }[] }).units;
+    for (const u of units) {
+      const x = (u.speed * 1000) / 20;
+      if (x - Math.floor(x) === 0.5) exactTies++;
+    }
+    expect(got.ties[r]?.speeds, 'tie table ' + r + ' speeds').toEqual([...sim.speedFxPerTick]);
+    expect(hex32(got.ties[r]?.hash ?? 0), 'tie table ' + r + ' hash').toBe(hex32(simDataHash(sim)));
+  }
+  // The synthetic tables really exercise the tie rule (not vacuously equal).
+  expect(exactTies).toBeGreaterThan(TIE_ROUNDS);
+  info.annotations.push({
+    type: 'simDataHash',
+    description:
+      browserName + ' bundled ' + hex32(got.bundled.hash) + ', ' + exactTies + ' exact ties',
+  });
 });

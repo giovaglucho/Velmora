@@ -12,6 +12,7 @@ function sample(): Replay {
     version: REPLAY_FORMAT_VERSION,
     seed: 4294967295,
     dataVersion: '0.2.0',
+    simDataHash: 123456789,
     config: {
       maxPlayers: 2,
       maxEntities: 64,
@@ -86,15 +87,23 @@ describe('replay roundtrip', () => {
   });
   it('emits canonical key order and no whitespace', () => {
     const text = serializeReplay(sample());
-    expect(text.startsWith('{"version":1,"seed":4294967295,"dataVersion":"0.2.0","config":{')).toBe(
-      true,
-    );
+    expect(
+      text.startsWith(
+        '{"version":2,"seed":4294967295,"dataVersion":"0.2.0","simDataHash":123456789,"config":{',
+      ),
+    ).toBe(true);
     expect(text).toContain(
       '"turns":[{"n":1,"cmds":[{"turn":1,"playerId":1,"type":"move","unitIds":',
     );
     expect(text).toContain('"target":{"kind":"pos","x":1500,"y":1500},"payload":null}');
     expect(text).not.toMatch(/\s/);
     expect(text.endsWith('"checkpoints":[[5,123],[10,4294967295]]}')).toBe(true);
+  });
+  it('keeps an optional config.simDataHash through the round trip', () => {
+    const r = sample();
+    r.config.simDataHash = 42;
+    const back = validateReplay(JSON.parse(serializeReplay(r)));
+    expect(back.config.simDataHash).toBe(42);
   });
   it('checkpoints are optional', () => {
     const r = sample();
@@ -128,7 +137,10 @@ describe('validateReplay rejections', () => {
     ['extra turn key', (r) => (r.turns[0].extra = 1), /replay\.turns\[0\]/],
     ['extra config key', (r) => (r.config.extra = 1), /replay\.config/],
     ['missing key', (r) => delete r.dataVersion, /missing key "dataVersion"/],
-    ['wrong version', (r) => (r.version = 2), /replay\.version/],
+    ['wrong version', (r) => (r.version = 1), /replay\.version/],
+    ['missing simDataHash', (r) => delete r.simDataHash, /missing key "simDataHash"/],
+    ['non-uint32 simDataHash', (r) => (r.simDataHash = -1), /replay\.simDataHash/],
+    ['fractional simDataHash', (r) => (r.simDataHash = 1.5), /replay\.simDataHash/],
     ['empty dataVersion', (r) => (r.dataVersion = ''), /replay\.dataVersion/],
     ['empty cmds', (r) => (r.turns[0].cmds = []), /replay\.turns\[0\]\.cmds/],
     ['payload not null', (r) => (r.turns[0].cmds[0].payload = {}), /payload/],

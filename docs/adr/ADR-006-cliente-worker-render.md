@@ -600,7 +600,7 @@ Escenario fijo: mapa 128×128, 400 unidades en movimiento (2 jugadores), cámara
 3. Compatibilidad `@vitejs/plugin-react` con Vite 8 (verificar peer deps en T0; si falla, fijar `vite` a la versión soportada con ADR menor).
 4. COEP `require-corp` en dev/preview: cualquier recurso externo rompe el aislamiento; los assets son locales (§9).
 5. La métrica de costuras (§4.6) es una definición operativa, no perceptual; se completa con revisión visual.
-6. `simDataHash` (H3) aún no existe: `ready.simDataHash` es `null` hasta S1; hasta entonces solo se valida `dataVersion`.
+6. `simDataHash` (H3) existe desde S1: el host lo calcula, lo informa en `ready.simDataHash` y rechaza el `init` si `init.simDataHash` o `config.simDataHash` no coinciden (el tipo conserva `number | null` por compatibilidad). `turn` incorpora `skippedUnits` (S3, diagnóstico, fuera del hash).
 
 ## Estado
 

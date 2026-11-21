@@ -1,11 +1,12 @@
 // ADR-006 §4.5 — Pixi Renderer. Owner: render-engineer (R2/R3). May use Pixi; never React or @reinos/sim.
 import { Application, Container, type WebGLRenderer } from 'pixi.js';
 import type { SimClient } from '../worker/client';
+import type { SnapshotView } from '../worker/snapshot';
 import { clampCamera, createCamera, stepZoom } from './camera';
 import { visibleTileRange } from './culling';
 import { DecalLayer } from './entities/markers';
 import { createProceduralUnitAtlas, type UnitAtlas } from './entities/atlas';
-import { UnitLayer } from './entities/unitLayer';
+import { UnitLayer, type SlotVisible } from './entities/unitLayer';
 import { interpolationAlpha, gridToWorld } from './iso';
 import { TerrainView } from './terrain/chunks';
 import type { TerrainMap } from './terrain/terrainMap';
@@ -32,6 +33,18 @@ export interface RenderStats {
 /** The part of SimClient the renderer consumes (tests/harness pass a fake). */
 export type SnapshotFeed = Pick<SimClient, 'latest' | 'latestArrivalMs'>;
 
+/** What the integration receives once per frame, after the snapshot of the frame is known. */
+export interface FrameContext {
+  /** The frame's snapshot (valid until the next frame; null before the first one). */
+  view: SnapshotView | null;
+  /** Interpolation factor of this frame (ADR-006 §3.7). */
+  alpha: number;
+  /** ms since the previous frame. */
+  dtMs: number;
+  /** performance.now() at the start of the frame. */
+  nowMs: number;
+}
+
 export interface RendererOptions {
   canvas: HTMLCanvasElement;
   simClient: SnapshotFeed;
@@ -46,6 +59,17 @@ export interface RendererOptions {
   /** Seam-metric negative control (Q3): independent hard-edged tiles. */
   hardTerrainTiles?: boolean;
   background?: number;
+  /**
+   * Start of each frame, before the camera is applied. When given, the integration owns camera motion
+   * (pan, edge scroll, zoom easing: CameraController.step) and the renderer does not step the zoom itself.
+   */
+  beforeFrame?: (dtMs: number) => void;
+  /** After the frame's snapshot is known and before sprites are updated (fog update, minimap, HUD feed). */
+  onFrame?: (f: FrameContext) => void;
+  /** Right after Pixi's render() submission (input→marker latency probes). */
+  afterRender?: (nowMs: number) => void;
+  /** Fog of war: false hides the slot's sprites (enemy/neutral units on non-visible tiles). */
+  slotVisible?: SlotVisible;
 }
 
 export interface RenderLayers {
@@ -174,7 +198,8 @@ export async function createRenderer(opts: RendererOptions): Promise<Renderer> {
     calls = 0;
 
     // camera: animated zoom, limits, world transform
-    stepZoom(camera, dt, opts.zoomTauMs);
+    if (opts.beforeFrame) opts.beforeFrame(dt);
+    else stepZoom(camera, dt, opts.zoomTauMs);
     clampCamera(camera, terrain.width, terrain.height);
     const z = camera.zoomT;
     world.scale.set(z);
@@ -185,7 +210,8 @@ export async function createRenderer(opts: RendererOptions): Promise<Renderer> {
     );
     const view = simClient.latest();
     const alpha = view ? interpolationAlpha(t0, simClient.latestArrivalMs, view.tickIntervalUs) : 0;
-    units.update(view, alpha, camera, vp);
+    opts.onFrame?.({ view, alpha, dtMs: dt, nowMs: t0 });
+    units.update(view, alpha, camera, vp, opts.slotVisible);
     decals.update(view, alpha, t0);
     stats.visibleUnits = units.visibleUnits;
     stats.visibleRings = decals.ringsShown;
@@ -193,7 +219,9 @@ export async function createRenderer(opts: RendererOptions): Promise<Renderer> {
     stats.updateMs = t1 - t0;
 
     webgl.render({ container: app.stage });
-    stats.renderMs = performance.now() - t1;
+    const t2 = performance.now();
+    stats.renderMs = t2 - t1;
+    opts.afterRender?.(t2);
     stats.frames++;
     stats.frameMs = stats.frameMs === 0 ? dt : stats.frameMs * 0.9 + dt * 0.1;
     stats.fps = 1000 / stats.frameMs;

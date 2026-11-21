@@ -4,9 +4,79 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reinos de Ceniza</title>
+    <link rel="icon" href="data:," />
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+      }
+      body {
+        background: #0b0d10;
+        color: #e8d9c3;
+        font-family: Georgia, 'Times New Roman', serif;
+      }
+      #app,
+      .stage {
+        position: fixed;
+        inset: 0;
+      }
+      .game-canvas {
+        position: absolute;
+        inset: 0;
+        display: block;
+        width: 100vw;
+        height: 100vh;
+        touch-action: none;
+        user-select: none;
+      }
+      .hud-host,
+      .box-host {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+      .boot-status,
+      .boot-error {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        margin: 0;
+        font-size: 1.25rem;
+        letter-spacing: 0.04em;
+      }
+      .boot-error {
+        color: #f08a68;
+      }
+      .devlog-link {
+        position: fixed;
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        padding: 2px 10px;
+        font:
+          13px/1.35 system-ui,
+          sans-serif;
+        color: #d9763a;
+        background: #14100dcc;
+        border-radius: 4px;
+        text-decoration: none;
+      }
+      .devlog-link:hover {
+        color: #f0b968;
+      }
+    </style>
   </head>
   <body>
     <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
+    <a class="devlog-link" href="/devlog/">Ver el devlog</a>
+    <noscript>Reinos de Ceniza necesita JavaScript. <a href="/devlog/">Ver el devlog</a></noscript>
+    <script type="module" src="/src/boot/main.ts"></script>
   </body>
 </html>

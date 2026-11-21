@@ -30,6 +30,11 @@ export interface SimConfig {
   map: MapSpec;
   /** Created in array order before tick 0. */
   spawns: SpawnSpec[];
+  /**
+   * Optional uint32 simDataHash(SimData) the match expects (H3). When present, createSim refuses
+   * to start if the local SimData hashes differently.
+   */
+  simDataHash?: number;
 }
 
 function fail(path: string, msg: string): never {
@@ -54,7 +59,15 @@ function exactKeys(o: Record<string, unknown>, keys: readonly string[], path: st
 /** Validates a SimConfig, returning a canonical copy (keys in declaration order). Throws Error with the field path. */
 export function validateSimConfig(x: unknown, path = 'config'): SimConfig {
   if (!isObj(x)) return fail(path, 'must be an object');
-  exactKeys(x, ['maxPlayers', 'maxEntities', 'map', 'spawns'], path);
+  const own = Object.keys(x);
+  const hasHash = own.includes('simDataHash');
+  exactKeys(
+    x,
+    hasHash
+      ? ['maxPlayers', 'maxEntities', 'map', 'spawns', 'simDataHash']
+      : ['maxPlayers', 'maxEntities', 'map', 'spawns'],
+    path,
+  );
   const maxPlayers = int(x.maxPlayers, 1, MAX_PLAYERS, path + '.maxPlayers');
   const maxEntities = int(x.maxEntities, 1, MAX_ENTITIES_LIMIT, path + '.maxEntities');
   const m = x.map;
@@ -87,5 +100,12 @@ export function validateSimConfig(x: unknown, path = 'config'): SimConfig {
       y: int(s.y, 0, MAX_COORD_FX, p + '.y'),
     });
   }
-  return { maxPlayers, maxEntities, map: { width, height, blockedRle: rle }, spawns };
+  const out: SimConfig = {
+    maxPlayers,
+    maxEntities,
+    map: { width, height, blockedRle: rle },
+    spawns,
+  };
+  if (hasHash) out.simDataHash = int(x.simDataHash, 0, 0xffffffff, path + '.simDataHash');
+  return out;
 }

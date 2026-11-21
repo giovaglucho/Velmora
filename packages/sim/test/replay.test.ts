@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   REPLAY_FORMAT_VERSION,
   serializeReplay,
+  simDataHash,
   validateReplay,
   type Command,
   type Replay,
@@ -39,6 +40,7 @@ function record(every = 10): Replay {
     version: REPLAY_FORMAT_VERSION,
     seed: 99,
     dataVersion: 'test-1',
+    simDataHash: simDataHash(TEST_DATA),
     config: cfg,
     totalTurns: TURNS,
     turns,
@@ -95,6 +97,14 @@ describe('runReplay', () => {
   it('rejects a dataVersion that does not match the data', () => {
     expect(() => runReplay({ ...record(), dataVersion: '9.9.9' }, TEST_DATA, opts)).toThrow(
       /dataVersion/,
+    );
+  });
+  it('rejects data whose content differs from the recording even with the same dataVersion', () => {
+    const rep = record();
+    const edited = { ...TEST_DATA, movement: { ...TEST_DATA.movement, separationPermille: 701 } };
+    expect(() => runReplay(rep, edited, opts)).toThrow(/simDataHash mismatch/);
+    expect(() => runReplay({ ...rep, simDataHash: rep.simDataHash ^ 1 }, TEST_DATA, opts)).toThrow(
+      /simDataHash mismatch/,
     );
   });
   it('turns without commands are omitted and the run is unaffected by that', () => {

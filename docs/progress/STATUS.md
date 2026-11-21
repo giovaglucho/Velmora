@@ -31,13 +31,11 @@ Revisión `reviewer` F1: 4 bloqueantes (umbral `progress*4` hardcodeado; `determ
 
 ## Deuda conocida / recomendaciones del reviewer (no bloqueantes)
 
-- Hash de contenido de `SimData` en config/replay (hoy solo se valida el string `dataVersion`).
 - Tope de comandos por turno/jugador y de turnos de replay (requisito de relay, Fase 9).
-- Test en navegador de `buildSimData` (empates .5 de `Math.round`).
 - Bench: reportar también tick individual (picos hasta 7 ms con comandos); sin gate automático de CI.
 - Relay sin `maxPayload`/Origin; API sin CORS/helmet/rate limit (Fases 8–9). `JWT_SECRET` compartido → envVarGroup.
 - Datos pendientes del GDD: `packages/data/COVERAGE.md` (31 warnings de data:check).
-- `REPLAY_FORMAT_VERSION` no subido tras la ola 2 (no hay replays persistidos aún).
+- `REPLAY_FORMAT_VERSION` subido a 2 en F2/S1 (`simDataHash` en `Replay`); sin replays persistidos. Golden re-pineado sin cambio de `finalHash` ni checkpoints. S2: Firefox/WebKit del test de `buildSimData` pendientes de CI (`PW_ALL_BROWSERS=1`).
 
 ## Próximos pasos
 

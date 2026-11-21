@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Command } from '@reinos/shared';
+import { simDataHash, type Command } from '@reinos/shared';
 import { createCommandScheduler, createSimHost } from '../../src/worker/host';
 import type { FromWorker, ToWorker } from '../../src/worker/protocol';
 import { DATA, SEED, makeHarness, moveCmd, newSim, type Harness } from './helpers';
@@ -34,7 +34,7 @@ describe('SimHost pacing', () => {
       t: 'ready',
       capacity: 1024,
       dataVersion: DATA.dataVersion,
-      simDataHash: null,
+      simDataHash: simDataHash(DATA),
       mode: 'transfer',
     });
     expect(h.lastSnap.tick).toBe(0); // the render has something to draw at once
@@ -192,6 +192,7 @@ describe('commands', () => {
     ).not.toThrow();
     h.advance(450);
     expect(turns(h)[0]?.rejected).toBe(9);
+    expect(turns(h)[0]?.skippedUnits).toBe(0);
     expect(turns(h)[1]?.rejected).toBe(0);
     expect(errors(h)).toEqual([]);
     // the sim kept running and a valid command still works afterwards
@@ -232,6 +233,23 @@ describe('lifecycle errors', () => {
     expect(h.msgs.some((m) => m.t === 'ready')).toBe(false);
     h.advance(1000);
     expect(turns(h)).toHaveLength(0);
+  });
+  it('simDataHash mismatch (init field or config field) -> error, no ready', () => {
+    const real = simDataHash(DATA);
+    const h = makeHarness();
+    init(h, { simDataHash: real ^ 1 });
+    expect(errors(h)[0]).toMatch(/simDataHash mismatch/);
+    expect(h.msgs.some((m) => m.t === 'ready')).toBe(false);
+    const h2 = makeHarness();
+    init(h2, { config: { ...buildScenario('demo100', SEED), simDataHash: real ^ 1 } });
+    expect(errors(h2)[0]).toMatch(/simDataHash mismatch/);
+    expect(h2.msgs.some((m) => m.t === 'ready')).toBe(false);
+  });
+  it('a matching simDataHash starts normally', () => {
+    const h = makeHarness();
+    init(h, { simDataHash: simDataHash(DATA) });
+    expect(errors(h)).toEqual([]);
+    expect(h.msgs.some((m) => m.t === 'ready')).toBe(true);
   });
   it('an invalid config -> error message (no throw)', () => {
     const h = makeHarness();
