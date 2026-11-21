@@ -30,8 +30,27 @@ export interface GeneratedFile {
   bytes: Uint8Array;
 }
 
+/**
+ * Serialise JSON. Pretty output collapses short flat arrays onto one line so the committed
+ * manifest.json is already Prettier-stable (`pnpm format:check` passes right after `assets:gen`).
+ */
 function jsonBytes(v: unknown, pretty = false): Uint8Array {
-  return Buffer.from(JSON.stringify(v, null, pretty ? 2 : undefined) + '\n', 'utf8');
+  let text = JSON.stringify(v, null, pretty ? 2 : undefined);
+  if (pretty) {
+    text = text.replace(
+      /^( *)(.*)\[\n((?: +[^[\]{}\n]+,?\n)+) *\]/gm,
+      (m, indent: string, head: string, items: string) => {
+        const flat = items
+          .trim()
+          .split('\n')
+          .map((l) => l.trim())
+          .join(' ');
+        const line = `${indent}${head}[${flat}]`;
+        return line.length <= 80 ? line : m;
+      },
+    );
+  }
+  return Buffer.from(text + '\n', 'utf8');
 }
 
 /** Generate the whole set in memory. Pure and deterministic: same bytes on every call. */
