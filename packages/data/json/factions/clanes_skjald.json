@@ -39,7 +39,7 @@
           }
         }
       ],
-      "notes": "AMBIGUO: porcentajes por era interpretados como no acumulativos (el valor de la era reemplaza al anterior)."
+      "notes": "RESUELTO (fiel al GDD): \"+10% en II, +15% en III, +20% en IV\" son el bonus de cada era, no acumulativos (el valor de la era reemplaza al anterior)."
     },
     {
       "id": "barcos_baratos",

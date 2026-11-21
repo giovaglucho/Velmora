@@ -81,7 +81,7 @@
           "value": 25
         }
       ],
-      "notes": "AMBIGUO: \"+25% precisión\" puede ser relativo (×1,25) o puntos porcentuales; tope 100%."
+      "notes": "RESUELTO (fiel al GDD): \"+25%\" como multiplicador relativo (×1,25), igual que el resto de los +X% del GDD; tope 100%."
     }
   ],
   "teamBonus": {

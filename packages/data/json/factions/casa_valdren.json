@@ -42,7 +42,7 @@
       "text": "Molinos y granjas: mejoras gratis de Yugo",
       "modifiers": [],
       "grantsTech": ["yugo"],
-      "notes": "AMBIGUO: \"mejoras gratis de Yugo\": se interpreta como Yugo gratis; no se aclara si incluye Arado de hierro / Rotación."
+      "notes": "RESUELTO (fiel al GDD): concede la tecnología Yugo sin costo a molinos y granjas; no incluye Arado de hierro ni Rotación de cultivos (no se mencionan)."
     },
     {
       "id": "batidores_atentos",

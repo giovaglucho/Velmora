@@ -1151,7 +1151,7 @@
       ],
       "effectText": "Precisión 100%, RoF −10%",
       "category": "military",
-      "notes": "AMBIGUO: \"RoF −10%\" tomado literal como −10% al tiempo de recarga (§8.3 lo describe como RoF −10%)."
+      "notes": "RESUELTO (fiel al GDD): \"RoF −10%\" como −10% al tiempo de recarga (multiplicador relativo)."
     },
     {
       "id": "tactica_de_estepa",

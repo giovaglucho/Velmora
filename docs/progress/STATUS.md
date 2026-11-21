@@ -52,7 +52,7 @@ Desviación del PLAN: sprites/terreno provisionales **procedurales propios** (`t
 - [x] `.claude/settings.json` aprobado por el dueño y activo (permisos pnpm/playwright/blender, bloqueo de push forzado, hooks de lint:sim y recordatorio de STATUS).
 - [x] Clúster MongoDB Atlas `Cluster0` (M0, AWS Frankfurt), usuario de base de datos y acceso `0.0.0.0/0` creados. `MONGODB_URI` todavía NO está cargado en Render: se carga por formulario seguro cuando arranque la Fase 8.
 - [ ] Packs de arte/audio y herramientas de IA para assets (puerta de Fase 6; conviene empezar ya).
-- [x] Técnicas únicas renombradas con las mismas letras: Valhalla → Lavahall, Caravanserai → Ravanasciera (GDD §10, datos y facciones). Pendiente: revisar interpretaciones AMBIGUO de `packages/data/COVERAGE.md`.
+- [x] Técnicas únicas renombradas con las mismas letras: Valhalla → Lavahall, Caravanserai → Ravanasciera (GDD §10, datos y facciones). Interpretaciones AMBIGUO cuatro principales resueltas con la lectura más fiel al GDD (Tessaline, Anillo de tensión, Yugo de Valdren, PV por era de Skjald); el resto de notas AMBIGUO en `packages/data` siguen como registro.
 
 ## Deuda conocida (no bloqueante)
 
