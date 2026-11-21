@@ -31,7 +31,7 @@ import {
   type SimConfig,
   type SpawnSpec,
 } from '@reinos/shared';
-import { createSim, createStubMovement } from '../src/index';
+import { createSim, createStubMovement, type MovementFactory } from '../src/index';
 import { TEST_DATA, moveCmd, rleFromBlocked, stopCmd } from './helpers/fixtures';
 
 const SCENARIO_UNITS = 200;
@@ -39,8 +39,14 @@ const SCENARIO_TICKS = 1000;
 const SCENARIO_TURNS = SCENARIO_TICKS / TURN_TICKS;
 // Golden values: computed twice (two independent runs, see the test) and pinned. A change here
 // means replay compatibility changed: bump REPLAY_FORMAT_VERSION and re-pin (ADR-005).
-const GOLDEN_FINAL_HASH = 729929481;
-const GOLDEN_TURN_DIGEST = 3546440723;
+// REAL movement (grid + hierarchical A* + steering, createSim default): pinned in Fase 1 / C5.
+// Verified in two separate Node processes (PRINT_GOLDEN=1) plus the in-test double run; a full
+// independent reference (A* + steering) is not viable, so cross-process equality is the check.
+const GOLDEN_FINAL_HASH = 808018988;
+const GOLDEN_TURN_DIGEST = 2270793453;
+// Straight-line stub (injected): the previous golden, kept to prove the injection path still works.
+const STUB_FINAL_HASH = 729929481;
+const STUB_TURN_DIGEST = 3546440723;
 
 function scenario(scenarioSeed: number): { config: SimConfig; cmds: Map<number, Command[]> } {
   const rng = createPrng(scenarioSeed); // scenario generator PRNG: separate from the sim's
@@ -96,9 +102,13 @@ function scenario(scenarioSeed: number): { config: SimConfig; cmds: Map<number, 
   };
 }
 
-function runScenario(scenarioSeed: number, simSeed: number): { finalHash: number; digest: number } {
+function runScenario(
+  scenarioSeed: number,
+  simSeed: number,
+  movement?: MovementFactory,
+): { finalHash: number; digest: number } {
   const { config, cmds } = scenario(scenarioSeed);
-  const sim = createSim(simSeed, 'test-1', config, TEST_DATA, { movement: createStubMovement });
+  const sim = createSim(simSeed, 'test-1', config, TEST_DATA, movement ? { movement } : undefined);
   const perTurn: number[] = [];
   for (let t = 0; t < SCENARIO_TURNS; t++) perTurn.push(sim.step(cmds.get(t) ?? []).hash);
   expect(sim.tick).toBe(SCENARIO_TICKS);
@@ -106,12 +116,18 @@ function runScenario(scenarioSeed: number, simSeed: number): { finalHash: number
 }
 
 describe('determinismo Fase 1: 200 unidades x 1000 ticks', () => {
-  it('coincide con el hash dorado (dos corridas independientes)', () => {
+  it('coincide con el hash dorado del movimiento real (dos corridas independientes)', () => {
     const a = runScenario(0xa11ce, 42);
     const b = runScenario(0xa11ce, 42);
     expect(b).toEqual(a);
+    if (process.env.PRINT_GOLDEN) console.log('GOLDEN', a.finalHash, a.digest);
     expect(a.finalHash).toBe(GOLDEN_FINAL_HASH);
     expect(a.digest).toBe(GOLDEN_TURN_DIGEST);
+  });
+  it('el stub inyectado conserva su hash dorado anterior', () => {
+    const a = runScenario(0xa11ce, 42, createStubMovement);
+    expect(a.finalHash).toBe(STUB_FINAL_HASH);
+    expect(a.digest).toBe(STUB_TURN_DIGEST);
   });
   it('es sensible a la semilla de la partida y a la del escenario', () => {
     const base = runScenario(0xa11ce, 42);
@@ -120,7 +136,7 @@ describe('determinismo Fase 1: 200 unidades x 1000 ticks', () => {
   });
   it('el escenario ejerce movimiento real', () => {
     const { config, cmds } = scenario(0xa11ce);
-    const sim = createSim(42, 'test-1', config, TEST_DATA, { movement: createStubMovement });
+    const sim = createSim(42, 'test-1', config, TEST_DATA);
     const start = Array.from(sim.world.posX);
     for (let t = 0; t < SCENARIO_TURNS; t++) sim.step(cmds.get(t) ?? []);
     let moved = 0;

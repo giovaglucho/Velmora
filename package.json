@@ -18,7 +18,9 @@
     "format:check": "prettier --check .",
     "data:check": "pnpm --filter @reinos/data run check",
     "devlog": "pnpm --filter @reinos/devlog run build",
-    "e2e": "playwright test --trace off"
+    "e2e": "playwright test --trace off",
+    "bench": "pnpm --filter @reinos/headless run bench",
+    "test:det:browsers": "pnpm --filter @reinos/headless run test:det:browsers"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

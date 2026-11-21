@@ -84,6 +84,10 @@ importers:
       '@reinos/shared':
         specifier: workspace:*
         version: link:../shared
+    devDependencies:
+      tsx:
+        specifier: ^4.23.15
+        version: 4.23.15
 
   tools/asset-pipeline: {}
 
@@ -100,7 +104,27 @@ importers:
         specifier: ^4.23.15
         version: 4.23.15
 
-  tools/headless: {}
+  tools/headless:
+    dependencies:
+      '@reinos/data':
+        specifier: workspace:*
+        version: link:../../packages/data
+      '@reinos/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@reinos/sim':
+        specifier: workspace:*
+        version: link:../../packages/sim
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.65.1
+        version: 1.65.1
+      esbuild:
+        specifier: 0.28.2
+        version: 0.28.2
+      tsx:
+        specifier: ^4.23.15
+        version: 4.23.15
 
   tools/lint-sim: {}
 

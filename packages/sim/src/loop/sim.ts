@@ -11,14 +11,9 @@ import {
 } from '@reinos/shared';
 import { applyCommands } from '../commands/index';
 import { hashState, hashStateFull, spawn, createWorld, type World } from '../ecs/index';
-import {
-  createStubMovement,
-  type Grid,
-  type GridFactory,
-  type MovementFactory,
-  type MovementSystem,
-} from '../systems';
-import { createStubGridFromMap } from './stub-grid';
+import { createGridFromMap } from '../grid/map';
+import { createMovementSystem } from '../steer/index';
+import { type Grid, type GridFactory, type MovementFactory, type MovementSystem } from '../systems';
 
 export interface TurnResult {
   /** Ticks completed after the step. */
@@ -49,9 +44,9 @@ export interface Sim {
 }
 
 export interface SimOptions {
-  /** Defaults to the straight-line stub until C5 provides steer/createMovementSystem. */
+  /** Defaults to steer/createMovementSystem (the straight-line stub stays available for tests). */
   movement?: MovementFactory;
-  /** Defaults to the minimal grid until C1 provides grid/. */
+  /** Defaults to grid/createGridFromMap. */
   grid?: GridFactory;
 }
 
@@ -70,10 +65,10 @@ export function createSim(
     throw new RangeError('seed must be a uint32');
   const cfg = validateSimConfig(config);
 
-  const grid = (opts?.grid ?? createStubGridFromMap)(cfg.map);
+  const grid = (opts?.grid ?? createGridFromMap)(cfg.map);
   const world = createWorld(cfg.maxEntities);
   const prng = createPrng(seed);
-  const movement: MovementSystem = (opts?.movement ?? createStubMovement)(world, grid, data);
+  const movement: MovementSystem = (opts?.movement ?? createMovementSystem)(world, grid, data);
 
   for (let k = 0; k < cfg.spawns.length; k++) {
     const s = cfg.spawns[k];

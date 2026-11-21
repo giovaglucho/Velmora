@@ -66,3 +66,30 @@ jobs:
           name: playwright-report
           path: playwright-report
           if-no-files-found: ignore
+
+  test-det-browsers:
+    # Determinism: Node vs Chromium (main thread, Worker, --jitless), Firefox and WebKit.
+    # Fails with a readable diff (first divergent checkpoint turn + finalHash in hex).
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - env:
+          PW_ALL_BROWSERS: '1'
+        run: pnpm test:det:browsers
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-det-report
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore

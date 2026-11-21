@@ -9,6 +9,8 @@ const executablePath =
 
 export default defineConfig({
   testDir: './e2e',
+  // Determinism specs run under playwright.det.config.ts (`pnpm test:det:browsers`).
+  testIgnore: '**/determinismo/**',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,

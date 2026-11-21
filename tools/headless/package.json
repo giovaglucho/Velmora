@@ -8,6 +8,26 @@
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "headless": "tsx src/cli.ts",
+    "run": "tsx src/cli.ts run",
+    "hashes": "tsx src/cli.ts hashes",
+    "gen-scenario": "tsx src/cli.ts gen-scenario",
+    "bench": "tsx src/cli.ts bench",
+    "golden:update": "tsx src/cli.ts golden update",
+    "golden:check": "tsx src/cli.ts golden check",
+    "debug-visual": "tsx src/visual/debug-visual.ts",
+    "test:det": "vitest run --config vitest.det.config.ts",
+    "test:det:browsers": "playwright test -c ../../playwright.det.config.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "esbuild": "0.28.2",
+    "tsx": "^4.23.15"
+  },
+  "dependencies": {
+    "@reinos/data": "workspace:*",
+    "@reinos/shared": "workspace:*",
+    "@reinos/sim": "workspace:*"
   }
 }
