@@ -1,0 +1,11 @@
+{
+  "note": "FPS baseline for the relative gate (SwiftShader, informative).",
+  "fps": {
+    "demo400|sab|0.6": 12.265,
+    "demo400|sab|1": 8.655,
+    "demo400|sab|1.4": 7.014,
+    "demo400|transfer|0.6": 12.47,
+    "demo400|transfer|1": 8.417,
+    "demo400|transfer|1.4": 6.694
+  }
+}

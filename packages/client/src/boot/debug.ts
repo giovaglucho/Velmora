@@ -66,7 +66,7 @@ export interface ReinosDebugApi {
   screenOfTile(tx: number, ty: number): { sx: number; sy: number };
   control(op: 'pause' | 'resume' | 'step'): void;
   perfReport(): PerfReport;
-  /** Tears the game down and boots `name` (demo100 | demo400). */
+  /** Tears the game down and boots `name` (demo100 | demo200 | demo400). */
   loadScenario(name: string): Promise<void>;
 }
 

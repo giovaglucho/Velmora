@@ -26,7 +26,7 @@ export function chooseSnapshotMode(requested: SnapshotMode | 'auto'): SnapshotMo
   return sab ? 'sab' : 'transfer';
 }
 
-/** Parses `?scenario=demo100|demo400&snap=sab|transfer&debug=1&perf=400&seed=N`; unknown values fall back. */
+/** Parses `?scenario=demo100|demo200|demo400&snap=sab|transfer&debug=1&perf=400&seed=N`; unknown values fall back. */
 export function readBootParams(search: string, dev = false): BootParams {
   const q = new URLSearchParams(search);
   const perfRaw = q.get('perf');

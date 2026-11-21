@@ -3,14 +3,16 @@
 // the same SimConfig. Unit ids refer to units.json; their stats come from the data package.
 import { createPrng, tileCenterFx, type SimConfig, type SpawnSpec } from '@reinos/shared';
 
-export type ScenarioName = 'demo100' | 'demo400';
-export const SCENARIO_NAMES: readonly ScenarioName[] = ['demo100', 'demo400'];
+export type ScenarioName = 'demo100' | 'demo200' | 'demo400';
+export const SCENARIO_NAMES: readonly ScenarioName[] = ['demo100', 'demo200', 'demo400'];
 
 const MAP_SIDE = 128;
 const MAX_ENTITIES = 1024;
 /** Per-player army: columns x rows on a one-tile grid (rows cycle through UNIT_ROWS). */
 const ARMY: Readonly<Record<ScenarioName, { cols: number; rows: number }>> = {
   demo100: { cols: 10, rows: 5 },
+  // 100 OWN units per player (K6: box-select 100 units); 200 in total.
+  demo200: { cols: 10, rows: 10 },
   demo400: { cols: 20, rows: 10 },
 };
 const UNIT_ROWS: readonly string[] = ['recluta', 'arquero', 'jinete_ligero'];

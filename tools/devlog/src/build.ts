@@ -56,7 +56,7 @@ ${imgs}${vid}
 
 **Métricas:** ${metricsText(e)}${e.metricas.nota ? ` (${e.metricas.nota})` : ''}.
 
-**Siguiente:** ${e.siguiente}
+${e.notas && e.notas.length > 0 ? `**Notas:**\n\n${e.notas.map((n) => `- ${n}`).join('\n')}\n\n` : ''}**Siguiente:** ${e.siguiente}
 `;
 }
 

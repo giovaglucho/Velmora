@@ -129,4 +129,23 @@ export default tseslint.config(
     },
   },
   ...clientBoundaries,
+  {
+    // Node scripts that also run snippets inside the page (page.evaluate): both sets of globals are legitimate.
+    files: ['e2e/perf/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        console: 'readonly',
+        Buffer: 'readonly',
+        process: 'readonly',
+        fetch: 'readonly',
+        setTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        window: 'readonly',
+        document: 'readonly',
+        performance: 'readonly',
+        requestAnimationFrame: 'readonly',
+      },
+    },
+  },
 );

@@ -1,0 +1,878 @@
+{
+  "kind": "proxy",
+  "warning": "SwiftShader (software WebGL) - NOT the reference hardware. K1 (>= 60 fps with 400 units) is NOT proven by this report: TODO-HUMANO.",
+  "env": {
+    "date": "2026-11-21T18:24:07.007Z",
+    "chromium": "153.0.8010.12",
+    "glRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.30GHz x4",
+    "node": "v22.23.5",
+    "viewport": "1280x720 @1x",
+    "flags": [
+      "--no-sandbox",
+      "--use-gl=angle",
+      "--use-angle=swiftshader",
+      "--enable-unsafe-swiftshader",
+      "--ignore-gpu-blocklist",
+      "--disable-gpu-vsync",
+      "--disable-frame-rate-limit"
+    ],
+    "reps": 3,
+    "warmupS": 3,
+    "windowS": 10
+  },
+  "gates": {
+    "updateMsP95": 4,
+    "drawCalls": 60,
+    "tickMsP95": 3,
+    "ticksDropped": 0,
+    "fpsMinFractionOfBaseline": 0.6
+  },
+  "gateResults": [
+    {
+      "id": "demo400 sab z0.6",
+      "name": "updateMs p95",
+      "value": 1.37,
+      "limit": 4,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z0.6",
+      "name": "draw calls p95",
+      "value": 15,
+      "limit": 60,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z0.6",
+      "name": "tickMs p95 (worker)",
+      "value": 0.625,
+      "limit": 3,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z0.6",
+      "name": "ticksDropped",
+      "value": 0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z0.6",
+      "name": "console errors",
+      "value": 0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z0.6",
+      "name": "fps vs baseline (relative)",
+      "value": 12.265,
+      "limit": 7.359,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z1",
+      "name": "updateMs p95",
+      "value": 1.325,
+      "limit": 4,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z1",
+      "name": "draw calls p95",
+      "value": 7,
+      "limit": 60,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z1",
+      "name": "tickMs p95 (worker)",
+      "value": 0.555,
+      "limit": 3,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z1",
+      "name": "ticksDropped",
+      "value": 0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z1",
+      "name": "console errors",
+      "value": 0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z1",
+      "name": "fps vs baseline (relative)",
+      "value": 8.655,
+      "limit": 5.193,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z1.4",
+      "name": "updateMs p95",
+      "value": 1.495,
+      "limit": 4,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z1.4",
+      "name": "draw calls p95",
+      "value": 7,
+      "limit": 60,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z1.4",
+      "name": "tickMs p95 (worker)",
+      "value": 0.51,
+      "limit": 3,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z1.4",
+      "name": "ticksDropped",
+      "value": 0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z1.4",
+      "name": "console errors",
+      "value": 0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "id": "demo400 sab z1.4",
+      "name": "fps vs baseline (relative)",
+      "value": 7.014,
+      "limit": 4.208,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z0.6",
+      "name": "updateMs p95",
+      "value": 1.3,
+      "limit": 4,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z0.6",
+      "name": "draw calls p95",
+      "value": 15,
+      "limit": 60,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z0.6",
+      "name": "tickMs p95 (worker)",
+      "value": 0.58,
+      "limit": 3,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z0.6",
+      "name": "ticksDropped",
+      "value": 0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z0.6",
+      "name": "console errors",
+      "value": 0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z0.6",
+      "name": "fps vs baseline (relative)",
+      "value": 12.47,
+      "limit": 7.482,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z1",
+      "name": "updateMs p95",
+      "value": 1.61,
+      "limit": 4,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z1",
+      "name": "draw calls p95",
+      "value": 7,
+      "limit": 60,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z1",
+      "name": "tickMs p95 (worker)",
+      "value": 0.62,
+      "limit": 3,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z1",
+      "name": "ticksDropped",
+      "value": 0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z1",
+      "name": "console errors",
+      "value": 0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z1",
+      "name": "fps vs baseline (relative)",
+      "value": 8.417,
+      "limit": 5.05,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z1.4",
+      "name": "updateMs p95",
+      "value": 1.975,
+      "limit": 4,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z1.4",
+      "name": "draw calls p95",
+      "value": 7,
+      "limit": 60,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z1.4",
+      "name": "tickMs p95 (worker)",
+      "value": 0.555,
+      "limit": 3,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z1.4",
+      "name": "ticksDropped",
+      "value": 0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z1.4",
+      "name": "console errors",
+      "value": 0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "id": "demo400 transfer z1.4",
+      "name": "fps vs baseline (relative)",
+      "value": 6.694,
+      "limit": 4.016,
+      "ok": true
+    },
+    {
+      "id": "harness400 (sin niebla) z0.6",
+      "name": "updateMs p95",
+      "value": 0.225,
+      "limit": 4,
+      "ok": true
+    },
+    {
+      "id": "harness400 (sin niebla) z0.6",
+      "name": "draw calls p95",
+      "value": 17,
+      "limit": 60,
+      "ok": true
+    },
+    {
+      "id": "harness400 (sin niebla) z0.6",
+      "name": "console errors",
+      "value": 0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "id": "harness400 (sin niebla) z1",
+      "name": "updateMs p95",
+      "value": 0.31,
+      "limit": 4,
+      "ok": true
+    },
+    {
+      "id": "harness400 (sin niebla) z1",
+      "name": "draw calls p95",
+      "value": 5,
+      "limit": 60,
+      "ok": true
+    },
+    {
+      "id": "harness400 (sin niebla) z1",
+      "name": "console errors",
+      "value": 0,
+      "limit": 0,
+      "ok": true
+    },
+    {
+      "id": "harness400 (sin niebla) z1.4",
+      "name": "updateMs p95",
+      "value": 0.77,
+      "limit": 4,
+      "ok": true
+    },
+    {
+      "id": "harness400 (sin niebla) z1.4",
+      "name": "draw calls p95",
+      "value": 5,
+      "limit": 60,
+      "ok": true
+    },
+    {
+      "id": "harness400 (sin niebla) z1.4",
+      "name": "console errors",
+      "value": 0,
+      "limit": 0,
+      "ok": true
+    }
+  ],
+  "ok": true,
+  "results": [
+    {
+      "scenario": "demo400",
+      "mode": "sab",
+      "actualMode": "sab",
+      "zoom": 0.6,
+      "reps": 3,
+      "own": 200,
+      "fpsAvg": {
+        "median": 12.265,
+        "min": 12.193,
+        "max": 12.611
+      },
+      "fpsP5": {
+        "median": 10.873,
+        "min": 10.822,
+        "max": 11.569
+      },
+      "updateMsP50": {
+        "median": 0.785,
+        "min": 0.725,
+        "max": 0.815
+      },
+      "updateMsP95": {
+        "median": 1.37,
+        "min": 1.315,
+        "max": 1.385
+      },
+      "updateMsMax": {
+        "median": 2.665,
+        "min": 2.11,
+        "max": 2.67
+      },
+      "renderMsP95": {
+        "median": 0.975,
+        "min": 0.95,
+        "max": 1.015
+      },
+      "drawCallsP95": {
+        "median": 15,
+        "min": 15,
+        "max": 15
+      },
+      "drawCallsMax": {
+        "median": 15,
+        "min": 15,
+        "max": 15
+      },
+      "visibleUnitsP50": {
+        "median": 200,
+        "min": 200,
+        "max": 200
+      },
+      "tickMsP95": {
+        "median": 0.625,
+        "min": 0.5,
+        "max": 0.855
+      },
+      "tickMsP95Worst": {
+        "median": 2.7,
+        "min": 2.565,
+        "max": 3.27
+      },
+      "tickMsAvg": {
+        "median": 0.425,
+        "min": 0.422,
+        "max": 0.426
+      },
+      "ticksDropped": 0,
+      "consoleErrors": []
+    },
+    {
+      "scenario": "demo400",
+      "mode": "sab",
+      "actualMode": "sab",
+      "zoom": 1,
+      "reps": 3,
+      "own": 200,
+      "fpsAvg": {
+        "median": 8.655,
+        "min": 8.627,
+        "max": 8.756
+      },
+      "fpsP5": {
+        "median": 7.847,
+        "min": 7.715,
+        "max": 8.138
+      },
+      "updateMsP50": {
+        "median": 0.86,
+        "min": 0.8,
+        "max": 1.015
+      },
+      "updateMsP95": {
+        "median": 1.325,
+        "min": 1.205,
+        "max": 2.275
+      },
+      "updateMsMax": {
+        "median": 3.075,
+        "min": 1.625,
+        "max": 4.24
+      },
+      "renderMsP95": {
+        "median": 0.89,
+        "min": 0.795,
+        "max": 0.905
+      },
+      "drawCallsP95": {
+        "median": 7,
+        "min": 7,
+        "max": 7
+      },
+      "drawCallsMax": {
+        "median": 7,
+        "min": 7,
+        "max": 7
+      },
+      "visibleUnitsP50": {
+        "median": 200,
+        "min": 200,
+        "max": 200
+      },
+      "tickMsP95": {
+        "median": 0.555,
+        "min": 0.535,
+        "max": 0.605
+      },
+      "tickMsP95Worst": {
+        "median": 0.84,
+        "min": 0.695,
+        "max": 1.375
+      },
+      "tickMsAvg": {
+        "median": 0.434,
+        "min": 0.421,
+        "max": 0.455
+      },
+      "ticksDropped": 0,
+      "consoleErrors": []
+    },
+    {
+      "scenario": "demo400",
+      "mode": "sab",
+      "actualMode": "sab",
+      "zoom": 1.4,
+      "reps": 3,
+      "own": 200,
+      "fpsAvg": {
+        "median": 7.014,
+        "min": 6.912,
+        "max": 7.061
+      },
+      "fpsP5": {
+        "median": 6.327,
+        "min": 6.036,
+        "max": 6.622
+      },
+      "updateMsP50": {
+        "median": 0.86,
+        "min": 0.78,
+        "max": 0.895
+      },
+      "updateMsP95": {
+        "median": 1.495,
+        "min": 1.26,
+        "max": 1.51
+      },
+      "updateMsMax": {
+        "median": 3.235,
+        "min": 2.5,
+        "max": 4.19
+      },
+      "renderMsP95": {
+        "median": 0.725,
+        "min": 0.65,
+        "max": 1.025
+      },
+      "drawCallsP95": {
+        "median": 7,
+        "min": 7,
+        "max": 7
+      },
+      "drawCallsMax": {
+        "median": 7,
+        "min": 7,
+        "max": 7
+      },
+      "visibleUnitsP50": {
+        "median": 182,
+        "min": 182,
+        "max": 182
+      },
+      "tickMsP95": {
+        "median": 0.51,
+        "min": 0.5,
+        "max": 0.53
+      },
+      "tickMsP95Worst": {
+        "median": 0.655,
+        "min": 0.655,
+        "max": 0.79
+      },
+      "tickMsAvg": {
+        "median": 0.413,
+        "min": 0.411,
+        "max": 0.421
+      },
+      "ticksDropped": 0,
+      "consoleErrors": []
+    },
+    {
+      "scenario": "demo400",
+      "mode": "transfer",
+      "actualMode": "transfer",
+      "zoom": 0.6,
+      "reps": 3,
+      "own": 200,
+      "fpsAvg": {
+        "median": 12.47,
+        "min": 12.366,
+        "max": 12.777
+      },
+      "fpsP5": {
+        "median": 11.069,
+        "min": 10.894,
+        "max": 11.623
+      },
+      "updateMsP50": {
+        "median": 0.75,
+        "min": 0.72,
+        "max": 0.8
+      },
+      "updateMsP95": {
+        "median": 1.3,
+        "min": 1.08,
+        "max": 1.345
+      },
+      "updateMsMax": {
+        "median": 2.585,
+        "min": 2.03,
+        "max": 3.28
+      },
+      "renderMsP95": {
+        "median": 0.875,
+        "min": 0.875,
+        "max": 0.975
+      },
+      "drawCallsP95": {
+        "median": 15,
+        "min": 15,
+        "max": 15
+      },
+      "drawCallsMax": {
+        "median": 15,
+        "min": 15,
+        "max": 15
+      },
+      "visibleUnitsP50": {
+        "median": 200,
+        "min": 200,
+        "max": 200
+      },
+      "tickMsP95": {
+        "median": 0.58,
+        "min": 0.54,
+        "max": 0.61
+      },
+      "tickMsP95Worst": {
+        "median": 0.945,
+        "min": 0.875,
+        "max": 1.785
+      },
+      "tickMsAvg": {
+        "median": 0.435,
+        "min": 0.412,
+        "max": 0.446
+      },
+      "ticksDropped": 0,
+      "consoleErrors": []
+    },
+    {
+      "scenario": "demo400",
+      "mode": "transfer",
+      "actualMode": "transfer",
+      "zoom": 1,
+      "reps": 3,
+      "own": 200,
+      "fpsAvg": {
+        "median": 8.417,
+        "min": 8.287,
+        "max": 8.616
+      },
+      "fpsP5": {
+        "median": 7.437,
+        "min": 7.197,
+        "max": 7.785
+      },
+      "updateMsP50": {
+        "median": 0.93,
+        "min": 0.905,
+        "max": 1.16
+      },
+      "updateMsP95": {
+        "median": 1.61,
+        "min": 1.465,
+        "max": 1.765
+      },
+      "updateMsMax": {
+        "median": 2.615,
+        "min": 2.51,
+        "max": 3.745
+      },
+      "renderMsP95": {
+        "median": 1.29,
+        "min": 0.995,
+        "max": 1.475
+      },
+      "drawCallsP95": {
+        "median": 7,
+        "min": 7,
+        "max": 7
+      },
+      "drawCallsMax": {
+        "median": 7,
+        "min": 7,
+        "max": 7
+      },
+      "visibleUnitsP50": {
+        "median": 200,
+        "min": 200,
+        "max": 200
+      },
+      "tickMsP95": {
+        "median": 0.62,
+        "min": 0.485,
+        "max": 0.635
+      },
+      "tickMsP95Worst": {
+        "median": 1.155,
+        "min": 1.03,
+        "max": 2.1
+      },
+      "tickMsAvg": {
+        "median": 0.454,
+        "min": 0.437,
+        "max": 0.478
+      },
+      "ticksDropped": 0,
+      "consoleErrors": []
+    },
+    {
+      "scenario": "demo400",
+      "mode": "transfer",
+      "actualMode": "transfer",
+      "zoom": 1.4,
+      "reps": 3,
+      "own": 200,
+      "fpsAvg": {
+        "median": 6.694,
+        "min": 6.566,
+        "max": 6.95
+      },
+      "fpsP5": {
+        "median": 5.887,
+        "min": 5.846,
+        "max": 6.317
+      },
+      "updateMsP50": {
+        "median": 1.1,
+        "min": 1.09,
+        "max": 1.17
+      },
+      "updateMsP95": {
+        "median": 1.975,
+        "min": 1.69,
+        "max": 2.175
+      },
+      "updateMsMax": {
+        "median": 3.86,
+        "min": 2.305,
+        "max": 4.605
+      },
+      "renderMsP95": {
+        "median": 1.18,
+        "min": 1.165,
+        "max": 1.23
+      },
+      "drawCallsP95": {
+        "median": 7,
+        "min": 7,
+        "max": 7
+      },
+      "drawCallsMax": {
+        "median": 7,
+        "min": 7,
+        "max": 7
+      },
+      "visibleUnitsP50": {
+        "median": 182,
+        "min": 182,
+        "max": 182
+      },
+      "tickMsP95": {
+        "median": 0.555,
+        "min": 0.515,
+        "max": 0.595
+      },
+      "tickMsP95Worst": {
+        "median": 1.425,
+        "min": 1.355,
+        "max": 2.755
+      },
+      "tickMsAvg": {
+        "median": 0.44,
+        "min": 0.423,
+        "max": 0.444
+      },
+      "ticksDropped": 0,
+      "consoleErrors": []
+    }
+  ],
+  "harness": [
+    {
+      "zoom": 0.6,
+      "reps": 3,
+      "fps": {
+        "median": 13.753,
+        "min": 13.612,
+        "max": 13.841
+      },
+      "updateMsP50": {
+        "median": 0.145,
+        "min": 0.14,
+        "max": 0.305
+      },
+      "updateMsP95": {
+        "median": 0.225,
+        "min": 0.185,
+        "max": 0.485
+      },
+      "renderMsP95": {
+        "median": 1.135,
+        "min": 0.98,
+        "max": 1.305
+      },
+      "drawCallsP95": {
+        "median": 17,
+        "min": 17,
+        "max": 17
+      },
+      "visibleUnitsP50": {
+        "median": 400,
+        "min": 400,
+        "max": 400
+      },
+      "consoleErrors": []
+    },
+    {
+      "zoom": 1,
+      "reps": 3,
+      "fps": {
+        "median": 7.7,
+        "min": 7.479,
+        "max": 7.704
+      },
+      "updateMsP50": {
+        "median": 0.165,
+        "min": 0.145,
+        "max": 0.355
+      },
+      "updateMsP95": {
+        "median": 0.31,
+        "min": 0.245,
+        "max": 0.575
+      },
+      "renderMsP95": {
+        "median": 1.34,
+        "min": 0.98,
+        "max": 1.84
+      },
+      "drawCallsP95": {
+        "median": 5,
+        "min": 5,
+        "max": 5
+      },
+      "visibleUnitsP50": {
+        "median": 400,
+        "min": 400,
+        "max": 400
+      },
+      "consoleErrors": []
+    },
+    {
+      "zoom": 1.4,
+      "reps": 3,
+      "fps": {
+        "median": 4.934,
+        "min": 4.876,
+        "max": 4.979
+      },
+      "updateMsP50": {
+        "median": 0.185,
+        "min": 0.165,
+        "max": 0.37
+      },
+      "updateMsP95": {
+        "median": 0.77,
+        "min": 0.36,
+        "max": 3.12
+      },
+      "renderMsP95": {
+        "median": 1.495,
+        "min": 1.45,
+        "max": 1.695
+      },
+      "drawCallsP95": {
+        "median": 5,
+        "min": 5,
+        "max": 5
+      },
+      "visibleUnitsP50": {
+        "median": 391,
+        "min": 391,
+        "max": 391
+      },
+      "consoleErrors": []
+    }
+  ]
+}

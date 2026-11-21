@@ -2,7 +2,7 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { buildDevlog, REPO_ROOT } from '../src/build.js';
+import { buildDevlog, readmeFor, REPO_ROOT } from '../src/build.js';
 
 function sandbox(json?: string) {
   const root = mkdtempSync(join(tmpdir(), 'devlog-'));
@@ -14,6 +14,21 @@ function sandbox(json?: string) {
 }
 
 describe('devlog build', () => {
+  it('readmeFor muestra las notas opcionales como viñetas', () => {
+    const base = {
+      fase: 2,
+      titulo: 'T',
+      porcentaje: 21,
+      ahoraSePuede: 'x',
+      metricas: { fps: null, tick: null, tests: null },
+      siguiente: 's',
+      imagenes: [],
+    };
+    expect(readmeFor(base)).not.toContain('**Notas:**');
+    const md = readmeFor({ ...base, notas: ['uno', 'dos'] });
+    expect(md).toContain('**Notas:**\n\n- uno\n- dos\n\n**Siguiente:** s');
+  });
+
   it('genera index.html con la tarjeta de fase-00 y la barra de hitos marcada', () => {
     const root = sandbox();
     const r = buildDevlog({ root, outDir: join(root, 'out') });

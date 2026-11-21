@@ -22,7 +22,8 @@
     "bench": "pnpm --filter @reinos/headless run bench",
     "test:det:browsers": "pnpm --filter @reinos/headless run test:det:browsers",
     "e2e:render": "pnpm assets:gen && pnpm --filter @reinos/client build && playwright test -c playwright.render.config.ts --trace off",
-    "perf:render": "node -e \"console.error('perf:render: TODO(Q2) not implemented yet'); process.exit(1)\"",
+    "perf:render": "pnpm assets:gen && pnpm --filter @reinos/client build && node e2e/perf/perf-render.mjs",
+    "media:render": "node e2e/perf/capture-media.mjs",
     "assets:gen": "pnpm --filter @reinos/asset-pipeline run gen"
   },
   "devDependencies": {

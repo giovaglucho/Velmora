@@ -11,6 +11,8 @@ export const DevlogSchema = z.object({
   ahoraSePuede: z.string().min(1),
   /** null = aún no medido (se muestra como pendiente, nunca se inventa). */
   metricas: z.object({ fps: metric, tick: metric, tests: metric, nota: z.string().optional() }),
+  /** Notas extra para el README de la fase (una viñeta cada una; no se muestran en la tarjeta del sitio). */
+  notas: z.array(z.string().min(1)).optional(),
   siguiente: z.string().min(1),
   /** Rutas relativas a docs/progress/fase-XX/media/. */
   imagenes: z.array(z.object({ archivo: z.string().min(1), alt: z.string().min(1) })),

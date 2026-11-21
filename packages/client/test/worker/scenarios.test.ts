@@ -12,9 +12,10 @@ import { DATA, SEED, moveCmd } from './helpers';
 /** Pinned: hash after 200 ticks (50 turns) with one move order for the first 20 units at turn 0. */
 const PINNED: Record<ScenarioName, number> = {
   demo100: 2552486542,
+  demo200: 998836058,
   demo400: 4096375533,
 };
-const UNITS: Record<ScenarioName, number> = { demo100: 100, demo400: 400 };
+const UNITS: Record<ScenarioName, number> = { demo100: 100, demo200: 200, demo400: 400 };
 
 function hashAfter200(name: ScenarioName, seed: number): number {
   const sim = createSim(seed, DATA.dataVersion, buildScenario(name, seed), DATA);
@@ -25,8 +26,8 @@ function hashAfter200(name: ScenarioName, seed: number): number {
 }
 
 describe('scenarios', () => {
-  it('exposes both names', () => {
-    expect([...SCENARIO_NAMES]).toEqual(['demo100', 'demo400']);
+  it('exposes all names', () => {
+    expect([...SCENARIO_NAMES]).toEqual(['demo100', 'demo200', 'demo400']);
     expect(isScenarioName('demo100')).toBe(true);
     expect(isScenarioName('nope')).toBe(false);
   });
