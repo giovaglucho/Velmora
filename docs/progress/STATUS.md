@@ -64,6 +64,10 @@ Desviación del PLAN: sprites/terreno provisionales **procedurales propios** (`t
 - Datos pendientes del GDD en `packages/data/COVERAGE.md` (31 warnings de `data:check`).
 - Medios del devlog duplicados (`docs/` y `packages/client/public/devlog`, ~34 MB): evaluar Git LFS o excluir.
 
+## Devlog: mapa del proyecto
+
+`/devlog` muestra un "Mapa del proyecto" con las 14 fases (hechas, en curso y próximas) desde `docs/progress/roadmap.json`. Actualizar ese JSON al cerrar cada fase. Verificado: typecheck y tests de `tools/devlog` en verde, `pnpm devlog` regenera la página. Revisión visual del mapa pendiente (no se pudo capturar la página generada en este entorno).
+
 ## Próximos pasos (retomar con `/estado` y luego `/fase 3`)
 
 Contexto de la sesión anterior llegó al límite (regla PLAN §4.1): se guardó el estado aquí. El plan de Fase 3 ya existe; **no empezar de cero**: leer `docs/progress/fase-03/plan.md` y ADR-007, pasar el ADR a Aceptado tras revisión R1 del architect y lanzar las olas (T0 stubs primero).

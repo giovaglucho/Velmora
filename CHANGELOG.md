@@ -1,5 +1,11 @@
 # Changelog
 
+## [devlog] — 2026-11-21 — Mapa del proyecto en /devlog
+
+- `docs/progress/roadmap.json` con las 14 fases: estado (hecha / en curso / próxima / futura), pasos y pendiente de cada una.
+- `tools/devlog`: `RoadmapSchema` y sección "Mapa del proyecto" en `/devlog`, encima de las tarjetas de fase. El mapa es opcional: sin el JSON la página sale como antes.
+- Sin capturas ni métricas nuevas: Fase 3 sigue sin código.
+
 ## [fase-00] — 2026-11-21 — Fundaciones
 
 - Monorepo pnpm + Turborepo, TS estricto, ESLint/Prettier, Vitest, Playwright.

@@ -9,7 +9,7 @@ import {
 } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { DevlogSchema, HITOS, type Devlog } from './schema.js';
+import { DevlogSchema, HITOS, RoadmapSchema, type Devlog, type Roadmap } from './schema.js';
 
 export const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 
@@ -71,6 +71,33 @@ export function hitosBar(actual: number): string {
   return `<ol class="hitos" aria-label="Hitos del plan">${items.join('')}</ol>`;
 }
 
+/** Opcional: si no existe docs/progress/roadmap.json, la página sale sin el mapa. */
+export function loadRoadmap(root: string): Roadmap | null {
+  const f = join(root, 'docs/progress/roadmap.json');
+  if (!existsSync(f)) return null;
+  const r = RoadmapSchema.safeParse(JSON.parse(readFileSync(f, 'utf8')));
+  if (!r.success) throw new Error(`roadmap.json inválido: ${r.error.message}`);
+  return r.data;
+}
+
+const ESTADO_LABEL: Record<string, string> = {
+  hecha: 'Hecha',
+  'en curso': 'En curso',
+  próxima: 'Próxima',
+  futura: 'Futura',
+};
+
+export function roadmapHtml(r: Roadmap): string {
+  const cards = r.fases
+    .map((f) => {
+      const id = `fase-${pad(f.fase)}`;
+      const link = f.estado === 'hecha' ? `<a href="#${id}">ver devlog</a>` : '';
+      return `<li class="rm ${f.estado.replace(' ', '-')}"><header><span class="n">F${pad(f.fase)}</span><span class="est">${ESTADO_LABEL[f.estado] ?? esc(f.estado)}</span></header><h3>${esc(f.titulo)}</h3><ul>${f.pasos.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>${f.pendiente ? `<p class="pend-t"><strong>Pendiente:</strong> ${esc(f.pendiente)}</p>` : ''}${link}</li>`;
+    })
+    .join('');
+  return `<section class="roadmap" aria-labelledby="rm-title"><h2 id="rm-title">Mapa del proyecto</h2><p class="sub">Lo hecho y lo que viene, fase por fase. Fuente: docs/progress/roadmap.json.</p><ol class="rm-grid">${cards}</ol></section>`;
+}
+
 function card(e: Devlog, mediaBase: string): string {
   const m = e.metricas;
   const stat = (label: string, v: number | null, unit: string) =>
@@ -124,6 +151,18 @@ h1{font:700 clamp(28px,5vw,44px)/1.1 Georgia,serif;margin:0 0 6px;color:var(--go
 .stat .u,.stat .l{font-size:13px;color:var(--mute)}
 .nota{color:var(--mute);font-size:14px;margin:0 0 12px}
 footer{color:var(--mute);font-size:13px}
+.roadmap{margin:0 0 40px}.roadmap h2,.rm-title-cards{font:700 26px/1.2 Georgia,serif;margin:0 0 4px;color:var(--gold)}
+.rm-grid{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;padding:0;margin:16px 0 0}
+.rm{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:14px;color:var(--mute)}
+.rm h3{margin:4px 0 6px;font:700 17px/1.3 Georgia,serif;color:var(--text)}
+.rm ul{margin:0 0 6px;padding-left:18px}.rm li{margin:2px 0}
+.rm header{display:flex;justify-content:space-between;font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+.rm .n{color:var(--mute)}.rm .est{font-weight:700;color:var(--mute)}
+.rm.hecha{border-color:#4d6b3a}.rm.hecha .est{color:var(--ok)}
+.rm.en-curso{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}.rm.en-curso .est{color:var(--gold)}
+.rm.próxima .est{color:var(--ember)}
+.rm .pend-t{margin:6px 0;color:var(--text)}
+.rm a{color:var(--gold)}
 @media(max-width:700px){.hitos{grid-template-columns:1fr}.stats{grid-template-columns:1fr}body{font-size:16px}}`;
 
 export function buildDevlog(opts: { root?: string; outDir?: string } = {}) {
@@ -158,6 +197,7 @@ export function buildDevlog(opts: { root?: string; outDir?: string } = {}) {
     writeFileSync(join(root, 'docs/progress', tag, 'README.md'), readmeFor(e));
   }
   const actual = entries[0]!.fase;
+  const roadmap = loadRoadmap(root);
   const cards = entries
     .map((e) => card((e as Devlog & { _shown: Devlog })._shown, `media/fase-${pad(e.fase)}`))
     .join('\n');
@@ -168,6 +208,8 @@ export function buildDevlog(opts: { root?: string; outDir?: string } = {}) {
 <h1>Devlog · Reinos de Ceniza</h1>
 <p class="sub">Progreso visible fase por fase. Lo más reciente arriba.</p>
 ${hitosBar(actual)}
+${roadmap ? roadmapHtml(roadmap) : ''}
+${roadmap ? '<h2 class="rm-title-cards">Fases completadas y en curso</h2>' : ''}
 ${cards}
 </main></body></html>
 `;

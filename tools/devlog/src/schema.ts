@@ -21,7 +21,24 @@ export const DevlogSchema = z.object({
 
 export type Devlog = z.infer<typeof DevlogSchema>;
 
-export const HITOS: { n: number; nombre: string; desde: number; hasta: number }[] = [
+export const RoadmapSchema = z.object({
+  fases: z
+    .array(
+      z.object({
+        fase: z.number().int().min(0).max(13),
+        titulo: z.string().min(1),
+        estado: z.enum(['hecha', 'en curso', 'próxima', 'futura']),
+        pasos: z.array(z.string().min(1)).min(1),
+        /** Lo que impide cerrar la fase (puerta humana o criterio abierto). null = nada pendiente. */
+        pendiente: z.string().min(1).nullable(),
+      }),
+    )
+    .length(14),
+});
+
+export type Roadmap = z.infer<typeof RoadmapSchema>;
+
+export const HITOS:{ n: number; nombre: string; desde: number; hasta: number }[] = [
   { n: 1, nombre: 'Prototipo', desde: 0, hasta: 3 },
   { n: 2, nombre: 'MVP vs IA', desde: 4, hasta: 5 },
   { n: 3, nombre: 'Aspecto AAA', desde: 6, hasta: 7 },

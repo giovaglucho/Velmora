@@ -1,0 +1,110 @@
+{
+  "fases": [
+    {
+      "fase": 0,
+      "titulo": "Fundaciones",
+      "estado": "hecha",
+      "pasos": ["Monorepo pnpm + Turborepo, TypeScript estricto y CI", "Lint, formato y tests base en verde"],
+      "pendiente": "URL desplegada en Render (TODO-HUMANO)"
+    },
+    {
+      "fase": 1,
+      "titulo": "Núcleo de simulación determinista",
+      "estado": "hecha",
+      "pasos": ["Simulación con punto fijo y PRNG por partida", "1000 unidades × 10 000 ticks con golden hash"],
+      "pendiente": "Hash verificado en Firefox y WebKit (solo CI en GitHub)"
+    },
+    {
+      "fase": 2,
+      "titulo": "Render isométrico base",
+      "estado": "hecha",
+      "pasos": ["Mapa isométrico PixiJS con chunks y tres zooms", "Niebla de guerra, minimapa y selección con órdenes"],
+      "pendiente": "Medir ≥ 60 fps con 400 unidades en hardware de referencia (TODO-HUMANO)"
+    },
+    {
+      "fase": 3,
+      "titulo": "Economía y construcción (Eras I–II)",
+      "estado": "en curso",
+      "pasos": [
+        "Colonos con recolección, caminata real y depósitos",
+        "Construcción con fórmula 3t/(n+2) y población",
+        "Colas de producción y eras I–II con requisitos",
+        "Generador de mapas \"Llanuras de Ceniza\" con equidad validada",
+        "HUD económico: recursos, comandos y colocación de edificios",
+        "Bot de build order como test de CI",
+        "Devlog: video de aldea de 3 a 30 colonos"
+      ],
+      "pendiente": "Revisión visual de Hito 1 (puerta humana)"
+    },
+    {
+      "fase": 4,
+      "titulo": "Combate y unidades militares",
+      "estado": "próxima",
+      "pasos": ["Daño con clases de armadura y proyectiles", "Actitudes, formaciones y flow fields", "Unidades de Eras I–II y torres"],
+      "pendiente": null
+    },
+    {
+      "fase": 5,
+      "titulo": "IA, mapas y partida rápida",
+      "estado": "futura",
+      "pasos": ["Motor de reglas de la IA y 6 dificultades", "Victoria por conquista y pantallas de partida", "Dos mapas más"],
+      "pendiente": null
+    },
+    {
+      "fase": 6,
+      "titulo": "Pipeline de arte, iluminación y audio",
+      "estado": "futura",
+      "pasos": ["Render de sprites con Blender y atlas KTX2", "Iluminación, agua y partículas", "Audio con música adaptativa"],
+      "pendiente": "Packs de arte y audio (puerta humana; conviene empezar ya)"
+    },
+    {
+      "fase": 7,
+      "titulo": "Contenido completo de juego",
+      "estado": "futura",
+      "pasos": ["Eras III–IV y 4 facciones", "Asedio, murallas, mercado y naval", "IA por facción y torneos de balance"],
+      "pendiente": null
+    },
+    {
+      "fase": 8,
+      "titulo": "Backend, cuentas y persistencia",
+      "estado": "futura",
+      "pasos": ["API Express con auth JWT y modo invitado", "Perfiles e historial de partidas", "Pruebas de seguridad básicas"],
+      "pendiente": "Clúster MongoDB Atlas (TODO-HUMANO)"
+    },
+    {
+      "fase": 9,
+      "titulo": "Multijugador lockstep, lobbies y ranked",
+      "estado": "futura",
+      "pasos": ["Relay WebSocket con hashes y reconexión", "Lobbies, espectadores y matchmaking", "Ranked Glicko-2 y repeticiones"],
+      "pendiente": null
+    },
+    {
+      "fase": 10,
+      "titulo": "Experiencia de juego de PC en el navegador",
+      "estado": "futura",
+      "pasos": ["Precarga, menú principal y opciones", "Cinemática de introducción en motor", "Service Worker de caché"],
+      "pendiente": null
+    },
+    {
+      "fase": 11,
+      "titulo": "Campaña y tutorial",
+      "estado": "futura",
+      "pasos": ["Motor de escenarios con triggers", "Prólogo y campaña de 9 misiones", "Bot que completa cada misión"],
+      "pendiente": null
+    },
+    {
+      "fase": 12,
+      "titulo": "Retención y social",
+      "estado": "futura",
+      "pasos": ["Desafío diario validado en servidor", "Logros, XP y misiones semanales", "Telemetría con opt-out"],
+      "pendiente": null
+    },
+    {
+      "fase": 13,
+      "titulo": "Pulido, balance, beta y lanzamiento",
+      "estado": "futura",
+      "pasos": ["Balance final y beta cerrada", "Lanzamiento 1.0"],
+      "pendiente": null
+    }
+  ]
+}
